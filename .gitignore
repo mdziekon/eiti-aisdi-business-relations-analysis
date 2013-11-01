@@ -11,3 +11,8 @@
 *.lai
 *.la
 *.a
+
+# Eclipse files and directories
+.project
+.cproject
+.settings/
