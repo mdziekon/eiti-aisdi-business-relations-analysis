@@ -16,3 +16,6 @@
 .project
 .cproject
 .settings/
+
+# Generic building directories
+build/
