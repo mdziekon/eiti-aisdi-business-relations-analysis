@@ -19,7 +19,7 @@ $(REAL_EXECUTABLE): $(OBJECTS)
 	$(CXX) $(LDFLAGS) $(LDLIBS) $(OBJECTS) -o $@
 
 $(BUILDDIR)/$(SOURCEDIR)/%.o: $(SOURCEDIR)/%.cpp
-	$(foreach d,$(subst /, ,${@D}),mkdir $d && cd $d && ):
+	$(foreach d,$(subst /, ,${@D}), -mkdir $d && cd $d && ):
 	$(CXX) $(CXXFLAGS) $< -o $@
 	
 .PHONY: clean
