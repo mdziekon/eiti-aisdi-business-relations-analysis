@@ -12,10 +12,5 @@
 *.la
 *.a
 
-# Eclipse files and directories
-.project
-.cproject
-.settings/
-
 # Generic building directories
 build/
