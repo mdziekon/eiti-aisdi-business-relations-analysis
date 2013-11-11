@@ -1,0 +1,9 @@
+called: g++
+	/home/michal/NetBeansProjects/aisdi
+	g++
+	-c
+	-Wall
+	src/AISDI.cpp
+	-o
+	build/src/AISDI.o
+

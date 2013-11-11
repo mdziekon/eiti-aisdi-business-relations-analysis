@@ -1,0 +1,7 @@
+mkdir build && cd build &&   -mkdir src && cd src && :
+/bin/sh: 1: -mkdir: not found
+make: [build/src/AISDI.o] Błąd 127 (zignorowany)
+g++ -c -Wall src/AISDI.cpp -o build/src/AISDI.o
+Assembler messages:
+Fatal error: can't create build/src/AISDI.o: Nie ma takiego pliku ani katalogu
+make: *** [build/src/AISDI.o] Błąd 1
