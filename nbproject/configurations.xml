@@ -7,12 +7,13 @@
           <in>Attachment.cpp</in>
           <in>Containers.hpp</in>
           <in>Email.cpp</in>
-          <in>Exception.cpp</in>
           <in>Headers.cpp</in>
           <in>Mail.cpp</in>
           <in>Person.cpp</in>
         </df>
         <in>AISDI.cpp</in>
+        <in>Exceptions.hpp</in>
+        <in>GenericException.cpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -54,13 +55,15 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="src/Exceptions.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/GenericException.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/containers/Attachment.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/containers/Containers.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/containers/Email.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/containers/Exception.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/containers/Headers.cpp" ex="false" tool="1" flavor2="0">
       </item>

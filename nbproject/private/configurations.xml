@@ -13,12 +13,13 @@
           <in>Attachment.cpp</in>
           <in>Containers.hpp</in>
           <in>Email.cpp</in>
-          <in>Exception.cpp</in>
           <in>Headers.cpp</in>
           <in>Mail.cpp</in>
           <in>Person.cpp</in>
         </df>
         <in>AISDI.cpp</in>
+        <in>Exceptions.hpp</in>
+        <in>GenericException.cpp</in>
       </df>
     </df>
   </logicalFolder>
@@ -63,6 +64,7 @@
         <runcommand>"${OUTPUT_PATH}"</runcommand>
         <rundir>.</rundir>
         <buildfirst>true</buildfirst>
+        <console-type>1</console-type>
         <terminal-type>0</terminal-type>
         <remove-instrumentation>0</remove-instrumentation>
         <environment>

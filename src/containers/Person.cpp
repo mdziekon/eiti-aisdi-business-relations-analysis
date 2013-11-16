@@ -1,7 +1,6 @@
 #include "Containers.hpp"
 #include <algorithm>
 #include <sstream>
-#include <iostream>
 
 Containers::Person::Person(const string& email):
 email(email)
@@ -55,7 +54,17 @@ string Containers::Person::getName() const
 	return name.str();
 }
 
-const Containers::Person::Email& Containers::Person::getEmail() const
+const Containers::Email& Containers::Person::getEmail() const
 {
 	return this->email;
+}
+
+void Containers::Person::addSentMail(Mail& sentMail)
+{
+	this->sentMails.push_back(&sentMail);
+}
+
+const vector<Containers::Mail*>& Containers::Person::getSentMails() const
+{
+	return this->sentMails;
 }

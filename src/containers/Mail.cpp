@@ -11,7 +11,7 @@ void Containers::Mail::addAttachment(const Attachment& attachment)
 	this->attachments.push_back(attachment);
 }
 
-const vector<Containers::Mail::Attachment>& Containers::Mail::getAttachments() const
+const vector<Containers::Attachment>& Containers::Mail::getAttachments() const
 {
 	return this->attachments;
 }
