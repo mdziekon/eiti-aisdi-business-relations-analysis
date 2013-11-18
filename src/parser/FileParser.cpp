@@ -1,11 +1,11 @@
 #include "FileParser.hpp"
+#include <cstdio>
 
-Containers::Mail & FileParser::build (string & str)
+using namespace Containers;
+
+Mail * FileParser::build (string & str)
 {
-	const string lastHeaderKey = "Content-Transfer-Encoding"
-	
-	unsigned int currPos = 0;
-	unsigned int maxPos = str.size();
+	const string lastHeaderKey = "Content-Transfer-Encoding";
 	
 	string key;
 	string value;
@@ -13,40 +13,67 @@ Containers::Mail & FileParser::build (string & str)
 	string from;
 	string to;
 	
-	Containers::Headers headers;
+	Headers headers;
+        
+        std::string::iterator it = str.begin();
 	
-	for(; currPos < str.size() && key != lastHeaderKey; key.clear(), value.clear() currPos++) {
-		while(str[currPos++] != ':') {		/* wykrycie headera */
-			key += buffer;				
+	for(; it < str.end() && key != lastHeaderKey; key.clear(), value.clear(), it++) {
+            
+                /* petla pobierajaca klucz headera*/
+            
+		while(*it++ != ':') {	
+			key += *--it;				
 		} 
-		currPos++;
+		*it++;
 		
-		while(str[currPos++] ==  ' ')  {	/* wykrycie dowolnej liczby linijek zawartosci */	
-			while(str[currPos++] == ' ');	/* dzieki wcieciom na poczatku */
-			while(str[currPos] != '\r')
-				value = value + str[currPos++];
-			currPos++;						//sekwencja \r\n
+                /* petla pobierajaca zawartosc headera - 
+                  jesli wiersz zaczyna sie od spacji, to
+                  jest to kontynuacja zawartosci */
+                
+		while(*it++ ==  ' ')  {	
+                        
+                        /* pominiecie wciecia */
+                    
+			while(*it++ == ' ');
+                        
+                        /* koniec linii - sekwencja \r\n
+                           przesuwamy az do \r, potem 
+                           pomijamy \n */
+                        
+			while(*it != '\r') {
+				value = value + *it++;
+                        }
+			it++;
 		}
 		
-		if(key == "From")
-			from = value.getMail();
-		else if(key == "To")
-			to = value.getMail();
-		else
+                /* warunki potrzebne do stworzenia 
+                   obiektow nadawcy i odbiorcy */
+                
+		if(key == "From") {
+			from = getMail(value);
+                }
+		else if(key == "To") {
+			to = getMail(value);
+                }
+		else {
 			headers.addHeader(key, value);
+                }
+                
+                printf("%s %s \n", key.c_str(), value.c_str());
 	}
-	
-	return Mail(Containers::Person(from), Containers::Person(to), str.substr(currPos, str.size()-currPos), headers, 0);
-	/* nie wiem, w jakim formacie ma być czasoznaczek */
+        
+	return new Mail(Person(from), Person(to), std::string(it++, str.end()), headers, 0);
+	/* TODO czasoznaczek */
 }
 
-string & FileParser::getMail (string & input)
-{
-	string output;
+string FileParser::getMail (string & input)
+{       
+        std::string::iterator it = input.begin();
+        std::string::iterator end_it;
 	
-	while(input[startpos++] != '<')
-		while(input[startpos] != '>')
-			output += input[startpos];
+	while(*it++ != '<');
+	for(end_it = it; *end_it != '>'; end_it++);
+
 	
-	return output;
+	return string(++it, --end_it);
 }
