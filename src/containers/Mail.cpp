@@ -1,7 +1,7 @@
 #include "Containers.hpp"
 
-Containers::Mail::Mail(const Person& sender, const Person& receiver, const string& content, const Headers& headers, const int& sendTimestap):
-sender(sender), receiver(receiver), content(content), headers(headers), sendTimestamp(sendTimestap)
+Containers::Mail::Mail(Person& sender, Person& receiver, const string& content, const Headers& headers, const int& sendTimestap):
+sender(&sender), receiver(&receiver), content(content), headers(headers), sendTimestamp(sendTimestap)
 {
 	
 }

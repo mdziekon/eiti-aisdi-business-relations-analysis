@@ -58,13 +58,3 @@ const Containers::Email& Containers::Person::getEmail() const
 {
 	return this->email;
 }
-
-void Containers::Person::addSentMail(Mail& sentMail)
-{
-	this->sentMails.push_back(&sentMail);
-}
-
-const vector<Containers::Mail*>& Containers::Person::getSentMails() const
-{
-	return this->sentMails;
-}
