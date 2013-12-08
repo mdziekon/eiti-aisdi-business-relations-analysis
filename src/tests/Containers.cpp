@@ -3,6 +3,7 @@
 //============================================================================
 
 #include <iostream>
+#include <stdexcept>
 #include "../utils/UTests.hpp"
 
 #include "../utils/Exceptions.hpp"
@@ -207,7 +208,7 @@ int main()
 	// Currectly, nothing to test
 	
 	// ---
-	// - Test #03
+	// - Test #04
 	// - Model - Person
 	// ---
 	
@@ -260,6 +261,51 @@ int main()
 	}
 	
 	uTest_Abort("#04");
+	
+	cout << endl;
+	
+	// ---
+	// - Test #05
+	// - Model - Mail
+	// ---
+	
+	// 1. Check if constructor works correctly
+	{
+		auto person1 = Containers::Person("test1@1domain.com");
+		auto person2 = Containers::Person("test2@domain2.com");
+		
+		auto test = Containers::Mail(person1, person2, string("testContent"), Containers::Headers(), 123);
+		uTest_True(test.sender->getEmail().getFull() == "test1@1domain.com", "#05 - #01a");
+		uTest_True(test.receiver->getEmail().getFull() == "test2@domain2.com", "#05 - #01b");
+		uTest_True(test.content == "testContent", "#05 - #01c");
+		uTest_True(test.sendTimestamp == 123, "#05 - #01d");
+	}
+	
+	// 2. Check if attachment adding and list reading works
+	{
+		auto person1 = Containers::Person("test1@1domain.com");
+		auto person2 = Containers::Person("test2@domain2.com");
+		
+		auto test = Containers::Mail(person1, person2, string("testContent"), Containers::Headers(), 123);
+		test.addAttachment(Containers::Attachment("file1.ext1", 1));
+		test.addAttachment(Containers::Attachment("file2.ext2", 3));
+		
+		auto vect = test.getAttachments();
+		uTest_True(vect.at(0).getFilename() == "file1.ext1", "#05 - #02a");
+		uTest_True(vect.at(1).getFilename() == "file2.ext2", "#05 - #02b");
+		bool exceptionCaught = false;
+		try
+		{
+			vect.at(2).getFilename();
+		}
+		catch(out_of_range e)
+		{
+			exceptionCaught = true;
+		}
+		uTest_True(exceptionCaught, "#05 - #02c");
+	}
+	
+	uTest_Abort("#05");
 	
 	cout << endl;
 	
