@@ -70,7 +70,7 @@ namespace Containers
 		vector<Attachment> attachments;
 
 	public:
-		Person *sender, *receiver;
+		Person * const sender, * const receiver;
 		const string content;
 		const Headers headers;
 		const int sendTimestamp;
