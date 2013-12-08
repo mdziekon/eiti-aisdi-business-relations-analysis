@@ -309,5 +309,7 @@ int main()
 	
 	cout << endl;
 	
+	uTest_Finish;
+	
 	return 0;
 }

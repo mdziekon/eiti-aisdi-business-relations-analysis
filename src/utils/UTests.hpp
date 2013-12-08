@@ -92,10 +92,11 @@ void uTest_Time(F1 f1, F2 f2, int loop, const char* label)
 	std::cout << " - Av: " << (total / loop) * 1000 << "ms. | Hi: " << (highest * 1000) << "ms. | T: " << (total * 1000) << "ms. (" << loop << "x)\n";
 }
 
-#define uTest_Init bool uTest_Failed = false;
-#define uTest_True(e, l) std::cout.flags(std::ios::left); std::cout.width(23); std::cout << l; if(e){ std::cout << "Passed"; } else { std::cout << "Failed"; uTest_Failed = true; } cout << "\n";
+#define uTest_Init int uTest_Failed = 0;
+#define uTest_True(e, l) std::cout.flags(std::ios::left); std::cout.width(23); std::cout << l; if(e){ std::cout << "Passed"; } else { std::cout << "Failed"; ++uTest_Failed; } cout << "\n";
 #define uTest_False(e, l) uTest_True(!(e), l);
-#define uTest_Abort(l) if(uTest_Failed == true){ cout << "\nOne of the tests from \"Test " << l << " Set\" has failed, aborting further tests...\n"; return 1; }
+#define uTest_Abort(l) if(uTest_Failed > 0){ cout << "\nOne of the tests from \"Test " << l << " Set\" has failed, aborting further tests...\n(Failed tests: " << uTest_Failed << ")\n"; return 1; }
+#define uTest_Finish if(uTest_Failed == 0){ cout << "\nAll tests passed!\n"; } else { cout << "\nSome tests failed!\n(Failed tests: " << uTest_Failed << ")\n"; } return 1;
 
 #endif	/* UTESTS_H */
 
