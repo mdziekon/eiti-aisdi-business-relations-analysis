@@ -12,9 +12,7 @@
 using namespace std;
 
 namespace Containers
-{
-	class Mail;
-	
+{	
 	class Email
 	{
 		friend class Person;
@@ -56,7 +54,6 @@ namespace Containers
 	protected:
 		string firstName, lastName;
 		Email email;
-		vector<Mail*> sentMails;
 		
 	public:
 		Person(const string& email);
@@ -65,8 +62,6 @@ namespace Containers
 		const string& getLastName() const;
 		string getName() const;
 		const Email& getEmail() const;
-		void addSentMail(Mail& sentMail);
-		const vector<Mail*>& getSentMails() const;
 	};
 	
 	class Mail
@@ -75,12 +70,12 @@ namespace Containers
 		vector<Attachment> attachments;
 
 	public:
-		const Person& sender, receiver;
+		Person * const sender, * const receiver;
 		const string content;
 		const Headers headers;
 		const int sendTimestamp;
 
-		Mail(const Person& sender, const Person& receiver, const string& content, const Headers& headers, const int& sendTimestap);
+		Mail(Person& sender, Person& receiver, const string& content, const Headers& headers, const int& sendTimestap);
 
 		void addAttachment(const Attachment& attachment);
 		const vector<Attachment>& getAttachments() const;

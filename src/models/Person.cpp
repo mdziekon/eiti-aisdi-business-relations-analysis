@@ -6,6 +6,7 @@ Containers::Person::Person(const string& email):
 email(email)
 {
 	auto posDot = this->email.getLocal().find_first_of(".");
+	string::iterator firstLetterCapitalize;
 	if (posDot == string::npos)
 	{
 		this->firstName = string("");
@@ -14,17 +15,28 @@ email(email)
 	else
 	{
 		this->firstName = this->email.getLocal().substr(0, posDot);
-		*(this->firstName.begin()) -= 32;
 		this->lastName = this->email.getLocal().substr(posDot + 1);
+		
+		firstLetterCapitalize = this->firstName.begin();
+		if (*firstLetterCapitalize >= 'a' && *firstLetterCapitalize <= 'z')
+		{
+			*firstLetterCapitalize -= 32;
+		}
 	}
 	replace(this->lastName.begin(), this->lastName.end(), '.', ' ');
-	*(this->lastName.begin()) -= 32;
+	
+	firstLetterCapitalize = this->lastName.begin();
+	if (*firstLetterCapitalize >= 'a' && *firstLetterCapitalize <= 'z')
+	{
+		*firstLetterCapitalize -= 32;
+	}
+	
 	for (auto iter = this->lastName.begin() + 1, nextIter = this->lastName.end(); iter != this->lastName.end(); ++iter)
 	{
 		if (*iter == ' ')
 		{
 			nextIter = iter + 1;
-			if (nextIter != this->lastName.end())
+			if (nextIter != this->lastName.end() && *nextIter >= 'a' && *nextIter <= 'z')
 			{
 				*nextIter -= 32;
 			}
@@ -57,14 +69,4 @@ string Containers::Person::getName() const
 const Containers::Email& Containers::Person::getEmail() const
 {
 	return this->email;
-}
-
-void Containers::Person::addSentMail(Mail& sentMail)
-{
-	this->sentMails.push_back(&sentMail);
-}
-
-const vector<Containers::Mail*>& Containers::Person::getSentMails() const
-{
-	return this->sentMails;
 }

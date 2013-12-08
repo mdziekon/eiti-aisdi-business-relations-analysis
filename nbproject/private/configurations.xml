@@ -4,18 +4,25 @@
     <df root="." name="0">
       <df name="build">
         <df name="src">
-          <df name="containers">
+          <df name="models">
+          </df>
+          <df name="tests">
+          </df>
+          <df name="utils">
           </df>
         </df>
       </df>
       <df name="src">
-        <df name="containers">
-          <in>Attachment.cpp</in>
-          <in>Containers.hpp</in>
-          <in>Email.cpp</in>
-          <in>Headers.cpp</in>
-          <in>Mail.cpp</in>
-          <in>Person.cpp</in>
+        <df name="controllers">
+        </df>
+        <df name="models">
+        </df>
+        <df name="tests">
+          <in>Containers.cpp</in>
+        </df>
+        <df name="utils">
+        </df>
+        <df name="views">
         </df>
         <in>AISDI.cpp</in>
         <in>Exceptions.hpp</in>
