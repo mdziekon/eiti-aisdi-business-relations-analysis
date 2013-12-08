@@ -6,6 +6,12 @@
         <df name="src">
           <df name="containers">
           </df>
+          <df name="models">
+          </df>
+          <df name="tests">
+          </df>
+          <df name="utils">
+          </df>
         </df>
       </df>
       <df name="src">

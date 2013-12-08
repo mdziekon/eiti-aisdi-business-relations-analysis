@@ -3,7 +3,12 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="src">
+        <df name="tests">
+          <in>Containers.cpp</in>
+        </df>
         <in>AISDI.cpp</in>
+        <in>Exceptions.hpp</in>
+        <in>GenericException.cpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -45,21 +50,55 @@
         <ccTool>
         </ccTool>
       </item>
-      <item path="src/models/Attachment.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/Exceptions.hpp" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="src/models/Containers.hpp" ex="false" tool="3" flavor2="0">
+      <item path="src/GenericException.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="src/models/Email.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/models/Attachment.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="src/models/Headers.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/models/Email.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="src/models/Mail.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/models/Headers.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="src/models/Person.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/models/Mail.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="src/utils/Exceptions.hpp" ex="false" tool="3" flavor2="0">
+      <item path="src/models/Person.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="src/utils/GenericException.cpp" ex="false" tool="1" flavor2="0">
+      <item path="src/tests/Containers.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/utils/GenericException.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
       </item>
     </conf>
   </confs>
