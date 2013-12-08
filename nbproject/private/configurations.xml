@@ -4,6 +4,8 @@
     <df root="." name="0">
       <df name="build">
         <df name="src">
+          <df name="containers">
+          </df>
         </df>
       </df>
       <df name="src">
