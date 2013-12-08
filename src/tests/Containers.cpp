@@ -199,5 +199,69 @@ int main()
 	
 	cout << endl;
 	
+	// ---
+	// - Test #03
+	// - Model - Headers
+	// ---
+	
+	// Currectly, nothing to test
+	
+	// ---
+	// - Test #03
+	// - Model - Person
+	// ---
+	
+	// 1. Check if method getEmail() works correctly (and proper Email is returned)
+	{
+		auto test = Containers::Person("Adam.Nowak@domena.pl").getEmail();
+		uTest_True(test.getFull() == "Adam.Nowak@domena.pl", "#04 - #01");
+	}
+	
+	// 2. Check if method getFirstName() works correctly
+	{
+		auto test1 = Containers::Person("Adam.Nowak@domena.pl");
+		auto test2 = Containers::Person("adam.nowak@_domena.pl");
+		auto test3 = Containers::Person("1Adam.5nowak@domena.pl");
+		auto test4 = Containers::Person("_adam.!nowak@domena.pl");
+		uTest_True(test1.getFirstName() == "Adam", "#04 - #02a");
+		uTest_True(test2.getFirstName() == "Adam", "#04 - #02b");
+		uTest_True(test3.getFirstName() == "1Adam", "#04 - #02c");
+		uTest_True(test4.getFirstName() == "_adam", "#04 - #02d");
+	}
+	
+	// 3. Check if method getLastName() works correctly
+	{
+		auto test1 = Containers::Person("Adam.Nowak@domena.pl");
+		auto test2 = Containers::Person("adam.nowak@_domena.pl");
+		auto test3 = Containers::Person("1Adam.5nowak@domena.pl");
+		auto test4 = Containers::Person("_adam.!nowak@domena.pl");
+		auto test5 = Containers::Person("Adam.Nowak.Kowalski@domena.pl");
+		auto test6 = Containers::Person("adam.nowak.kowalski@domena.pl");
+		auto test7 = Containers::Person("adam._nowak.1kowalski@domena.pl");
+		auto test8 = Containers::Person("adam.1nowak._kowalski@domena.pl");
+		uTest_True(test1.getLastName() == "Nowak", "#04 - #03a");
+		uTest_True(test2.getLastName() == "Nowak", "#04 - #03b");
+		uTest_True(test3.getLastName() == "5nowak", "#04 - #03c");
+		uTest_True(test4.getLastName() == "!nowak", "#04 - #03d");
+		uTest_True(test5.getLastName() == "Nowak Kowalski", "#04 - #03e");
+		uTest_True(test6.getLastName() == "Nowak Kowalski", "#04 - #03f");
+		uTest_True(test7.getLastName() == "_nowak 1kowalski", "#04 - #03g");
+		uTest_True(test8.getLastName() == "1nowak _kowalski", "#04 - #03h");
+	}
+	
+	// 4. Check if method getName() works correctly
+	{
+		auto test1 = Containers::Person("Adam.Nowak@domena.pl");
+		auto test2 = Containers::Person("nowak@_domena.pl");
+		auto test3 = Containers::Person("Adam.Nowak.kowalski@domena.pl");
+		uTest_True(test1.getName() == "Adam Nowak", "#04 - #04a");
+		uTest_True(test2.getName() == "Nowak", "#04 - #04b");
+		uTest_True(test3.getName() == "Adam Nowak Kowalski", "#04 - #04c");
+	}
+	
+	uTest_Abort("#04");
+	
+	cout << endl;
+	
 	return 0;
 }

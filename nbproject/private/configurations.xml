@@ -6,6 +6,8 @@
         <df name="src">
           <df name="models">
           </df>
+          <df name="tests">
+          </df>
           <df name="utils">
           </df>
         </df>
