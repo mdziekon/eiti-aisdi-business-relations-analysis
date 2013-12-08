@@ -1,12 +1,12 @@
 CXX=g++
-CXXFLAGS=-c -Wall -std=c++0x
+CXXFLAGS=-c -Wall -std=gnu++0x
 LDFLAGS=
 LDLIBS=
 
 SOURCEDIR=src
 BUILDDIR=build
 
-SOURCES=AISDI.cpp utils/GenericException.cpp models/Attachment.cpp models/Person.cpp models/Email.cpp models/Mail.cpp models/Headers.cpp
+SOURCES=AISDI.cpp utils/GenericException.cpp models/Attachment.cpp models/Person.cpp models/Email.cpp models/Mail.cpp models/Headers.cpp parser/FileParser.cpp
 EXECUTABLE=run
 
 REAL_SOURCES=$(addprefix $(SOURCEDIR)/, $(SOURCES))
