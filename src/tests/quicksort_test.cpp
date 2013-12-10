@@ -11,65 +11,51 @@
 #include <string>
 #include <vector>
 #include "quicksort.h"
+#include "classsorter.h"
 
 using namespace std;
 
+
+
 int main(void)
 {
+
     cout << "Sortowanie intow: " << endl;
-    vector<int>tab(40);
-    tab[0] = NULL;
+    vector<Mail>Kutasy(40);
+
     
-    for (int i = 1; i < 40; i++)
+    for (int i = 0; i < 40; i++)
     {
-        tab[i] = rand();
-        cout << tab[i] << " ";
+        Kutasy[i].data = rand();
+        cout << Kutasy[i].data << " ";
     };
     cout << endl;
+    SortByDateAsc cmp;
     
-    quicksort<int>(tab, 0, tab.size() - 1);
+    quicksort<Mail>(Kutasy, 0, Kutasy.size() - 1, cmp);
     
-    for (int i = 1; i < 40; i++)
-        cout << tab[i] << " ";
+    for (int i = 0; i < 40; i++)
+        cout << Kutasy[i].data << " ";
     cout << endl;
     cout << endl;
     
-    cout << "Sortowanie double'i: " << endl;
-    
-    
-    vector<double>tab2(40);
-    tab[0] = NULL;
-    
-    for (int i = 1; i < 40; i++)
-    {
-        tab2[i] = rand();
-        cout << tab2[i] << " ";
-    };
-    cout << endl;
-    
-    quicksort<double>(tab2, 0, tab2.size() - 1);
-    
-    for (int i = 1; i < 40; i++)
-        cout << tab2[i] << " ";
-    cout << endl;
-    cout << endl;
+
     
     cout << "Sortowanie stringow: " << endl;
     
     
-    vector<string>tab3 {"asd", "oeuw", "shdfi", "qowe", "jcxv", "ewoutw", "asdhiqwe", "sdhfs", "orteuio", "sfhasf", "qwiqewq", "dsfiuertre", "iuasdias", "qweyuxnxv", "hasdyqwe", "iuwrewkhs", "qweqgb", "ascbxvcx", "asfuer"};
-    tab[0] = NULL;
-    
-    for (int i = 1; i < tab3.size(); i++)
+    for (int i = 0; i < 40; i++)
     {
-        cout << tab3[i] << " ";
+        Kutasy[i].name = rand();
+        cout << Kutasy[i].name << " ";
     };
     cout << endl;
     
-    quicksort<string>(tab3, 0, tab3.size() - 1);
+    SortByNameAsc cmp2;
+    quicksort<Mail>(Kutasy, 0, Kutasy.size() - 1, cmp2);
     
-    for (int i = 1; i < tab3.size(); i++)
-        cout << tab3[i] << " ";
+    for (int i = 0; i < 40; i++)
+        cout << Kutasy[i].name << " ";
     cout << endl;
     return 0;
 }
