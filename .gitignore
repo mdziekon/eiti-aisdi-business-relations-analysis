@@ -16,3 +16,8 @@
 build/
 bin/
 obj/
+
+#cebula bloks
+*.cbp
+*.depend
+*.layout
