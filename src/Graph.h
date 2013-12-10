@@ -9,7 +9,7 @@
 class Edge;
 
 class Vertex{
-    public: // na testy
+    public:
     friend class Graph;
     std::unordered_map<Vertex*, Edge*> edges;
 
@@ -38,7 +38,6 @@ class Graph{
     //to przyjmuje wektor UNIKALNYCH mejli idodaje te mejle do krawedzi. jesli krawedz nie istnieje, dodaje ja
     void addToEdges(std::vector<Containers::Mail*>& mails);
 
-    public:
     Graph(std::vector<Containers::Person*>& people, std::vector<Containers::Mail*>& mails);
     ~Graph();
 

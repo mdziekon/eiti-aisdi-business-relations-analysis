@@ -54,3 +54,4 @@ void Edge::addMail(Containers::Mail& mail){
     this->x = x;
     this->y = y;
 }
+
