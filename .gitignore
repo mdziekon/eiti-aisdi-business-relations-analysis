@@ -14,3 +14,5 @@
 
 # Generic building directories
 build/
+bin/
+obj/
