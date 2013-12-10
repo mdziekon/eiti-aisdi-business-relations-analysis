@@ -12,33 +12,34 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
+#include "classsorter.h"
 using namespace std;
 
-template<class T> void quicksort(vector<T> &a, const long& const_left, const long& const_right)
+template<class T> void quicksort(vector<T> &tab, const long& const_left, const long& const_right, SortComparator<T>&cmp)
 {
     if (const_left < const_right) {
         
-        T mid_value = a[const_left];
+        T mid_value = tab[const_left];
         long temp_left = const_left - 1;
         long temp_right = const_right + 1;
         
         while(1)
         {
             
-            while (a[--temp_right] > mid_value); //jezeli przekroczymy nasz "srodek"
-            while (a[++temp_left] < mid_value);
+            while (cmp.compare(tab[--temp_right], mid_value) == 1); //jezeli przekroczymy nasz "srodek"
+            while (cmp.compare(tab[++temp_left], mid_value) == -1);
             
             if (temp_left >= temp_right) // w momencie krytycznym wychodzimy z sortowania
                 break;
             
-            T temp = a[temp_right];
-            a[temp_right] = a[temp_left]; //swap
-            a[temp_left] = temp;
+            T temp = tab[temp_right];
+            tab[temp_right] = tab[temp_left]; //swap
+            tab[temp_left] = temp;
         }
         
         long mid = temp_right;
-        quicksort(a, const_left, mid); // rekurencyjnie wywolujemy
-        quicksort(a, mid + 1, const_right);
+        quicksort(tab, const_left, mid, cmp); // rekurencyjnie wywolujemy
+        quicksort(tab, mid + 1, const_right, cmp);
     }
 }
 
