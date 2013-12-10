@@ -1,5 +1,8 @@
 <RCC>
-    <qresource prefix="/icons1">
+    <qresource prefix="/">
+        <file>images/001.png</file>
+        <file>images/002.png</file>
+        <file>images/003.png</file>
         <file>images/009.png</file>
         <file>images/015.png</file>
         <file>images/026.png</file>
@@ -12,9 +15,6 @@
         <file>images/039.png</file>
         <file>images/icon1.png</file>
         <file>images/icon2.png</file>
-        <file>images/001.png</file>
-        <file>images/002.png</file>
-        <file>images/003.png</file>
         <file>images/picture.png</file>
         <file>images/strzalka.png</file>
     </qresource>

@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     sw = new SettingsWindow(0);
     hw = new HelpWindow(0);
     ui->setupUi(this);
+    WrzucGraf();
 }
 
 MainWindow::~MainWindow()
@@ -84,4 +85,10 @@ void MainWindow::UzupelnijSzczegoly()
         }
 }
 
+void MainWindow::WrzucGraf()
+{
+    this->graphspace = new GraphSpace();
+    ui->gridGraphLayout->addWidget(graphspace, 0, 0, 1, 4);
+    setLayout(ui->gridGraphLayout);
+}
 

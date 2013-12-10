@@ -23,7 +23,11 @@ SOURCES +=\
     views/mainwindow.cpp \
     views/loadfilewindow.cpp \
     views/helpwindow.cpp \
-    utils/GenericException.cpp
+    utils/GenericException.cpp \
+    models/Graph.cpp \
+    views/widget.cpp \
+    views/graphspace.cpp \
+    views/GraphTest.cpp
 
 
 
@@ -34,7 +38,10 @@ HEADERS  += \
     views/settingswindow.h \
     views/mainwindow.h \
     views/loadfilewindow.h \
-    views/helpwindow.h
+    views/helpwindow.h \
+    models/Graph.h \
+    views/widget.h \
+    views/graphspace.h
 
 
 
@@ -50,7 +57,7 @@ FORMS    += \
 OTHER_FILES +=
 
 RESOURCES += \
-    assets/icons1.qrc
+    assets/images.qrc
 
 
 

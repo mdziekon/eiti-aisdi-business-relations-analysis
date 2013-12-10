@@ -9,6 +9,7 @@
 #include "helpwindow.h"
 #include "settingswindow.h"
 #include "../models/Containers.hpp"
+#include "graphspace.h"
 
 
 namespace Ui {
@@ -31,21 +32,22 @@ public:
 
 private slots:
     void on_actionLoadFile_activated();
-
     void on_actionSettings_activated();
-
     void on_actionHelp_activated();
 
 private:
-    void AddLine(Containers::Mail mail, int lp);
-    void UzupelnijZestawienie();
-    void UzupelnijSzczegoly();
-    QTreeWidget * treeWidget_MailList;
     LoadFileWindow* lfw ;
     SettingsWindow* sw;
     HelpWindow* hw;
     Ui::MainWindow *ui;
 
+    void AddLine(Containers::Mail mail, int lp);
+    void UzupelnijZestawienie();
+    void UzupelnijSzczegoly();
+    QTreeWidget * treeWidget_MailList;
+
+    void WrzucGraf();
+    GraphSpace * graphspace;
 
 
 };

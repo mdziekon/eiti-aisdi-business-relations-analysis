@@ -52,7 +52,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -158,6 +158,17 @@
      <attribute name="title">
       <string>3. Graf</string>
      </attribute>
+     <widget class="QWidget" name="gridLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>-1</x>
+        <y>-1</y>
+        <width>571</width>
+        <height>421</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridGraphLayout"/>
+     </widget>
     </widget>
    </widget>
   </widget>
