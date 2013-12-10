@@ -198,8 +198,8 @@
   </widget>
   <action name="actionLoadFile">
    <property name="icon">
-    <iconset resource="../assets/icons1.qrc">
-     <normaloff>:/icons1/images/026.png</normaloff>:/icons1/images/026.png</iconset>
+    <iconset resource="../assets/images.qrc">
+     <normaloff>:/images/032.png</normaloff>:/images/032.png</iconset>
    </property>
    <property name="text">
     <string>Zaladuj plik</string>
@@ -213,8 +213,8 @@
   </action>
   <action name="actionSettings">
    <property name="icon">
-    <iconset resource="../assets/icons1.qrc">
-     <normaloff>:/icons1/images/015.png</normaloff>:/icons1/images/015.png</iconset>
+    <iconset resource="../assets/images.qrc">
+     <normaloff>:/images/015.png</normaloff>:/images/015.png</iconset>
    </property>
    <property name="text">
     <string>Ustawienia</string>
@@ -225,8 +225,8 @@
   </action>
   <action name="actionHelp">
    <property name="icon">
-    <iconset resource="../assets/icons1.qrc">
-     <normaloff>:/icons1/images/009.png</normaloff>:/icons1/images/009.png</iconset>
+    <iconset resource="../assets/images.qrc">
+     <normaloff>:/images/009.png</normaloff>:/images/009.png</iconset>
    </property>
    <property name="text">
     <string>Pomoc</string>
@@ -240,7 +240,7 @@
   </action>
  </widget>
  <resources>
-  <include location="../assets/icons1.qrc"/>
+  <include location="../assets/images.qrc"/>
  </resources>
  <connections/>
 </ui>

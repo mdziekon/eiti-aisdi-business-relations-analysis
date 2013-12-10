@@ -52,8 +52,8 @@
      <string>Dodaj Folder</string>
     </property>
     <property name="icon">
-     <iconset resource="../assets/icons1.qrc">
-      <normaloff>:/icons1/images/039.png</normaloff>:/icons1/images/039.png</iconset>
+     <iconset resource="../assets/images.qrc">
+      <normaloff>:/images/039.png</normaloff>:/images/039.png</iconset>
     </property>
     <property name="toolButtonStyle">
      <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -75,8 +75,8 @@
      <string>Dodaj Plik</string>
     </property>
     <property name="icon">
-     <iconset resource="../assets/icons1.qrc">
-      <normaloff>:/icons1/images/032.png</normaloff>:/icons1/images/032.png</iconset>
+     <iconset resource="../assets/images.qrc">
+      <normaloff>:/images/026.png</normaloff>:/images/026.png</iconset>
     </property>
     <property name="toolButtonStyle">
      <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -98,8 +98,8 @@
      <string>Usun Plik</string>
     </property>
     <property name="icon">
-     <iconset resource="../assets/icons1.qrc">
-      <normaloff>:/icons1/images/034.png</normaloff>:/icons1/images/034.png</iconset>
+     <iconset resource="../assets/images.qrc">
+      <normaloff>:/images/034.png</normaloff>:/images/034.png</iconset>
     </property>
     <property name="toolButtonStyle">
      <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -121,8 +121,8 @@
      <string>Zatwierdz</string>
     </property>
     <property name="icon">
-     <iconset resource="../assets/icons1.qrc">
-      <normaloff>:/icons1/images/031.png</normaloff>:/icons1/images/031.png</iconset>
+     <iconset resource="../assets/images.qrc">
+      <normaloff>:/images/031.png</normaloff>:/images/031.png</iconset>
     </property>
     <property name="default">
      <bool>false</bool>
@@ -135,7 +135,7 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
-  <include location="../assets/icons1.qrc"/>
+  <include location="../assets/images.qrc"/>
  </resources>
  <connections/>
 </ui>
