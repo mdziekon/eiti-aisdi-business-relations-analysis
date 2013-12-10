@@ -22,8 +22,10 @@ public:
 
     const Vertex* pointedVertex;//to, na co wskazuje ta krawedz ( tzn. odbiorca mejli, ktore ta krawedz zawiera)
     std::vector<Containers::Mail> mails;    //wszystkie mejle ktore zawiera ta krawedz
-    //do edga mozna dodac jakies ladne dodatkowe dane :3
+    float x = 0;
+    float y = 0;
 
+    void setLocation(float a, float b);
     void addMail(Containers::Mail& mail);
 };
 

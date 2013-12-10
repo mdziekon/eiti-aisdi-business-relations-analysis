@@ -49,3 +49,8 @@ Edge::Edge(Vertex* pointedVertex){
 void Edge::addMail(Containers::Mail& mail){
      mails.push_back(mail);
  }
+
+ void Vertex::setLocation(float x, float y){
+    this->x = x;
+    this->y = y;
+}
