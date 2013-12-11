@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LoadFileWindow</class>
+ <widget class="QMainWindow" name="LoadFileWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>553</width>
+    <height>269</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Wczytaj</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../assets/images.qrc">
+    <normaloff>:/images/32.png</normaloff>:/images/32.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTreeWidget" name="treeWidget_FilesList">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>46</y>
+      <width>521</width>
+      <height>192</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string>Nazwa</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Rozmiar</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Ścieżka</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QToolButton" name="toolButton_AddFolder">
+    <property name="geometry">
+     <rect>
+      <x>12</x>
+      <y>13</y>
+      <width>119</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Dodaj Folder</string>
+    </property>
+    <property name="icon">
+     <iconset resource="../assets/images.qrc">
+      <normaloff>:/images/039.png</normaloff>:/images/039.png</iconset>
+    </property>
+    <property name="toolButtonStyle">
+     <enum>Qt::ToolButtonTextBesideIcon</enum>
+    </property>
+    <property name="autoRaise">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="toolButton_AddFile">
+    <property name="geometry">
+     <rect>
+      <x>137</x>
+      <y>13</y>
+      <width>100</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Dodaj Plik</string>
+    </property>
+    <property name="icon">
+     <iconset resource="../assets/images.qrc">
+      <normaloff>:/images/026.png</normaloff>:/images/026.png</iconset>
+    </property>
+    <property name="toolButtonStyle">
+     <enum>Qt::ToolButtonTextBesideIcon</enum>
+    </property>
+    <property name="autoRaise">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="toolButton_DeleteFile">
+    <property name="geometry">
+     <rect>
+      <x>243</x>
+      <y>13</y>
+      <width>95</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Usun Plik</string>
+    </property>
+    <property name="icon">
+     <iconset resource="../assets/images.qrc">
+      <normaloff>:/images/034.png</normaloff>:/images/034.png</iconset>
+    </property>
+    <property name="toolButtonStyle">
+     <enum>Qt::ToolButtonTextBesideIcon</enum>
+    </property>
+    <property name="autoRaise">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_Confirm">
+    <property name="geometry">
+     <rect>
+      <x>344</x>
+      <y>12</y>
+      <width>106</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Zatwierdz</string>
+    </property>
+    <property name="icon">
+     <iconset resource="../assets/images.qrc">
+      <normaloff>:/images/031.png</normaloff>:/images/031.png</iconset>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources>
+  <include location="../assets/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>
