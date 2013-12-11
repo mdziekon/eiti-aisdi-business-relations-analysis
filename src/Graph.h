@@ -47,12 +47,13 @@ class Graph{
     Containers::Person& getMostActiveSender();
     Containers::Person& getMostActiveReceiver();
     unsigned int getForwardedMailsNum();
-
+    unsigned int getBiggestEdgeSize();
 
     private:
     unsigned int mailsNum;
-    Containers::Person* mostActiveSender;
-    Containers::Person* mostActiveReceiver;
+    unsigned int biggestEdge;
+    //Containers::Person* mostActiveSender;
+    //Containers::Person* mostActiveReceiver;
     //to przyjmuje wektor UNIKALNYCH osob, dodaje wierzcholki odpowiadajce tym osobom
     void addPeople(std::vector<Containers::Person*>& people);
     //to przyjmuje wektor UNIKALNYCH mejli idodaje te mejle do krawedzi. jesli krawedz nie istnieje, dodaje ja

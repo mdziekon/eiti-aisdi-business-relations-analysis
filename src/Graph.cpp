@@ -3,6 +3,10 @@
 
 Graph::Graph(std::vector<Containers::Person*>& people, std::vector<Containers::Mail*>& mails){
     mailsNum=0;
+    //Containers::Person* mostActiveSender=0;
+    //Containers::Person* mostActiveReceiver=0;
+    biggestEdge=0;
+
     addPeople(people);
     addToEdges(mails);
 }
@@ -26,7 +30,6 @@ void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
 
     //dla kazdego mejla znajdz wierzcholek nadawacy, w mapie krawedzi wierzcholka nadawcy
     //znajdz krawedz odpowiadajaca wierzcholkowi i wstaw tam nowa krawedz, jesli wczesniej nie istniala zadna
-
     for(unsigned int i=0; i<mails.size(); i++){
         //te 2 wskazniki ponizej nie sa potrzebne, ale wtedy jedna linijka mialaby 3 linijki xd
         Vertex* senderVertex=vertices.find(mails[i]->sender)->second;
@@ -47,13 +50,23 @@ void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
 unsigned int Graph::getMailsNumber(){
     return this->mailsNum;
 }
-Containers::Person& Graph::getMostActiveSender(){
-    //Containers::Person& mostActiveSender=;
+unsigned int Graph::getBiggestEdgeSize(){
+    for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            if(edgeIt->second->mails.size()>=biggestEdge)
+                biggestEdge=edgeIt->second->mails.size();
+        }
+    }
+    return biggestEdge;
 }
+/*
 Containers::Person& Graph::getMostActiveReceiver(){
-    //Containers::Person& mostActiveReceiver=;
 
 }
+Containers::Person& Graph::getMostActiveSender(){
+
+}
+*/
 unsigned int Graph::getPeopleNum(){
     return this->vertices.size();
 }
