@@ -6,7 +6,7 @@ LDLIBS=
 SOURCEDIR=src
 BUILDDIR=build
 
-SOURCES=AISDI.cpp utils/GenericException.cpp models/Attachment.cpp models/Person.cpp models/Email.cpp models/Mail.cpp models/Headers.cpp parser/FileParser.cpp
+SOURCES=AISDI.cpp utils/GenericException.cpp models/Attachment.cpp models/Person.cpp models/Email.cpp models/Mail.cpp models/Headers.cpp controllers/parser.cpp
 EXECUTABLE=run
 
 REAL_SOURCES=$(addprefix $(SOURCEDIR)/, $(SOURCES))

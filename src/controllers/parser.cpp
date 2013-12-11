@@ -8,11 +8,6 @@
 #include <iostream>
 #include <vector>
 
-#ifndef FP_CACHE_DEFINED
-#define FP_CACHE_DEFINED
-std::unordered_set<Containers::Person*> FileParser::cache;
-#endif
-
 bool FileParser::CzyKatalog(const std::string & path)
 {
 	bool is_dir = false;
@@ -145,12 +140,25 @@ std::string FileParser::parseEmail(const std::string & input)
 	return input.substr(input.find_last_of('<') + 1, input.find_last_of('>') - 1);
 } 
 
-bool FileParser::addPerson(Person * p)
+Person * FileParser::addPerson(const std::string & email)
 {
-	return cache.insert(p).second;
+	Person * temporaryPerson;
+	std::pair<std::unordered_map<std::string, Person *>::iterator, bool> result;
+
+	result = cache.insert(std::pair<std::string, Person *>(email, NULL));
+
+	if (result.second) {
+		temporaryPerson =  new Person(email);
+		cache.at(email) = temporaryPerson;
+	}
+	else {
+		temporaryPerson = cache.at(email);
+	}
+	
+	return temporaryPerson;
 }
 
-std::unordered_set<Person*> FileParser::getCache()
+std::unordered_map<std::string, Person*> FileParser::getCache()
 {
 	return cache;
 }	
@@ -164,7 +172,6 @@ Containers::Mail * FileParser::build(std::string& str)
 {
 	this->parser_foundHeadersEnd = false;
 	auto it = str.begin();
-
 	Person * sender;
 	Person * receiver;
 
@@ -180,12 +187,10 @@ Containers::Mail * FileParser::build(std::string& str)
 			time = parseTime(result.second);
 		}
 		else if(result.first == "From") {
-			sender = new Person(this->parseEmail(result.second));
-			this->addPerson(sender);
+			sender = this->addPerson(this->parseEmail(result.second));
 		} 
 		else if (result.first == "To") {
-			receiver = new Person(this->parseEmail(result.second));
-			//this->addPerson(receiver);
+			receiver = this->addPerson(this->parseEmail(result.second));
 		} 
 		else if (result.first == "Contents") {
 			 contents = result.second;
@@ -193,8 +198,8 @@ Containers::Mail * FileParser::build(std::string& str)
 		else {
 			headers.addHeader(result.first, result.second);
 		} 
-	}
-	return NULL;//new Mail (*sender, *receiver, contents, headers, time);
+	} 
+	return new Mail (*sender, *receiver, contents, headers, time);
 }
 
 std::pair<std::string, std::string> FileParser::parseEntity(std::string& fullString, std::string::iterator& startIter)
