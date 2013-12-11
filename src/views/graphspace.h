@@ -16,9 +16,11 @@
 #include "../models/Graph.h"
 
 
-
+//te oddzielne funkcje sa do testowania i mozna potem wywalic
 Graph* GraphTest();
 Graph* GenerateGraph1();
+vector<Containers::Mail*> GenerateMails();
+//
 
 class GraphSpace : public QWidget
 {
@@ -28,6 +30,7 @@ public:
 
 
     GraphSpace(QWidget *parent = 0);
+    GraphSpace(Graph * pobranygraf, QWidget *parent = 0);
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
@@ -47,13 +50,13 @@ private:
     QImage trial = QImage(":images/015.png");
 
     //dane do okienka w ktorym rysujemy graf
-    int xs = 180;
-    int ys = 180;
-    int r = 150; //(1,41 * 200)
+    int xs = 240;
+    int ys = 200;
+    int r = 170; //(1,41 * 200)
     float pi = 3.14;
 
     void SetvertexCount();
-    void loadGraph();
+    void loadGraph();//funkcja do testowania, przy pelnej funkcjonalnosci programu mozna wywalic
     void setLocations();
     QPoint liczCwiartkeDlugosciLini(float x1, float y1, float x2, float y2);
 

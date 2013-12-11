@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     sw = new SettingsWindow(0);
     hw = new HelpWindow(0);
     ui->setupUi(this);
-    WrzucGraf();
+
 }
 
 MainWindow::~MainWindow()
@@ -25,9 +25,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionLoadFile_activated()
 {
-
-    lfw->show();
-    this->hide();
+    if(Flagwindow1)
+    {
+        lfw->show();
+        this->hide();
+    }
 }
 
 void MainWindow::on_actionSettings_activated()
@@ -40,25 +42,43 @@ void MainWindow::on_actionHelp_activated()
     hw->show();
 }
 
-void MainWindow::AddLine(Containers::Mail mail, int lp)
+void MainWindow::AddLine(Containers::Mail* mail, int lp)
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(ui->treeWidget_MailList);
 
-
-
-    item->setText(0,QString::number(lp));
-    item->setText(1, QString::fromStdString(mail.sender->getName()) );
-    //item->setText(2,"nie wiem ktory element bedzie z tematem" );
-    //item->setText(3,"mamy wgl jakas date w mailu?" );
+    item->setText(0, QString::fromStdString(mail->sender->getName()) );
+    item->setText(1, QString::fromStdString(mail->receiver->getName()) );
+    //item->setText(2,QString::fromStdString(mail.costam)  ); //nie wiem jak zwrocic tytul
+    item->setText(3,QString::number(mail->sendTimestamp));
     ui->treeWidget_MailList->addTopLevelItem(item);
 }
 
-
-void MainWindow::UzupelnianieOkienek(/* wygenerowane obiekty */)
+void MainWindow::ClearAll()
 {
+    while(ui->treeWidget_MailList->topLevelItemCount())
+    {
+        delete ui->treeWidget_MailList->takeTopLevelItem(0);
+    }
+}
+
+
+void MainWindow::UzupelnianieOkienek(/* wygenerowane obiekty: wektor ludzi, maili i graf */)
+{
+    /*
+
+      vecPerson = vecPobranePerson;
+      vecMail = vecPobraneMail;
+
+    */
+    vecMail = GenerateMails();
+
+    Flagwindow1 = false;
+
     UzupelnijZestawienie();
 
     UzupelnijSzczegoly();
+
+    UzupelnijGraf(/*wygenerowany graf*/);
 }
 void MainWindow::UzupelnijZestawienie()
 {
@@ -72,20 +92,28 @@ void MainWindow::UzupelnijZestawienie()
     QString mails = QString::number(mailsint);
     ui->return_IloscMaili->setText(mails);
 
-    ui->return_CosTam->setText("3");//to do usuniecia jak nie wymyslimy co tu mozna wstawiac
+
 }
 void MainWindow::UzupelnijSzczegoly()
 {
     int lp = 0;
 
-        for(std::vector<Containers::Mail>::iterator itMail = vecMail.begin();
+        for(std::vector<Containers::Mail*>::iterator itMail = vecMail.begin();
             itMail != vecMail.end() ; ++itMail)
         {
             AddLine(*itMail,++lp);
         }
+        ui->treeWidget_MailList->sortItems(0,Qt::SortOrder(0));
 }
 
-void MainWindow::WrzucGraf()
+void MainWindow::UzupelnijGraf(/*Graph * pobranygraf*/)
+{
+    this->graphspace = new GraphSpace(/*pobranygraf*/);
+    ui->gridGraphLayout->addWidget(graphspace, 0, 0, 1, 4);
+    setLayout(ui->gridGraphLayout);
+}
+
+void MainWindow::WrzucGraf()//potem mozna usunac, jak reszta bedzie dzialac
 {
     this->graphspace = new GraphSpace();
     ui->gridGraphLayout->addWidget(graphspace, 0, 0, 1, 4);

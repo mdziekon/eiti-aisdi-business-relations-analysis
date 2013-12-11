@@ -21,32 +21,46 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     
 public:
-    void virtual UzupelnianieOkienek(/*utworzone obiekty*/);
+
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    //wektorki do ktorych zapisuje odebrane obiekty
     std::vector<Containers::Person> vecPerson;
-    std::vector<Containers::Mail> vecMail;
-    
+    std::vector<Containers::Mail*> vecMail;
 
+    //funkcja ta zostanie wywolana w oknie loadfilewindow, gdy wczytamy pliki i zostanie uruchomiony modul parsujacy
+    void virtual UzupelnianieOkienek(/*utworzone obiekty*/);
+    
+    bool Flagwindow1 = true; //poniewaz nie chcemy by ktos do jednego uruchomienia programu ladowal
+                          //dwa razy plikow, to po pierwszym zaladowaniu, przycisk"Zaladuj Plik" sie blokuje
 
 private slots:
+    //przyciski do otwierania osobnych okienek
     void on_actionLoadFile_activated();
     void on_actionSettings_activated();
     void on_actionHelp_activated();
 
 private:
+    //okienka ktore sie oddzielnie otwieraja
     LoadFileWindow* lfw ;
     SettingsWindow* sw;
     HelpWindow* hw;
     Ui::MainWindow *ui;
 
-    void AddLine(Containers::Mail mail, int lp);
+    //od pierwszej karty Zestawienie
     void UzupelnijZestawienie();
+
+    //od drugiej karty Szczegoly
+    void AddLine(Containers::Mail* mail, int lp);
+    void ClearAll();
+    void Sorting();
     void UzupelnijSzczegoly();
     QTreeWidget * treeWidget_MailList;
 
-    void WrzucGraf();
+    //od trzeciej karty Graf
+    void UzupelnijGraf();
+    void WrzucGraf();//funkcja do testow, przy pelnej funkcjonalnosci programu mozna wywalic
     GraphSpace * graphspace;
 
 

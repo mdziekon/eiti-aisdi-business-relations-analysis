@@ -56,3 +56,23 @@ Graph* GenerateGraph1()
     return graf;
 
 }
+
+vector<Containers::Mail*> GenerateMails()
+{
+      vector<Containers::Mail*> mails;
+      vector<Containers::Person*> people;
+
+      people.push_back(new Containers::Person("kasia.kowalska@gmail.pl"));
+      people.push_back(new Containers::Person("karolina.nowak@gmail.pl"));
+      people.push_back(new Containers::Person("patryk.wozniak@gmail.pl"));
+      people.push_back(new Containers::Person("slawek.dudek@gmail.pl"));
+      people.push_back(new Containers::Person("marek.kwiatkowski@gmail.pl"));
+
+      mails.push_back(new Containers::Mail(*people[0], *people[1], "", Containers::Headers(), 1)); //kasia do karoliny
+      mails.push_back(new Containers::Mail(*people[1], *people[0], "", Containers::Headers(), 1)); //karolina do kasi
+      mails.push_back(new Containers::Mail(*people[0], *people[2], "", Containers::Headers(), 1)); //kasia do patryka
+      mails.push_back(new Containers::Mail(*people[3], *people[2], "", Containers::Headers(), 1)); //slawek do patryka
+      mails.push_back(new Containers::Mail(*people[4], *people[0], "", Containers::Headers(), 1)); //marek do kasi
+
+      return mails;
+}

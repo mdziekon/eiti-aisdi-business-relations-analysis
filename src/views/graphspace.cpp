@@ -6,12 +6,21 @@
 
 GraphSpace::GraphSpace(QWidget *parent)
     : QWidget(parent)
-{
+{//tego konstruktora w zasadzie uzywam dla testow, do programu bedziemy uzywac przeladowanego konstruktora przyjmujacego *graf
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
     loadGraph();
     SetvertexCount();
     setLocations();
+}
+
+GraphSpace::GraphSpace(Graph * pobranygraf, QWidget *parent)
+{
+    setBackgroundRole(QPalette::Base);
+    setAutoFillBackground(true);
+    SetvertexCount();
+    setLocations();
+    graf = pobranygraf;
 }
 QSize GraphSpace::minimumSizeHint() const
 {

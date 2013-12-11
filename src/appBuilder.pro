@@ -25,7 +25,6 @@ SOURCES +=\
     views/helpwindow.cpp \
     utils/GenericException.cpp \
     models/Graph.cpp \
-    views/widget.cpp \
     views/graphspace.cpp \
     views/GraphTest.cpp
 
@@ -40,7 +39,6 @@ HEADERS  += \
     views/loadfilewindow.h \
     views/helpwindow.h \
     models/Graph.h \
-    views/widget.h \
     views/graphspace.h
 
 

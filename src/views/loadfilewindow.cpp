@@ -63,6 +63,7 @@ std:: vector<std::string> LoadFileWindow::GetPathList()
     return mainFileNameList;
 }
 
+//ostatnia dzialajaca funkcja w tym oknie przed zamknieciem !!!
 void LoadFileWindow::on_pushButton_Confirm_clicked()
 {
     do

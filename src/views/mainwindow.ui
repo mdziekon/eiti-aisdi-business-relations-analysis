@@ -52,7 +52,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -134,12 +134,12 @@
       </property>
       <column>
        <property name="text">
-        <string>LP</string>
+        <string>Nadawca</string>
        </property>
       </column>
       <column>
        <property name="text">
-        <string>Nadawca</string>
+        <string>Odbiorca</string>
        </property>
       </column>
       <column>
