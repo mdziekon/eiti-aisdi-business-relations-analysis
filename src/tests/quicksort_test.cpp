@@ -4,7 +4,7 @@
 //
 //  Created by Daniel Obrebski on 09/12/13.
 //  Copyright (c) 2013 Daniel Obrebski. All rights reserved.
-// TEST zrobiony generalnie, tylko trzeba popodstawiac.
+
 
 #include <iostream>
 #include <cstdlib>
@@ -33,7 +33,7 @@ int main(void)
     mails.push_back(new Containers::Mail(*people[0], *people[2], "", Containers::Headers(), 8)); //kasia do patryka
     mails.push_back(new Containers::Mail(*people[3], *people[2], "", Containers::Headers(), 5)); //slawek do patryka
     mails.push_back(new Containers::Mail(*people[4], *people[0], "", Containers::Headers(), 2)); //marek do kasi
-
+    
     cout << "Sortowanie po dacie, przed sortowaniem: " << endl;
     
     for (int i = 0; i < mails.size()-1; i++)
@@ -51,7 +51,7 @@ int main(void)
     for (int i = 0; i < mails.size()-1; i++)
         cout << mails[i]->sendTimestamp << " ";
     cout << endl;
-   
+    
     
     cout << "Sortowanie po receiver, przed sortowaniem" << endl;
     
