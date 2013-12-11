@@ -4,72 +4,71 @@
 //
 //  Created by Daniel Obrebski on 09/12/13.
 //  Copyright (c) 2013 Daniel Obrebski. All rights reserved.
-//
+//TEST genealnie masz caly zrobiony
 
 #include <iostream>
 #include <cstdlib>
 #include <string>
 #include <vector>
 #include "heapsort.h"
+#include "sortComparators.h"
+#include "Containers.hpp"
 
 using namespace std;
 
 int main(void)
 {
-    cout << "Sortowanie intow: " << endl;
-    vector<int>tab(40);
-    tab[0] = NULL;
+    vector<Containers::Mail*> mails;
+    vector<Containers::Person*> people;
     
-    for (int i = 1; i < 40; i++)
+    people.push_back(new Containers::Person(""));//pusty
+    people.push_back(new Containers::Person("kasia.kowalska@gmail.pl"));
+    people.push_back(new Containers::Person("karolina.nowak@gmail.pl"));
+    people.push_back(new Containers::Person("patryk.wozniak@gmail.pl"));
+    people.push_back(new Containers::Person("slawek.dudek@gmail.pl"));
+    people.push_back(new Containers::Person("marek.kwiatkowski@gmail.pl"));
+
+    mails.push_back(new Containers::Mail(*people[1], *people[1], "", Containers::Headers(), 0));//pusty
+    mails.push_back(new Containers::Mail(*people[1], *people[2], "", Containers::Headers(), 10)); //kasia do karoliny
+    mails.push_back(new Containers::Mail(*people[2], *people[1], "", Containers::Headers(), 13)); //karolina do kasi
+    mails.push_back(new Containers::Mail(*people[1], *people[3], "", Containers::Headers(), 8)); //kasia do patryka
+    mails.push_back(new Containers::Mail(*people[4], *people[3], "", Containers::Headers(), 5)); //slawek do patryka
+    mails.push_back(new Containers::Mail(*people[5], *people[1], "", Containers::Headers(), 2)); //marek do kasi
+    
+    cout << "Sortowanie po dacie, przed sortowaniem: " << endl;
+    
+    for (int i = 1; i < mails.size()-1; i++)
     {
-        tab[i] = rand();
-        cout << tab[i] << " ";
+        cout << mails[i]->sendTimestamp << " ";
     };
     cout << endl;
     
-    heapsort<int>(tab, tab.size() - 1);
+    SortByDateAsc cmp;
     
-    for (int i = 1; i < 40; i++)
-        cout << tab[i] << " ";
+    cout << "Sortowanie po dacie, po sortowaniu: " << endl;
+    
+    heapsort<Containers::Mail>(mails, mails.size() - 1, cmp);
+    
+    for (int i = 1; i < mails.size()-1; i++)
+        cout << mails[i]->sendTimestamp << " ";
     cout << endl;
-    cout << endl;
-    
-    cout << "Sortowanie double'i: " << endl;
     
     
-    vector<double>tab2(40);
-    tab[0] = NULL;
+    cout << "Sortowanie po receiver, przed sortowaniem" << endl;
     
-    for (int i = 1; i < 40; i++)
+    for (int i = 1; i < mails.size()-1; i++)
     {
-        tab2[i] = rand();
-        cout << tab2[i] << " ";
+        cout << mails[i]->receiver << " ";
     };
     cout << endl;
     
-    heapsort<double>(tab2, tab2.size() - 1);
+    SortByReceiverAsc cmp2;
     
-    for (int i = 1; i < 40; i++)
-        cout << tab2[i] << " ";
+    cout << "Sortowanie po receiver, po sortowaniu: " << endl;
+    
+    heapsort<Containers::Mail>(mails, mails.size() - 1, cmp2);
+    
+    for (int i = 1; i < mails.size()-1; i++)
+        cout << mails[i]->receiver << " ";
     cout << endl;
-    cout << endl;
-    
-    cout << "Sortowanie stringow: " << endl;
-    
-    
-    vector<string>tab3 {"asd", "oeuw", "shdfi", "qowe", "jcxv", "ewoutw", "asdhiqwe", "sdhfs", "orteuio", "sfhasf", "qwiqewq", "dsfiuertre", "iuasdias", "qweyuxnxv", "hasdyqwe", "iuwrewkhs", "qweqgb", "ascbxvcx", "asfuer"};
-    tab[0] = NULL;
-    
-    for (int i = 1; i < tab3.size(); i++)
-    {
-        cout << tab3[i] << " ";
-    };
-    cout << endl;
-    
-    heapsort<string>(tab3, tab3.size() - 1);
-    
-    for (int i = 1; i < tab3.size(); i++)
-        cout << tab3[i] << " ";
-    cout << endl;
-    return 0;
 }
