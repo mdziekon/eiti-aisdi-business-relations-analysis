@@ -15,6 +15,14 @@
 # Generic building directories
 build/
 
+bin/
+obj/
+
+#cebula bloks
+*.cbp
+*.depend
+*.layout
+
 
 # Qt Files 
 CMakeLists.txt.user 
@@ -24,4 +32,5 @@ ui_*.h
 *-build-*
 *.pro.user
 *.pro.user.*
+
 
