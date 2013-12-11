@@ -5,10 +5,13 @@
 //============================================================================
 
 #include "models/Containers.hpp"
+#include "controllers/Parser.hpp"
 
 using namespace std;
 
 int main()
 {	
+	FileParser fp;
+	fp.load("typowy_list.eml");
 	return 0;
 }
