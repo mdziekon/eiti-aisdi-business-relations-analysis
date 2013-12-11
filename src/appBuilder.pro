@@ -26,7 +26,7 @@ SOURCES +=\
     utils/GenericException.cpp \
     models/Graph.cpp \
     views/graphspace.cpp \
-    views/GraphTest.cpp
+	tests/GraphTest.cpp
 
 
 
