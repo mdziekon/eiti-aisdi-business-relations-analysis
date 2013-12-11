@@ -2,6 +2,7 @@
 #include <iostream>
 
 Graph::Graph(std::vector<Containers::Person*>& people, std::vector<Containers::Mail*>& mails){
+    mailsNum=0;
     addPeople(people);
     addToEdges(mails);
 }
@@ -19,7 +20,7 @@ void Graph::addPeople(std::vector<Containers::Person*>& people){
 }
 
 void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
-    //C++ ty kurwo dziekuje ci za skladnie
+    mailsNum+=mails.size();
     //para zwracanych wartosci przez operacje wstawienia
     std::pair<std::unordered_map<Vertex*, Edge*>::iterator,bool>ret;
 
@@ -43,6 +44,24 @@ void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
 
 }
 
+unsigned int Graph::getMailsNumber(){
+    return this->mailsNum;
+}
+Containers::Person& Graph::getMostActiveSender(){
+    //Containers::Person& mostActiveSender=;
+}
+Containers::Person& Graph::getMostActiveReceiver(){
+    //Containers::Person& mostActiveReceiver=;
+
+}
+unsigned int Graph::getPeopleNum(){
+    return this->vertices.size();
+}
+unsigned int getForwardedMailsNum(){
+    return 0;
+}
+
+
 Edge::Edge(Vertex* pointedVertex){
     this->pointedVertex=pointedVertex;
 }
@@ -50,8 +69,12 @@ void Edge::addMail(Containers::Mail& mail){
      mails.push_back(mail);
  }
 
+
+
  void Vertex::setLocation(float x, float y){
     this->x = x;
     this->y = y;
 }
+
+
 

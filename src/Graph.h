@@ -12,6 +12,8 @@ class Vertex{
     public:
     friend class Graph;
     std::unordered_map<Vertex*, Edge*> edges;
+    float x, y;
+    void setLocation(float x, float y);
 
 };
 
@@ -26,20 +28,35 @@ public:
     float y = 0;
 
     void setLocation(float a, float b);
+    unsigned int getMailsNumber();
     void addMail(Containers::Mail& mail);
+
+
 };
 
 
 class Graph{
     public: //do testow
     std::unordered_map<Containers::Person*, Vertex*> vertices;
-     //to przyjmuje wektor UNIKALNYCH osob, dodaje wierzcholki odpowiadajce tym osobom
-    void addPeople(std::vector<Containers::Person*>& people);
-    //to przyjmuje wektor UNIKALNYCH mejli idodaje te mejle do krawedzi. jesli krawedz nie istnieje, dodaje ja
-    void addToEdges(std::vector<Containers::Mail*>& mails);
 
     Graph(std::vector<Containers::Person*>& people, std::vector<Containers::Mail*>& mails);
     ~Graph();
+
+    unsigned int getMailsNumber();
+    unsigned int getPeopleNum();
+    Containers::Person& getMostActiveSender();
+    Containers::Person& getMostActiveReceiver();
+    unsigned int getForwardedMailsNum();
+
+
+    private:
+    unsigned int mailsNum;
+    Containers::Person* mostActiveSender;
+    Containers::Person* mostActiveReceiver;
+    //to przyjmuje wektor UNIKALNYCH osob, dodaje wierzcholki odpowiadajce tym osobom
+    void addPeople(std::vector<Containers::Person*>& people);
+    //to przyjmuje wektor UNIKALNYCH mejli idodaje te mejle do krawedzi. jesli krawedz nie istnieje, dodaje ja
+    void addToEdges(std::vector<Containers::Mail*>& mails);
 
 };
 
