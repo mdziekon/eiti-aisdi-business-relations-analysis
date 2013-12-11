@@ -11,74 +11,60 @@
 
 #include <iostream>
 #include <cstdlib>
+#include "Containers.hpp"
 using namespace std;
-
-class Mail
-{
-public:
-    string name;
-    int data;
-};
 
 template<class T> class SortComparator
 {
 public:
-	virtual int compare(T& left, T& right) = 0;
+	virtual bool compare(T& left, T& right) = 0;
 };
 
 class SortByDateAsc : public SortComparator<class Mail>
 {
-	int compare(Mail& left, Mail& right)
+	bool compare(Containers::Mail& left, Containers::Mail& right)
 	{
-        if(left.data > right.data)
-            return 1;
-		if(left.data == right.data)
-            return 0;
-        if(left.data < right.data)
-            return -1;
-        return -2;
+		return (left.sendTimestamp > right.sendTimestamp);
 	}
 };
 
-class SortByDateDesc : public SortComparator<class Mail>
+class SortByDateDsc : public SortComparator<class Mail>
 {
-	int compare(Mail& left, Mail& right)
+	bool compare(Containers::Mail& left, Containers::Mail& right)
 	{
-        if(left.data < right.data)
-            return 1;
-		if(left.data == right.data)
-            return 0;
-        if(left.data > right.data)
-            return -1;
-        return -2;
+        return (left.sendTimestamp < right.sendTimestamp);
 	}
 };
 
-class SortByNameAsc: public SortComparator<class Mail>
+class SortBySenderAsc: public SortComparator<class Mail>
 {
-    int compare(Mail& left, Mail& right)
+    bool compare(Containers::Mail& left, Containers::Mail& right)
 	{
-        if(left.name > right.name)
-            return 1;
-		if(left.name == right.name)
-            return 0;
-        if(!(left.name > right.name))
-            return -1;
-        return -2;
+		return (left.sender > right.sender);
 	}
 };
 
-class SortByNameDsc: public SortComparator<class Mail>
+class SortBySenderDsc: public SortComparator<class Mail>
 {
-    int compare(Mail& left, Mail& right)
+    bool compare(Containers::Mail& left, Containers::Mail& right)
 	{
-        if(left.name > right.name)
-            return -1;
-		if(left.name == right.name)
-            return 0;
-        if(!(left.name > right.name))
-            return 1;
-        return -2;
+        return (left.sender < right.sender);
+	}
+};
+
+class SortByReceiverAsc: public SortComparator<class Mail>
+{
+    bool compare(Containers::Mail& left, Containers::Mail& right)
+	{
+		return (left.receiver > right.receiver);
+	}
+};
+
+class SortByReceiverDsc: public SortComparator<class Mail>
+{
+    bool compare(Containers::Mail& left, Containers::Mail& right)
+	{
+        return (left.receiver < right.receiver);
 	}
 };
 
