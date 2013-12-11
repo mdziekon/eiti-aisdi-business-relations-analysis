@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>LoadFileWindow</string>
+   <string>Wczytaj</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../assets/images.qrc">
+    <normaloff>:/images/32.png</normaloff>:/images/32.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTreeWidget" name="treeWidget_FilesList">

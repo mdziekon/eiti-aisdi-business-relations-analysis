@@ -82,16 +82,16 @@ void MainWindow::UzupelnianieOkienek(/* wygenerowane obiekty: wektor ludzi, mail
 }
 void MainWindow::UzupelnijZestawienie()
 {
-    //uzupelniam ilosc osob wykrytych
-    int peopleint = vecPerson.size();
-    QString people = QString::number(peopleint);
-    ui->return_IloscOsob->setText(people);
+    //tu sa dwie przykladowe wartosci ktore pokazalam jak przetwarzac
 
-    //uzupelniam ilosc maili wykrytych
-    int mailsint = vecMail.size();
-    QString mails = QString::number(mailsint);
-    ui->return_IloscMaili->setText(mails);
+    ui->return_IloscOsob->setText( QString::number( vecPerson.size() ) );
+    ui->return_IloscMaili->setText( QString::number( vecMail.size() ) );
 
+    //reszta:
+    ui->return_IloscRelacji->setText( QString::number( 0 ) );
+    ui->return_LiczbaMailiForward->setText( QString::number( 0 ) );
+    ui->return_UzOdebrNajwMaili->setText( QString::number( 0 ) );
+    ui->return_UzytkownikWyslNajwMaili->setText( QString::number( 0 ) );
 
 }
 void MainWindow::UzupelnijSzczegoly()

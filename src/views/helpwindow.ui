@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Pomoc</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../assets/images.qrc">
+    <normaloff>:/images/32.png</normaloff>:/images/32.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label">
@@ -30,6 +34,8 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="../assets/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
