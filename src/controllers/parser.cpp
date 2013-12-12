@@ -17,8 +17,10 @@ bool FileParser::CzyKatalog(const std::string & path)
 	return is_dir;
 }
 
-void FileParser::load(const std::string path)
+std::vector<Containers::Mail*> FileParser::load(const std::string path)
 {
+	std::vector<Containers::Mail*> vec;
+	
 	if (this->CzyKatalog(path) == true)
 	{
 		DIR* p_dir = opendir(path.c_str());
@@ -27,16 +29,17 @@ void FileParser::load(const std::string path)
 
 		while ((p_file = readdir(p_dir)) != NULL)
 		{
-			this->load_plik(p_file->d_name);
+			vec.push_back(this->load_plik(p_file->d_name));
 		}
 	}
 	else
 	{
-		this->load_plik(path.c_str());
+		vec.push_back(this->load_plik(path.c_str()));
 	}
+	return vec;
 }
 
-void FileParser::load_plik(const char* path)
+Containers::Mail* FileParser::load_plik(const char* path)
 {
 	std::string Str;
 	FILE *File = fopen(path, "r");
@@ -48,7 +51,7 @@ void FileParser::load_plik(const char* path)
 	while (!feof(File)) {
 		Str += fgetc(File);
 	}
-	this->build(Str);
+	return this->build(Str);
 }
 
 using namespace Containers;
@@ -110,7 +113,7 @@ int FileParser::parseTime(const std::string & input)
 	seconds += *it++;
 	
 	/* zamiana dnia tygodnia na liczbę */
-	for(int i = 0; i < 12; ++i) {
+	for(int i = 0; i < 7; ++i) {
 		if(days[i] == weekday.c_str()) {
 			time_struct->tm_wday = i;
 			break;
@@ -169,7 +172,7 @@ int FileParser::cacheSize()
 }
 
 Containers::Mail * FileParser::build(std::string& str)
-{
+{	
 	this->parser_foundHeadersEnd = false;
 	auto it = str.begin();
 	Person * sender;
@@ -182,7 +185,6 @@ Containers::Mail * FileParser::build(std::string& str)
 	while(it != str.end())
 	{
 		auto result = this->parseEntity(str, it);
-		std::cout << result.first << '\n';
 		if(result.first == "Date") {
 			time = parseTime(result.second);
 		}

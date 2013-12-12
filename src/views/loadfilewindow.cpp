@@ -2,6 +2,9 @@
 #include "ui_loadfilewindow.h"
 #include "mainwindow.h"
 
+#include "../controllers/parser.hpp"
+#include "../models/Containers.hpp"
+
 
 LoadFileWindow::LoadFileWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -77,6 +80,14 @@ void LoadFileWindow::on_pushButton_Confirm_clicked()
         }
     }while(takenItem);
 
+	std::vector<Containers::Mail*> tempVec;
+	FileParser parser;
+	
+	for(std::string& it: mainFileNameList)
+	{
+		tempVec.push_back(parser.load_plik(it.c_str()));
+	}
+	
 /*
     w tym miejscu powininien zostac uruchomiony modul parsujacy do ktorego zostanie przekazany vector stringow
     z sciezkami do plikow do sparsowania,
@@ -90,7 +101,7 @@ void LoadFileWindow::on_pushButton_Confirm_clicked()
 
 */
 
-    myParent->UzupelnianieOkienek(/*utworzone ubiekty*/);
+    myParent->UzupelnianieOkienek(tempVec, parser.getCache());
     parentWidget()->show();
     close();
 }

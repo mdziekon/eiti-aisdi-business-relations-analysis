@@ -10,6 +10,7 @@
 #include "settingswindow.h"
 #include "../models/Containers.hpp"
 #include "graphspace.h"
+#include "../models/Graph.h"
 
 
 namespace Ui {
@@ -26,11 +27,11 @@ public:
     ~MainWindow();
 
     //wektorki do ktorych zapisuje odebrane obiekty
-    std::vector<Containers::Person> vecPerson;
+    std::unordered_map<std::string, Containers::Person*> vecPerson;
     std::vector<Containers::Mail*> vecMail;
 
     //funkcja ta zostanie wywolana w oknie loadfilewindow, gdy wczytamy pliki i zostanie uruchomiony modul parsujacy
-    void virtual UzupelnianieOkienek(/*utworzone obiekty*/);
+    void virtual UzupelnianieOkienek(std::vector<Containers::Mail*> vec, std::unordered_map<std::string, Containers::Person*> pers);
     
     bool Flagwindow1 = true; //poniewaz nie chcemy by ktos do jednego uruchomienia programu ladowal
                           //dwa razy plikow, to po pierwszym zaladowaniu, przycisk"Zaladuj Plik" sie blokuje
@@ -59,8 +60,7 @@ private:
     QTreeWidget * treeWidget_MailList;
 
     //od trzeciej karty Graf
-    void UzupelnijGraf();
-    void WrzucGraf();//funkcja do testow, przy pelnej funkcjonalnosci programu mozna wywalic
+    void UzupelnijGraf(Graph* graphObj);
     GraphSpace * graphspace;
 
 

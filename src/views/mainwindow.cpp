@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "loadfilewindow.h"
 #include "ui_loadfilewindow.h"
+#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -62,23 +63,18 @@ void MainWindow::ClearAll()
 }
 
 
-void MainWindow::UzupelnianieOkienek(/* wygenerowane obiekty: wektor ludzi, maili i graf */)
+void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMail, std::unordered_map<std::string, Containers::Person*> vecPobranePerson)
 {
-    /*
-
-      vecPerson = vecPobranePerson;
-      vecMail = vecPobraneMail;
-
-    */
-    vecMail = GenerateMails();
+    vecPerson = vecPobranePerson;
+    vecMail = vecPobraneMail;
 
     Flagwindow1 = false;
 
     UzupelnijZestawienie();
 
     UzupelnijSzczegoly();
-
-    UzupelnijGraf(/*wygenerowany graf*/);
+    UzupelnijGraf(new Graph(vecPerson, vecMail));
+	std::cout << "END OF GRAPH BUILD" << std::endl;
 }
 void MainWindow::UzupelnijZestawienie()
 {
@@ -106,17 +102,14 @@ void MainWindow::UzupelnijSzczegoly()
         ui->treeWidget_MailList->sortItems(0,Qt::SortOrder(0));
 }
 
-void MainWindow::UzupelnijGraf(/*Graph * pobranygraf*/)
+void MainWindow::UzupelnijGraf(Graph* graphObj)
 {
-    this->graphspace = new GraphSpace(/*pobranygraf*/);
+	std::cout << "-" << std::endl;
+    this->graphspace = new GraphSpace(graphObj, this);
+	std::cout << "--" << std::endl;
     ui->gridGraphLayout->addWidget(graphspace, 0, 0, 1, 4);
+	std::cout << "---" << std::endl;
     setLayout(ui->gridGraphLayout);
-}
-
-void MainWindow::WrzucGraf()//potem mozna usunac, jak reszta bedzie dzialac
-{
-    this->graphspace = new GraphSpace();
-    ui->gridGraphLayout->addWidget(graphspace, 0, 0, 1, 4);
-    setLayout(ui->gridGraphLayout);
+	std::cout << "----" << std::endl;
 }
 

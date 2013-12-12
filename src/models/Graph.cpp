@@ -1,14 +1,17 @@
 #include "Graph.h"
 #include <iostream>
 
-Graph::Graph(std::vector<Containers::Person*>& people, std::vector<Containers::Mail*>& mails){
+Graph::Graph(std::unordered_map<std::string, Containers::Person*>& people, std::vector<Containers::Mail*>& mails){
     mailsNum=0;
     //Containers::Person* mostActiveSender=0;
     //Containers::Person* mostActiveReceiver=0;
     biggestEdge=0;
 
+	std::cout << "test" << std::endl;
     addPeople(people);
+	std::cout << "test2" << std::endl;
     addToEdges(mails);
+	std::cout << "test3" << std::endl;
 }
 
 Graph::~Graph(){
@@ -17,10 +20,14 @@ Graph::~Graph(){
         delete it->second;
 }
 
-void Graph::addPeople(std::vector<Containers::Person*>& people){
-    for(unsigned int i=0; i<people.size(); i++){
-        vertices.insert(std::pair<Containers::Person*,Vertex*> (people[i], new Vertex));
-    }
+void Graph::addPeople(std::unordered_map<std::string, Containers::Person*>& people){
+	for(auto it = people.begin(); it != people.end(); ++it)
+	{
+		vertices.insert(std::pair<Containers::Person*,Vertex*> ((*it).second, new Vertex));
+	}
+
+	
+   
 }
 
 void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
