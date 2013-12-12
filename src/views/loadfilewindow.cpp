@@ -1,7 +1,7 @@
 #include "loadfilewindow.h"
 #include "ui_loadfilewindow.h"
 #include "mainwindow.h"
-#include <iostream>
+
 #include "../controllers/parser.hpp"
 #include "../models/Containers.hpp"
 
@@ -24,9 +24,9 @@ void LoadFileWindow::on_toolButton_AddFolder_clicked()
     QString *folderPath = new QString();
     QString czyZmieniony = *folderPath;
     *folderPath = QFileDialog::getExistingDirectory(this, tr("Dodaj folder"), "");
+    //QFileInfo infoPath(*folderPath);
     if(*folderPath == czyZmieniony)
         return;
-
     QDir mydir(*folderPath);
     QString filePath;
     QStringList nameFilter;
@@ -39,24 +39,17 @@ void LoadFileWindow::on_toolButton_AddFolder_clicked()
     }
 }
 
-
 void LoadFileWindow::on_toolButton_AddFile_clicked()
 {
     QString *filePath = new QString();
     QString czyZmieniony = *filePath;
-    *filePath = QFileDialog::getOpenFileName(this, tr("Dodaj plik"), "", tr("Files (*.eml)"));
+    *filePath = QFileDialog::getOpenFileName(this, tr("Dodaj plik"), "", tr("Files (*.eml*)"));
     if(*filePath != czyZmieniony)
     {
         QFileInfo infoPath(*filePath);
-        if(infoPath.completeSuffix() == QString("eml"))
-            AddLine(infoPath);
+        AddLine(infoPath);
     }
 }
-
-
-
-
-
 void LoadFileWindow::AddLine(QFileInfo infoPath)
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(ui->treeWidget_FilesList);
@@ -92,14 +85,14 @@ void LoadFileWindow::on_pushButton_Confirm_clicked()
         }
     }while(takenItem);
 
-	std::vector<Containers::Mail*> tempVec;
-	FileParser parser;
-	
-	for(std::string& it: mainFileNameList)
-	{
-		tempVec.push_back(parser.load_plik(it.c_str()));
-	}
-	
+    std::vector<Containers::Mail*> tempVec;
+    FileParser parser;
+
+    for(std::string& it: mainFileNameList)
+    {
+        tempVec.push_back(parser.load_plik(it.c_str()));
+    }
+
 /*
     w tym miejscu powininien zostac uruchomiony modul parsujacy do ktorego zostanie przekazany vector stringow
     z sciezkami do plikow do sparsowania,

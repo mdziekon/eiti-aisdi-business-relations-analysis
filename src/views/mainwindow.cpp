@@ -86,6 +86,8 @@ void MainWindow::UzupelnijZestawienie(Graph* graphObj)
     ui->return_IloscOsob->setText( QString::number( vecPerson.size() ) );
     ui->return_IloscMaili->setText( QString::number( vecMail.size() ) );
 
+    if(graphObj->getPeopleNum() == 0)
+        return;
     //reszta:
     ui->return_IloscRelacji->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
     ui->return_LiczbaMailiForward->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
