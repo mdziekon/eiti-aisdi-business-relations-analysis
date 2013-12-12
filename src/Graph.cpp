@@ -59,14 +59,27 @@ unsigned int Graph::getBiggestEdgeSize(){
     }
     return biggestEdge;
 }
-/*
-Containers::Person& Graph::getMostActiveReceiver(){
 
-}
+//Containers::Person& Graph::getMostActiveReceiver(){}
 Containers::Person& Graph::getMostActiveSender(){
+    unsigned int mostMailsSent=0;
+    Containers::Person* mostActiveSender=0;
 
+    for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        Containers::Person* vertexOwner = vertexIt->first;
+        unsigned int allMailsFromVertex=0;
+
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            allMailsFromVertex+=edgeIt->second->mails.size();
+        }
+        if(allMailsFromVertex>=mostMailsSent){
+            mostMailsSent=allMailsFromVertex;
+            mostActiveSender=vertexOwner;
+        }
+    }
+    return *mostActiveSender;
 }
-*/
+
 unsigned int Graph::getPeopleNum(){
     return this->vertices.size();
 }
