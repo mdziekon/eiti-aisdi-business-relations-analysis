@@ -3,6 +3,7 @@
 #include "loadfilewindow.h"
 #include "ui_loadfilewindow.h"
 #include <iostream>
+#include "../models/Graph.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -67,16 +68,18 @@ void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMa
 {
     vecPerson = vecPobranePerson;
     vecMail = vecPobraneMail;
+    Graph *loadedGraph = new Graph(vecPerson, vecMail);
+
 
     Flagwindow1 = false;
 
-    UzupelnijZestawienie();
+    UzupelnijZestawienie(loadedGraph);
 
     UzupelnijSzczegoly();
-    UzupelnijGraf(new Graph(vecPerson, vecMail));
+    UzupelnijGraf(loadedGraph);
 	std::cout << "END OF GRAPH BUILD" << std::endl;
 }
-void MainWindow::UzupelnijZestawienie()
+void MainWindow::UzupelnijZestawienie(Graph* graphObj)
 {
     //tu sa dwie przykladowe wartosci ktore pokazalam jak przetwarzac
 
@@ -84,10 +87,10 @@ void MainWindow::UzupelnijZestawienie()
     ui->return_IloscMaili->setText( QString::number( vecMail.size() ) );
 
     //reszta:
-    ui->return_IloscRelacji->setText( QString::number( 0 ) );
-    ui->return_LiczbaMailiForward->setText( QString::number( 0 ) );
-    ui->return_UzOdebrNajwMaili->setText( QString::number( 0 ) );
-    ui->return_UzytkownikWyslNajwMaili->setText( QString::number( 0 ) );
+    ui->return_IloscRelacji->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
+    ui->return_LiczbaMailiForward->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
+    ui->return_UzOdebrNajwMaili->setText( QString::fromStdString( "later" /*graphObj->getMostActiveReceiver().getName()*/ ) );
+    ui->return_UzytkownikWyslNajwMaili->setText( QString::fromStdString( graphObj->getMostActiveSender().getName() ) );
 
 }
 void MainWindow::UzupelnijSzczegoly()

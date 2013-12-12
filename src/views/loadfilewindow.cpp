@@ -1,7 +1,7 @@
 #include "loadfilewindow.h"
 #include "ui_loadfilewindow.h"
 #include "mainwindow.h"
-
+#include <iostream>
 #include "../controllers/parser.hpp"
 #include "../models/Containers.hpp"
 
@@ -22,29 +22,41 @@ LoadFileWindow::~LoadFileWindow()
 void LoadFileWindow::on_toolButton_AddFolder_clicked()
 {
     QString *folderPath = new QString();
-    *folderPath = QFileDialog::getExistingDirectory(this, tr("Dodaj folder"), ""); //mozna tu dodac ograniczenie jakie przyjmuje rozszerzenia
-    QFileInfo infoPath(*folderPath);
-    if(infoPath.isFile())
-    {
-        AddLine(infoPath);
-    }
-    else
-    {
-       QFileInfoList infoList = infoPath.dir().entryInfoList();
-       for(QList<QFileInfo>::iterator it = infoList.begin() ; it != infoList.end() ; ++it)
-       {
-           AddLine(*it);
-       }
+    QString czyZmieniony = *folderPath;
+    *folderPath = QFileDialog::getExistingDirectory(this, tr("Dodaj folder"), "");
+    if(*folderPath == czyZmieniony)
+        return;
 
+    QDir mydir(*folderPath);
+    QString filePath;
+    QStringList nameFilter;
+    nameFilter << "*.eml";
+    QFileInfoList list = mydir.entryInfoList( nameFilter, QDir::Files );
+
+    for(int i = 0; i < list.size(); i++)
+    {
+        AddLine( list.at(i) );
     }
 }
+
+
 void LoadFileWindow::on_toolButton_AddFile_clicked()
 {
     QString *filePath = new QString();
-    *filePath = QFileDialog::getOpenFileName(this, tr("Dodaj plik"), "", tr("Files (*.*)")); //mozna tu dodac ograniczenie jakie przyjmuje rozszerzenia
-    QFileInfo infoPath(*filePath);
-    AddLine(infoPath);
+    QString czyZmieniony = *filePath;
+    *filePath = QFileDialog::getOpenFileName(this, tr("Dodaj plik"), "", tr("Files (*.eml)"));
+    if(*filePath != czyZmieniony)
+    {
+        QFileInfo infoPath(*filePath);
+        if(infoPath.completeSuffix() == QString("eml"))
+            AddLine(infoPath);
+    }
 }
+
+
+
+
+
 void LoadFileWindow::AddLine(QFileInfo infoPath)
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(ui->treeWidget_FilesList);

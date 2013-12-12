@@ -30,6 +30,7 @@ public:
     std::unordered_map<std::string, Containers::Person*> vecPerson;
     std::vector<Containers::Mail*> vecMail;
 
+
     //funkcja ta zostanie wywolana w oknie loadfilewindow, gdy wczytamy pliki i zostanie uruchomiony modul parsujacy
     void virtual UzupelnianieOkienek(std::vector<Containers::Mail*> vec, std::unordered_map<std::string, Containers::Person*> pers);
     
@@ -50,7 +51,7 @@ private:
     Ui::MainWindow *ui;
 
     //od pierwszej karty Zestawienie
-    void UzupelnijZestawienie();
+    void UzupelnijZestawienie(Graph* graphObj);
 
     //od drugiej karty Szczegoly
     void AddLine(Containers::Mail* mail, int lp);
