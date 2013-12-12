@@ -45,7 +45,7 @@ class Graph{
     unsigned int getMailsNumber();
     unsigned int getPeopleNum();
     Containers::Person& getMostActiveSender();
-    Containers::Person& getMostActiveReceiver();
+    //Containers::Person& getMostActiveReceiver();
     unsigned int getForwardedMailsNum();
     unsigned int getBiggestEdgeSize();
 
