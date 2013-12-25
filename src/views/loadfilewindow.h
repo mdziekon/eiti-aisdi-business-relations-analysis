@@ -38,7 +38,6 @@ private slots:
     void on_toolButton_DeleteFile_clicked();
 
 private:
-
     Ui::LoadFileWindow *ui;    
     QTreeWidget* treeWidget_FilesList;
     QTreeWidgetItem * takenItem;
