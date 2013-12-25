@@ -47,7 +47,6 @@
           <in>settingswindow.cpp</in>
           <in>settingswindow.h</in>
         </df>
-        <in>AISDI.cpp</in>
         <in>AppGUI.cpp</in>
       </df>
     </df>

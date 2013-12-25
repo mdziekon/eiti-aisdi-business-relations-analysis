@@ -26,7 +26,6 @@
           <in>mainwindow.cpp</in>
           <in>settingswindow.cpp</in>
         </df>
-        <in>AISDI.cpp</in>
         <in>AppGUI.cpp</in>
       </df>
     </df>
@@ -140,13 +139,6 @@
           </preprocessorList>
         </ccTool>
       </folder>
-      <item path="src/AISDI.cpp" ex="false" tool="1" flavor2="4">
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-      </item>
       <item path="src/AppGUI.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
           <incDir>
