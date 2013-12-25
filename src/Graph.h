@@ -2,7 +2,7 @@
 #define GRAPH_H_INCLUDED
 
 #include <unordered_map>
-#include <vector>
+#include <list>
 #include "models\Containers.hpp"
 
 
@@ -10,8 +10,10 @@ class Edge;
 
 class Vertex{
     public:
+    ~Vertex();
     friend class Graph;
     std::unordered_map<Vertex*, Edge*> edges;
+    std::list<Edge*> pointingEdges;
     float x, y;
     void setLocation(float x, float y);
 
@@ -21,9 +23,10 @@ class Vertex{
 class Edge{
 public:
     Edge(Vertex* pointedVertex);
+    ~Edge();
 
     const Vertex* pointedVertex;//to, na co wskazuje ta krawedz ( tzn. odbiorca mejli, ktore ta krawedz zawiera)
-    std::vector<Containers::Mail> mails;    //wszystkie mejle ktore zawiera ta krawedz
+    std::list<Containers::Mail> mails;    //wszystkie mejle ktore zawiera ta krawedz
     float x = 0;
     float y = 0;
 

@@ -5,10 +5,14 @@
 //============================================================================
 
 #include "models/Containers.hpp"
-
+#include "Filter.h"
 using namespace std;
 
 int main()
-{	
+{
+    Filter filter;
+    TopicSubstringFilter tsf1("sd");
+
+    filter.addNewFilter(tsf1);
 	return 0;
 }

@@ -25,8 +25,6 @@ void Graph::addPeople(std::vector<Containers::Person*>& people){
 
 void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
     mailsNum+=mails.size();
-    //para zwracanych wartosci przez operacje wstawienia
-    std::pair<std::unordered_map<Vertex*, Edge*>::iterator,bool>ret;
 
     //dla kazdego mejla znajdz wierzcholek nadawacy, w mapie krawedzi wierzcholka nadawcy
     //znajdz krawedz odpowiadajaca wierzcholkowi i wstaw tam nowa krawedz, jesli wczesniej nie istniala zadna
@@ -35,17 +33,21 @@ void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
         Vertex* senderVertex=vertices.find(mails[i]->sender)->second;
         Vertex* receiverVertex=vertices.find(mails[i]->receiver)->second;
 
-        //jesli nie istnieje edge dla wierzcholka odbiorcy
+        //jesli nie istnieje edge dla wierzcholka odbiorcy, to go utworz
         if(senderVertex->edges.count(receiverVertex)==0){
             Edge* newEdge = new Edge(receiverVertex);
-            ret=senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
+            //dodaj do wierzcholka odbiorcy informacje o nowym edgu wskazujacym na ten wierzcholek
+            receiverVertex->pointingEdges.push_back(newEdge);
+            senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
         }
-        //na samym koncu dodaj mejla do zawartej w krawedzi listy mejli
-        ret.first->second->mails.push_back(*mails[i]);
 
+        auto it = senderVertex->edges.find(receiverVertex);
+        it->second->mails.push_back(*mails[i]);
     }
 
 }
+
+
 
 unsigned int Graph::getMailsNumber(){
     return this->mailsNum;
@@ -59,6 +61,9 @@ unsigned int Graph::getBiggestEdgeSize(){
     }
     return biggestEdge;
 }
+
+
+
 
 //Containers::Person& Graph::getMostActiveReceiver(){}
 Containers::Person& Graph::getMostActiveSender(){
@@ -88,15 +93,31 @@ unsigned int getForwardedMailsNum(){
 }
 
 
+
+
+
+
 Edge::Edge(Vertex* pointedVertex){
     this->pointedVertex=pointedVertex;
 }
+
+
+Edge::~Edge(){
+    //pointedVertex->pointingEdges->erase(this);
+}
 void Edge::addMail(Containers::Mail& mail){
      mails.push_back(mail);
- }
+}
 
 
 
+
+
+Vertex::~Vertex(){
+    std::unordered_map<Vertex*,Edge*>::iterator it;
+    for (it=edges.begin(); it!=edges.end(); ++it)
+        delete it->second;
+}
  void Vertex::setLocation(float x, float y){
     this->x = x;
     this->y = y;
