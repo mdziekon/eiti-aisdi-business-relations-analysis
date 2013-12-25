@@ -23,14 +23,12 @@ obj/
 *.depend
 *.layout
 
-
-# Qt Files 
-CMakeLists.txt.user 
-moc_*.cpp 
-qrc_*.cpp 
-ui_*.h 
+# Qt Files
+Makefile
+CMakeLists.txt.user
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
 *-build-*
 *.pro.user
 *.pro.user.*
-
-

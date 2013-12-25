@@ -8,8 +8,13 @@ QT       += core gui
 CFLAGS  = -std=c++0x
 QMAKE_CXXFLAGS += -std=c++11
 
+DESTDIR = build
+OBJECTS_DIR = build
+MOC_DIR = build
+UI_DIR = build
+RCC_DIR = build
 
-TARGET = appBuilder
+TARGET = run
 TEMPLATE = app
 
 

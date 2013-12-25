@@ -3,17 +3,37 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="src">
+        <df name="controllers">
+          <in>parser.cpp</in>
+        </df>
+        <df name="models">
+          <in>Email.cpp</in>
+          <in>Graph.cpp</in>
+          <in>Headers.cpp</in>
+          <in>Mail.cpp</in>
+          <in>Person.cpp</in>
+        </df>
         <df name="tests">
           <in>Containers.cpp</in>
         </df>
+        <df name="utils">
+          <in>GenericException.cpp</in>
+        </df>
+        <df name="views">
+          <in>graphspace.cpp</in>
+          <in>helpwindow.cpp</in>
+          <in>loadfilewindow.cpp</in>
+          <in>mainwindow.cpp</in>
+          <in>settingswindow.cpp</in>
+        </df>
         <in>AISDI.cpp</in>
+        <in>AppGUI.cpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="false"
                    kind="IMPORTANT_FILES_FOLDER">
-      <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
@@ -38,23 +58,162 @@
           <executablePath>build/run</executablePath>
           <ccTool>
             <standard>8</standard>
-            <incDir>
-              <pElem>.</pElem>
-              <pElem>.</pElem>
-              <pElem>.</pElem>
-              <pElem>.</pElem>
-              <pElem>.</pElem>
-              <pElem>.</pElem>
-              <pElem>.</pElem>
-            </incDir>
           </ccTool>
         </makeTool>
       </makefileType>
+      <folder path="0/src/controllers">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/share/qt4/mkspecs/linux-g++-64</pElem>
+            <pElem>.</pElem>
+            <pElem>/usr/include/qt4/QtCore</pElem>
+            <pElem>/usr/include/qt4/QtGui</pElem>
+            <pElem>/usr/include/qt4</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_NO_DEBUG</Elem>
+            <Elem>QT_SHARED</Elem>
+            <Elem>_REENTRANT</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/models">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/share/qt4/mkspecs/linux-g++-64</pElem>
+            <pElem>.</pElem>
+            <pElem>/usr/include/qt4/QtCore</pElem>
+            <pElem>/usr/include/qt4/QtGui</pElem>
+            <pElem>/usr/include/qt4</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_NO_DEBUG</Elem>
+            <Elem>QT_SHARED</Elem>
+            <Elem>_REENTRANT</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/tests">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="0/src/utils">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/share/qt4/mkspecs/linux-g++-64</pElem>
+            <pElem>.</pElem>
+            <pElem>/usr/include/qt4/QtCore</pElem>
+            <pElem>/usr/include/qt4/QtGui</pElem>
+            <pElem>/usr/include/qt4</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_NO_DEBUG</Elem>
+            <Elem>QT_SHARED</Elem>
+            <Elem>_REENTRANT</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="0/src/views">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/share/qt4/mkspecs/linux-g++-64</pElem>
+            <pElem>.</pElem>
+            <pElem>/usr/include/qt4/QtCore</pElem>
+            <pElem>/usr/include/qt4/QtGui</pElem>
+            <pElem>/usr/include/qt4</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_NO_DEBUG</Elem>
+            <Elem>QT_SHARED</Elem>
+            <Elem>_REENTRANT</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
       <item path="src/AISDI.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/AppGUI.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/share/qt4/mkspecs/linux-g++-64</pElem>
+            <pElem>.</pElem>
+            <pElem>/usr/include/qt4/QtCore</pElem>
+            <pElem>/usr/include/qt4/QtGui</pElem>
+            <pElem>/usr/include/qt4</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>QT_CORE_LIB</Elem>
+            <Elem>QT_GUI_LIB</Elem>
+            <Elem>QT_NO_DEBUG</Elem>
+            <Elem>QT_SHARED</Elem>
+            <Elem>_REENTRANT</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="src/controllers/parser.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/models/Email.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/models/Graph.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/models/Headers.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/models/Mail.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/models/Person.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
       </item>
       <item path="src/tests/Containers.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/utils/GenericException.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/views/graphspace.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/views/helpwindow.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/views/loadfilewindow.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/views/mainwindow.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/views/settingswindow.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
       </item>
