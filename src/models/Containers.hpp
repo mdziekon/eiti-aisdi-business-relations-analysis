@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include <ctime>
 
 using namespace std;
 
@@ -49,6 +50,19 @@ namespace Containers
 		bool addHeader(const string& key, const string& value);
 	};
 	
+	class Date
+	{
+	protected:
+		tm timeStruct;
+		
+	public:
+		Date();
+		Date(tm timeStruct);
+		
+		std::string formatDate(const char* format) const;
+		unsigned int getUnixTimestamp() const;
+	};
+	
 	class Person
 	{
 	protected:
@@ -73,9 +87,9 @@ namespace Containers
 		Person * const sender, * const receiver;
 		const string content;
 		const Headers headers;
-		const int sendTimestamp;
+		const Date sendDate;
 
-		Mail(Person& sender, Person& receiver, const string& content, const Headers& headers, const int& sendTimestap);
+		Mail(Person& sender, Person& receiver, const string& content, const Headers& headers, const Date& sendDate);
 
 		void addAttachment(const Attachment& attachment);
 		const vector<Attachment>& getAttachments() const;

@@ -19,7 +19,7 @@ private:
 	bool CzyKatalog(const std::string & path);
 	std::pair<std::string, std::string> parseEntity(std::string& fullString, std::string::iterator& startIter);
 	std::string parseEmail(const std::string & input);
-	int parseTime(const std::string & input);
+	Containers::Date parseTime(const std::string & input);
 	Containers::Person * addPerson(const std::string & email);
 public:
 	std::unordered_map<std::string, Containers::Person*> getCache();

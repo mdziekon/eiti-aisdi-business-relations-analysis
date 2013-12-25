@@ -56,9 +56,9 @@ Containers::Mail* FileParser::load_plik(const char* path)
 
 using namespace Containers;
 
-int FileParser::parseTime(const std::string & input)
+Date FileParser::parseTime(const std::string & input)
 {
-	tm * time_struct;
+	struct tm time_struct;
 	time_t rawtime;
 
 	std::string::const_iterator it = input.begin(); //spacja + dzień + spacja
@@ -66,9 +66,9 @@ int FileParser::parseTime(const std::string & input)
 	const char * days[7] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 	const char * months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
 				"Aug", "Sep", "Oct", "Nov", "Dec"};
-
+	
 	time(&rawtime);
-	time_struct = localtime(&rawtime);
+	time_struct = *localtime(&rawtime);
 	
 	/* reguły: spacja (pomijana), 3-literowa
 	nazwa dnia (pomijana), spacja, dzień z , spacja, miesiąc słownie,
@@ -115,26 +115,26 @@ int FileParser::parseTime(const std::string & input)
 	/* zamiana dnia tygodnia na liczbę */
 	for(int i = 0; i < 7; ++i) {
 		if(days[i] == weekday.c_str()) {
-			time_struct->tm_wday = i;
+			time_struct.tm_wday = i;
 			break;
 		}
 	}
 	/* zamiana miesiąca na liczbę */
 	for(int i = 0; i < 12; ++i) {
 		if(months[i] == month.c_str()) {
-			time_struct->tm_mon = i;
+			time_struct.tm_mon = i;
 			break;
 		}
 	}
 	/* zamiana od roku do sekund na liczby */
-	time_struct->tm_year = atoi(year.c_str()) - 1900;
-	time_struct->tm_mday = atoi(day.c_str());
-	time_struct->tm_hour = atoi(hours.c_str());
-	time_struct->tm_min = atoi(minutes.c_str());
-	time_struct->tm_sec = atoi(seconds.c_str());
-	time_struct->tm_isdst = -1;
+	time_struct.tm_year = atoi(year.c_str()) - 1900;
+	time_struct.tm_mday = atoi(day.c_str());
+	time_struct.tm_hour = atoi(hours.c_str());
+	time_struct.tm_min = atoi(minutes.c_str());
+	time_struct.tm_sec = atoi(seconds.c_str());
+	time_struct.tm_isdst = -1;
 
-	return mktime(time_struct);
+	return Date(time_struct);
 }
 	
 
@@ -180,13 +180,13 @@ Containers::Mail * FileParser::build(std::string& str)
 
 	Headers headers;
 	std::string contents;
-	int time = 0;
+	Date time;
 	
 	while(it != str.end())
 	{
 		auto result = this->parseEntity(str, it);
 		if(result.first == "Date") {
-			time = parseTime(result.second);
+			time = this->parseTime(result.second);
 		}
 		else if(result.first == "From") {
 			sender = this->addPerson(this->parseEmail(result.second));
@@ -200,7 +200,7 @@ Containers::Mail * FileParser::build(std::string& str)
 		else {
 			headers.addHeader(result.first, result.second);
 		} 
-	} 
+	}
 	return new Mail (*sender, *receiver, contents, headers, time);
 }
 

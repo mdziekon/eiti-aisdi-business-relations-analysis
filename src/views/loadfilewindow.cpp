@@ -1,6 +1,7 @@
 #include "loadfilewindow.h"
 #include "ui_loadfilewindow.h"
 #include "mainwindow.h"
+#include <iostream>
 
 #include "../controllers/parser.hpp"
 #include "../models/Containers.hpp"

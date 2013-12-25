@@ -51,7 +51,7 @@ void MainWindow::AddLine(Containers::Mail* mail, int lp)
     item->setText(0, QString::fromStdString(mail->sender->getName()) );
     item->setText(1, QString::fromStdString(mail->receiver->getName()) );
     //item->setText(2,QString::fromStdString(mail.costam)  ); //nie wiem jak zwrocic tytul
-    item->setText(3,QString::number(mail->sendTimestamp));
+    item->setText(3, QString::number(mail->sendDate.getUnixTimestamp()));
     ui->treeWidget_MailList->addTopLevelItem(item);
 }
 
@@ -77,7 +77,6 @@ void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMa
 
     UzupelnijSzczegoly();
     UzupelnijGraf(loadedGraph);
-	std::cout << "END OF GRAPH BUILD" << std::endl;
 }
 void MainWindow::UzupelnijZestawienie(Graph* graphObj)
 {
@@ -109,12 +108,8 @@ void MainWindow::UzupelnijSzczegoly()
 
 void MainWindow::UzupelnijGraf(Graph* graphObj)
 {
-	std::cout << "-" << std::endl;
     this->graphspace = new GraphSpace(graphObj, this);
-	std::cout << "--" << std::endl;
     ui->gridGraphLayout->addWidget(graphspace, 0, 0, 1, 4);
-	std::cout << "---" << std::endl;
     setLayout(ui->gridGraphLayout);
-	std::cout << "----" << std::endl;
 }
 

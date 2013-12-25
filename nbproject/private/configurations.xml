@@ -14,6 +14,7 @@
         <df name="models">
           <in>Attachment.cpp</in>
           <in>Containers.hpp</in>
+          <in>Date.cpp</in>
           <in>Email.cpp</in>
           <in>Graph.cpp</in>
           <in>Graph.h</in>

@@ -23,6 +23,7 @@ SOURCES +=\
     src/models/Person.cpp \
     src/models/Mail.cpp \
     src/models/Headers.cpp \
+    src/models/Date.cpp \
     src/models/Email.cpp \
     src/models/Graph.cpp \
     src/views/settingswindow.cpp \

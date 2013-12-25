@@ -8,17 +8,11 @@
 GraphSpace::GraphSpace(Graph * pobranygraf, QWidget *parent)
 {
 	this->graf = pobranygraf;
-	std::cout << "_" << std::endl;
     setBackgroundRole(QPalette::Base);
-	std::cout << "_" << std::endl;
     setAutoFillBackground(true);
-	std::cout << "_" << std::endl;
     SetvertexCount();
-	std::cout << "_" << std::endl;
     setLocations();
-	std::cout << "_" << std::endl;
     graf = pobranygraf;
-	std::cout << "_" << std::endl;
 }
 QSize GraphSpace::minimumSizeHint() const
 {

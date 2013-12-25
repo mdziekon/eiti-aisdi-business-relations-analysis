@@ -5,10 +5,15 @@
       <df name="src">
         <df name="controllers">
           <in>parser.cpp</in>
+          <in>parser.hpp</in>
         </df>
         <df name="models">
+          <in>Attachment.cpp</in>
+          <in>Containers.hpp</in>
+          <in>Date.cpp</in>
           <in>Email.cpp</in>
           <in>Graph.cpp</in>
+          <in>Graph.h</in>
           <in>Headers.cpp</in>
           <in>Mail.cpp</in>
           <in>Person.cpp</in>
@@ -17,12 +22,18 @@
           <in>Containers.cpp</in>
         </df>
         <df name="utils">
+          <in>Exceptions.hpp</in>
           <in>GenericException.cpp</in>
+          <in>UTests.cpp</in>
+          <in>UTests.hpp</in>
         </df>
         <df name="views">
           <in>graphspace.cpp</in>
+          <in>graphspace.h</in>
           <in>helpwindow.cpp</in>
+          <in>helpwindow.h</in>
           <in>loadfilewindow.cpp</in>
+          <in>loadfilewindow.h</in>
           <in>mainwindow.cpp</in>
           <in>settingswindow.cpp</in>
         </df>
@@ -161,6 +172,14 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="src/controllers/parser.hpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/models/Attachment.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/models/Containers.hpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/models/Date.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/models/Email.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
@@ -168,6 +187,8 @@
       <item path="src/models/Graph.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="src/models/Graph.h" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/models/Headers.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
@@ -185,21 +206,33 @@
         <ccTool>
         </ccTool>
       </item>
+      <item path="src/utils/Exceptions.hpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/utils/GenericException.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="src/utils/UTests.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/utils/UTests.hpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/views/graphspace.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
       </item>
+      <item path="src/views/graphspace.h" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/views/helpwindow.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
       </item>
+      <item path="src/views/helpwindow.h" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/views/loadfilewindow.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="src/views/loadfilewindow.h" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/views/mainwindow.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>

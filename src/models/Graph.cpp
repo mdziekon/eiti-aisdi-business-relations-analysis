@@ -7,11 +7,8 @@ Graph::Graph(std::unordered_map<std::string, Containers::Person*>& people, std::
     //Containers::Person* mostActiveReceiver=0;
     biggestEdge=0;
 
-	std::cout << "test" << std::endl;
     addPeople(people);
-	std::cout << "test2" << std::endl;
     addToEdges(mails);
-	std::cout << "test3" << std::endl;
 }
 
 Graph::~Graph(){
