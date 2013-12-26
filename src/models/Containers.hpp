@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <ctime>
 
 using namespace std;
@@ -46,8 +47,14 @@ namespace Containers
 	
 	class Headers
 	{
+	protected:
+		unordered_map<string, string> headers;
+		
 	public:
 		bool addHeader(const string& key, const string& value);
+		const string getHeader(const string& key) const;
+		const unordered_map<string, string>& getAllHeaders() const;
+		bool removeHeader(const string& key);
 	};
 	
 	class Date
