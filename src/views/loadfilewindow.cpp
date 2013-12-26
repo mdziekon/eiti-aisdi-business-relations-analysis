@@ -1,6 +1,10 @@
 #include "loadfilewindow.h"
 #include "ui_loadfilewindow.h"
 #include "mainwindow.h"
+#include <iostream>
+
+#include "../controllers/parser.hpp"
+#include "../models/Containers.hpp"
 
 
 LoadFileWindow::LoadFileWindow(QWidget *parent) :
@@ -19,28 +23,33 @@ LoadFileWindow::~LoadFileWindow()
 void LoadFileWindow::on_toolButton_AddFolder_clicked()
 {
     QString *folderPath = new QString();
-    *folderPath = QFileDialog::getExistingDirectory(this, tr("Dodaj folder"), ""); //mozna tu dodac ograniczenie jakie przyjmuje rozszerzenia
-    QFileInfo infoPath(*folderPath);
-    if(infoPath.isFile())
-    {
-        AddLine(infoPath);
-    }
-    else
-    {
-       QFileInfoList infoList = infoPath.dir().entryInfoList();
-       for(QList<QFileInfo>::iterator it = infoList.begin() ; it != infoList.end() ; ++it)
-       {
-           AddLine(*it);
-       }
+    QString czyZmieniony = *folderPath;
+    *folderPath = QFileDialog::getExistingDirectory(this, tr("Dodaj folder"), "");
+    //QFileInfo infoPath(*folderPath);
+    if(*folderPath == czyZmieniony)
+        return;
+    QDir mydir(*folderPath);
+    QString filePath;
+    QStringList nameFilter;
+    nameFilter << "*.eml";
+    QFileInfoList list = mydir.entryInfoList( nameFilter, QDir::Files );
 
+    for(int i = 0; i < list.size(); i++)
+    {
+        AddLine( list.at(i) );
     }
 }
+
 void LoadFileWindow::on_toolButton_AddFile_clicked()
 {
     QString *filePath = new QString();
-    *filePath = QFileDialog::getOpenFileName(this, tr("Dodaj plik"), "", tr("Files (*.*)")); //mozna tu dodac ograniczenie jakie przyjmuje rozszerzenia
-    QFileInfo infoPath(*filePath);
-    AddLine(infoPath);
+    QString czyZmieniony = *filePath;
+    *filePath = QFileDialog::getOpenFileName(this, tr("Dodaj plik"), "", tr("Files (*.eml*)"));
+    if(*filePath != czyZmieniony)
+    {
+        QFileInfo infoPath(*filePath);
+        AddLine(infoPath);
+    }
 }
 void LoadFileWindow::AddLine(QFileInfo infoPath)
 {
@@ -77,6 +86,14 @@ void LoadFileWindow::on_pushButton_Confirm_clicked()
         }
     }while(takenItem);
 
+    std::vector<Containers::Mail*> tempVec;
+    FileParser parser;
+
+    for(std::string& it: mainFileNameList)
+    {
+        tempVec.push_back(parser.load_plik(it.c_str()));
+    }
+
 /*
     w tym miejscu powininien zostac uruchomiony modul parsujacy do ktorego zostanie przekazany vector stringow
     z sciezkami do plikow do sparsowania,
@@ -90,7 +107,7 @@ void LoadFileWindow::on_pushButton_Confirm_clicked()
 
 */
 
-    myParent->UzupelnianieOkienek(/*utworzone ubiekty*/);
+    myParent->UzupelnianieOkienek(tempVec, parser.getCache());
     parentWidget()->show();
     close();
 }

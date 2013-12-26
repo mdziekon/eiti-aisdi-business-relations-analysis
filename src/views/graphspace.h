@@ -29,7 +29,6 @@ class GraphSpace : public QWidget
 public:
 
 
-    GraphSpace(QWidget *parent = 0);
     GraphSpace(Graph * pobranygraf, QWidget *parent = 0);
 
     QSize minimumSizeHint() const;
@@ -56,7 +55,6 @@ private:
     float pi = 3.14;
 
     void SetvertexCount();
-    void loadGraph();//funkcja do testowania, przy pelnej funkcjonalnosci programu mozna wywalic
     void setLocations();
     QPoint liczCwiartkeDlugosciLini(float x1, float y1, float x2, float y2);
 

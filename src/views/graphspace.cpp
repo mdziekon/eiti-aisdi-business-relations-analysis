@@ -3,19 +3,11 @@
 #include <math.h>
 #include <QString>
 #include "graphspace.h"
-
-GraphSpace::GraphSpace(QWidget *parent)
-    : QWidget(parent)
-{//tego konstruktora w zasadzie uzywam dla testow, do programu bedziemy uzywac przeladowanego konstruktora przyjmujacego *graf
-    setBackgroundRole(QPalette::Base);
-    setAutoFillBackground(true);
-    loadGraph();
-    SetvertexCount();
-    setLocations();
-}
+#include <iostream>
 
 GraphSpace::GraphSpace(Graph * pobranygraf, QWidget *parent)
 {
+	this->graf = pobranygraf;
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
     SetvertexCount();
@@ -30,11 +22,6 @@ QSize GraphSpace::minimumSizeHint() const
 QSize GraphSpace::sizeHint() const
 {
     return QSize(400, 400);
-}
-
-void GraphSpace::loadGraph()
-{
-    graf = GenerateGraph1();
 }
 
 void GraphSpace::SetvertexCount()

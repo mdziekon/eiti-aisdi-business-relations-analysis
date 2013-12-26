@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "loadfilewindow.h"
 #include "ui_loadfilewindow.h"
+#include <iostream>
+#include "../models/Graph.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -49,7 +51,7 @@ void MainWindow::AddLine(Containers::Mail* mail, int lp)
     item->setText(0, QString::fromStdString(mail->sender->getName()) );
     item->setText(1, QString::fromStdString(mail->receiver->getName()) );
     //item->setText(2,QString::fromStdString(mail.costam)  ); //nie wiem jak zwrocic tytul
-    item->setText(3,QString::number(mail->sendTimestamp));
+    item->setText(3, QString::number(mail->sendDate.getUnixTimestamp()));
     ui->treeWidget_MailList->addTopLevelItem(item);
 }
 
@@ -62,36 +64,34 @@ void MainWindow::ClearAll()
 }
 
 
-void MainWindow::UzupelnianieOkienek(/* wygenerowane obiekty: wektor ludzi, maili i graf */)
+void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMail, std::unordered_map<std::string, Containers::Person*> vecPobranePerson)
 {
-    /*
+    vecPerson = vecPobranePerson;
+    vecMail = vecPobraneMail;
+    Graph *loadedGraph = new Graph(vecPerson, vecMail);
 
-      vecPerson = vecPobranePerson;
-      vecMail = vecPobraneMail;
-
-    */
-    vecMail = GenerateMails();
 
     Flagwindow1 = false;
 
-    UzupelnijZestawienie();
+    UzupelnijZestawienie(loadedGraph);
 
     UzupelnijSzczegoly();
-
-    UzupelnijGraf(/*wygenerowany graf*/);
+    UzupelnijGraf(loadedGraph);
 }
-void MainWindow::UzupelnijZestawienie()
+void MainWindow::UzupelnijZestawienie(Graph* graphObj)
 {
     //tu sa dwie przykladowe wartosci ktore pokazalam jak przetwarzac
 
     ui->return_IloscOsob->setText( QString::number( vecPerson.size() ) );
     ui->return_IloscMaili->setText( QString::number( vecMail.size() ) );
 
+    if(graphObj->getPeopleNum() == 0)
+        return;
     //reszta:
-    ui->return_IloscRelacji->setText( QString::number( 0 ) );
-    ui->return_LiczbaMailiForward->setText( QString::number( 0 ) );
-    ui->return_UzOdebrNajwMaili->setText( QString::number( 0 ) );
-    ui->return_UzytkownikWyslNajwMaili->setText( QString::number( 0 ) );
+    ui->return_IloscRelacji->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
+    ui->return_LiczbaMailiForward->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
+    ui->return_UzOdebrNajwMaili->setText( QString::fromStdString( "later" /*graphObj->getMostActiveReceiver().getName()*/ ) );
+    ui->return_UzytkownikWyslNajwMaili->setText( QString::fromStdString( graphObj->getMostActiveSender().getName() ) );
 
 }
 void MainWindow::UzupelnijSzczegoly()
@@ -106,16 +106,9 @@ void MainWindow::UzupelnijSzczegoly()
         ui->treeWidget_MailList->sortItems(0,Qt::SortOrder(0));
 }
 
-void MainWindow::UzupelnijGraf(/*Graph * pobranygraf*/)
+void MainWindow::UzupelnijGraf(Graph* graphObj)
 {
-    this->graphspace = new GraphSpace(/*pobranygraf*/);
-    ui->gridGraphLayout->addWidget(graphspace, 0, 0, 1, 4);
-    setLayout(ui->gridGraphLayout);
-}
-
-void MainWindow::WrzucGraf()//potem mozna usunac, jak reszta bedzie dzialac
-{
-    this->graphspace = new GraphSpace();
+    this->graphspace = new GraphSpace(graphObj, this);
     ui->gridGraphLayout->addWidget(graphspace, 0, 0, 1, 4);
     setLayout(ui->gridGraphLayout);
 }

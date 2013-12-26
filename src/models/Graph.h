@@ -2,9 +2,9 @@
 #define GRAPH_H_INCLUDED
 
 #include <unordered_map>
+#include <vector>
 #include <list>
-#include "models\Containers.hpp"
-
+#include "Containers.hpp"
 
 class Edge;
 
@@ -42,7 +42,7 @@ class Graph{
     public: //do testow
     std::unordered_map<Containers::Person*, Vertex*> vertices;
 
-    Graph(std::vector<Containers::Person*>& people, std::vector<Containers::Mail*>& mails);
+    Graph(std::unordered_map<std::string, Containers::Person*>& people, std::vector<Containers::Mail*>& mails);
     ~Graph();
 
     unsigned int getMailsNumber();
@@ -58,7 +58,7 @@ class Graph{
     //Containers::Person* mostActiveSender;
     //Containers::Person* mostActiveReceiver;
     //to przyjmuje wektor UNIKALNYCH osob, dodaje wierzcholki odpowiadajce tym osobom
-    void addPeople(std::vector<Containers::Person*>& people);
+    void addPeople(std::unordered_map<std::string, Containers::Person*>& people);
     //to przyjmuje wektor UNIKALNYCH mejli idodaje te mejle do krawedzi. jesli krawedz nie istnieje, dodaje ja
     void addToEdges(std::vector<Containers::Mail*>& mails);
 
