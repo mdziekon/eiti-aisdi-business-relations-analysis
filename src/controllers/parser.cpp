@@ -176,7 +176,7 @@ Containers::Mail * FileParser::build(std::string& str)
 	this->parser_foundHeadersEnd = false;
 	auto it = str.begin();
 	Person * sender = NULL;
-	Person * receiver = NULL;
+	vector<pair<Person*, Receiver>> receivers;
 
 	Headers headers;
 	std::string contents;
@@ -192,7 +192,7 @@ Containers::Mail * FileParser::build(std::string& str)
 			sender = this->addPerson(this->parseEmail(result.second));
 		} 
 		else if (result.first == "To") {
-			receiver = this->addPerson(this->parseEmail(result.second));
+			receivers.push_back({this->addPerson(this->parseEmail(result.second)), Receiver::Normal});
 		} 
 		else if (result.first == "Contents") {
 			 contents = result.second;
@@ -201,7 +201,7 @@ Containers::Mail * FileParser::build(std::string& str)
 			headers.addHeader(result.first, result.second);
 		} 
 	}
-	return new Mail (*sender, *receiver, contents, headers, time);
+	return new Mail(*sender, receivers, contents, headers, time);
 }
 
 std::pair<std::string, std::string> FileParser::parseEntity(std::string& fullString, std::string::iterator& startIter)

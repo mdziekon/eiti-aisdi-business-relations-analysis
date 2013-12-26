@@ -85,18 +85,26 @@ namespace Containers
 		const Email& getEmail() const;
 	};
 	
+	enum Receiver
+	{
+		Normal, Copy, CarbonCopy, Reply
+	};
+	
 	class Mail
 	{
 	protected:
 		vector<Attachment> attachments;
+		
 
 	public:
-		Person * const sender, * const receiver;
+		Person * const sender;
+		const vector<pair<Person*, Receiver>> receivers;
+		
 		const string content;
 		const Headers headers;
 		const Date sendDate;
 
-		Mail(Person& sender, Person& receiver, const string& content, const Headers& headers, const Date& sendDate);
+		Mail(Person& sender, vector<pair<Person*, Receiver>>& receivers, const string& content, const Headers& headers, const Date& sendDate);
 
 		void addAttachment(const Attachment& attachment);
 		const vector<Attachment>& getAttachments() const;

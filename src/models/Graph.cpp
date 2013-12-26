@@ -37,13 +37,16 @@ void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
     for(unsigned int i=0; i<mails.size(); i++){
         //te 2 wskazniki ponizej nie sa potrzebne, ale wtedy jedna linijka mialaby 3 linijki xd
         Vertex* senderVertex=vertices.find(mails[i]->sender)->second;
-        Vertex* receiverVertex=vertices.find(mails[i]->receiver)->second;
+		for(auto recIt: mails[i]->receivers)
+		{
+			Vertex* receiverVertex=vertices.find(recIt.first)->second;
 
-        //jesli nie istnieje edge dla wierzcholka odbiorcy
-        if(senderVertex->edges.count(receiverVertex)==0){
-            Edge* newEdge = new Edge(receiverVertex);
-            ret=senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
-        }
+			//jesli nie istnieje edge dla wierzcholka odbiorcy
+			if(senderVertex->edges.count(receiverVertex)==0){
+				Edge* newEdge = new Edge(receiverVertex);
+				ret=senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
+			}
+		}
         //na samym koncu dodaj mejla do zawartej w krawedzi listy mejli
         ret.first->second->mails.push_back(*mails[i]);
 
