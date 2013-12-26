@@ -44,7 +44,7 @@ void MainWindow::on_actionHelp_activated()
     hw->show();
 }
 
-void MainWindow::AddLine(Containers::Mail* mail, int lp)
+void MainWindow::AddLine(Containers::Mail* mail)
 {
     QTreeWidgetItem *item = new QTreeWidgetItem(ui->treeWidget_MailList);
 
@@ -96,19 +96,16 @@ void MainWindow::UzupelnijZestawienie(Graph* graphObj)
 }
 void MainWindow::UzupelnijSzczegoly()
 {
-    int lp = 0;
-
-        for(std::vector<Containers::Mail*>::iterator itMail = vecMail.begin();
-            itMail != vecMail.end() ; ++itMail)
-        {
-            AddLine(*itMail,++lp);
-        }
-        ui->treeWidget_MailList->sortItems(0,Qt::SortOrder(0));
+	for(auto itMail = vecMail.begin(); itMail != vecMail.end() ; ++itMail)
+	{
+		AddLine(*itMail);
+	}
+	ui->treeWidget_MailList->sortItems(0, Qt::SortOrder(0));
 }
 
 void MainWindow::UzupelnijGraf(Graph* graphObj)
 {
-    this->graphspace = new GraphSpace(graphObj, this);
+    this->graphspace = new GraphSpace(graphObj);
     ui->gridGraphLayout->addWidget(graphspace, 0, 0, 1, 4);
     setLayout(ui->gridGraphLayout);
 }

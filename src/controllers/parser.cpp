@@ -175,8 +175,8 @@ Containers::Mail * FileParser::build(std::string& str)
 {	
 	this->parser_foundHeadersEnd = false;
 	auto it = str.begin();
-	Person * sender;
-	Person * receiver;
+	Person * sender = NULL;
+	Person * receiver = NULL;
 
 	Headers headers;
 	std::string contents;

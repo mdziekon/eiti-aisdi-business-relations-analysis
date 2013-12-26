@@ -29,7 +29,7 @@ class GraphSpace : public QWidget
 public:
 
 
-    GraphSpace(Graph * pobranygraf, QWidget *parent = 0);
+    GraphSpace(Graph * pobranygraf);
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;

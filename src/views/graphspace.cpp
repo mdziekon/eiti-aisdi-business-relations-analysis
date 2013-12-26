@@ -5,7 +5,7 @@
 #include "graphspace.h"
 #include <iostream>
 
-GraphSpace::GraphSpace(Graph * pobranygraf, QWidget *parent)
+GraphSpace::GraphSpace(Graph * pobranygraf)
 {
 	this->graf = pobranygraf;
     setBackgroundRole(QPalette::Base);
@@ -72,26 +72,21 @@ void GraphSpace::paintEvent(QPaintEvent * /* event */)
                 painter.drawLine(x1+15,y1+15 -8,x2+15,y2+15 -8);
                 pointStrzalka = liczCwiartkeDlugosciLini(x1+15,y1+15 -8,x2+15,y2+15 -8);
             }
-
             else if(x1>x2)
             {
                 painter.drawLine(x1+15,y1+15 +8,x2+15,y2+15 +8);
                 pointStrzalka = liczCwiartkeDlugosciLini(x1+15,y1+15 +8,x2+15,y2+15 +8);
             }
-
             else if(y1<y2)//x1==x2
             {
                 painter.drawLine(x1+15 -8,y1+15,x2+15 -8,y2+15);
                 pointStrzalka = liczCwiartkeDlugosciLini(x1+15 -8,y1+15,x2+15 -8,y2+15);
             }
-
             else if(y1>y2)
             {
                 painter.drawLine(x1+15 +8,y1+15,x2+15 +8,y2+15);
                 pointStrzalka = liczCwiartkeDlugosciLini(x1+15 +8,y1+15,x2+15 +8,y2+15);
             }
-            else
-                ; //nic nie robimy jesli x1==x2, y1==y2
 
             //rysuj strzalke, kropka blizej osoby oznacza odbiorce
             painter.drawImage(pointStrzalka, imageStrzalka);
