@@ -10,9 +10,9 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
-#include "heapsort.h"
-#include "sortComparators.h"
-#include "Containers.hpp"
+#include "../utils/heapsort.h"
+#include "../utils/sortComparators.h"
+#include "../models/Containers.hpp"
 
 using namespace std;
 
