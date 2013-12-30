@@ -14,6 +14,8 @@
 #include <QGridLayout>
 #include "../models/Containers.hpp"
 #include "../models/Graph.h"
+#include "../utils/sortComparators.h"
+#include <utility>
 
 
 //te oddzielne funkcje sa do testowania i mozna potem wywalic
@@ -21,6 +23,14 @@ Graph* GraphTest();
 Graph* GenerateGraph1();
 vector<Containers::Mail*> GenerateMails();
 //
+
+class SortedVerticesComparator : public SortComparator<class std::pair<Containers::Person* const, Vertex*>>
+{
+	bool compare(std::pair<Containers::Person* const, Vertex*>* left, std::pair<Containers::Person* const, Vertex*>* right)
+	{
+		return (left->first->getEmail().getFull() > right->first->getEmail().getFull());
+	}
+};
 
 class GraphSpace : public QWidget
 {
