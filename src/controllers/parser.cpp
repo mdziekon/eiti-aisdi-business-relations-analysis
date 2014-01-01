@@ -141,7 +141,51 @@ Date FileParser::parseTime(const std::string & input)
 std::string FileParser::parseEmail(const std::string & input)
 {
 	return input.substr(input.find_last_of('<') + 1, input.find_last_of('>') - 1);
-} 
+}
+
+vector<pair<Person*, Receiver>> FileParser::parseMultiple(
+        const std::string & input, Receiver type)
+{
+    std::basic_string<char>::const_iterator it = input.begin();
+    vector<pair<Person*, Receiver>> result;
+
+    do {
+        while(*it <= ' ' || *it == ',') {
+            it++;
+        }
+        // remember begin point of analyzed block
+        std::basic_string<char>::const_iterator begin_it = it;
+        // has there been an email in <>? if so, this'll be true'd
+        bool foundEmail = false;
+        
+        // keep iterating until the end of block (last block will be ended
+        // with a '\r', others will end with a comma)
+        do {
+            // look for nested address
+            if(*it == '<') {
+                std::basic_string<char>::const_iterator begin_internal = it;
+                while (*it != '>') {
+                    it++;
+                }
+                result.push_back(std::pair<Person*, Receiver>(
+                        new Person(std::string(begin_internal + 1, it - 1)),
+                        type ));
+                foundEmail = true;
+                // this'll iterate until the end of block
+            }
+            it++;
+        } while (*it != ',' && *it > ' ');
+        std::cout << '\n';
+        // no email in <>? chunk the whole block into the vector
+        if(!foundEmail) {
+            //nie ma zagnieżdżonego adresu
+            result.push_back(std::pair<Person*, Receiver>(new Person(
+                std::string(begin_it, it)), type));
+        }
+    } while (*it == ',' && *it > ' ');
+    
+    return result;
+}
 
 Person * FileParser::addPerson(const std::string & email)
 {
@@ -160,6 +204,7 @@ Person * FileParser::addPerson(const std::string & email)
 	
 	return temporaryPerson;
 }
+
 
 std::unordered_map<std::string, Person*> FileParser::getCache()
 {
@@ -197,6 +242,29 @@ Containers::Mail * FileParser::build(std::string& str)
 		else if (result.first == "Contents") {
 			 contents = result.second;
 		} 
+                else if (result.first == "To") {
+                    std::vector<std::pair<Person*, Receiver>> temp = 
+                            this->parseMultiple(result.second, Normal);
+                    receivers.insert(receivers.end(), temp.begin(), temp.end());
+                }
+                else if (result.first == "Cc") {
+                    std::vector<std::pair<Person*, Receiver>> temp = 
+                        this->parseMultiple(result.second, Copy);
+                    for(auto i : temp) {
+                        std::cout << i.first->getName();
+                    }
+                    //receivers.insert(receivers.end(), temp.begin(), temp.end());
+                }
+                else if (result.first == "Bcc") {
+                    std::vector<std::pair<Person*, Receiver>> temp = 
+                        this->parseMultiple(result.second, CarbonCopy);
+                    //receivers.insert(receivers.end(), temp.begin(), temp.end());
+                }
+                else if (result.first == "Reply-To") {
+                    std::vector<std::pair<Person*, Receiver>> temp = 
+                        this->parseMultiple(result.second, Reply);
+                    receivers.insert(receivers.end(), temp.begin(), temp.end());
+                }
 		else {
 			headers.addHeader(result.first, result.second);
 		} 
