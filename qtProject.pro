@@ -31,6 +31,7 @@ SOURCES +=\
     src/views/loadfilewindow.cpp \
     src/views/helpwindow.cpp \
     src/utils/GenericException.cpp \
+    src/utils/MD5.cpp \
     src/views/graphspace.cpp \
     src/controllers/parser.cpp
 
@@ -40,6 +41,7 @@ SOURCES +=\
 HEADERS  += \
     src/models/Containers.hpp \
     src/utils/Exceptions.hpp \
+    src/utils/MD5.h \
     src/views/settingswindow.h \
     src/views/mainwindow.h \
     src/views/loadfilewindow.h \

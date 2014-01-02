@@ -1,5 +1,6 @@
 #include "parser.hpp"
 #include "../utils/Exceptions.hpp"
+#include "../utils/MD5.h"
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
@@ -148,6 +149,8 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
 {
     std::basic_string<char>::const_iterator it = input.begin();
     vector<pair<Person*, Receiver>> result;
+    Person * current_person;
+    std::string mail_address;
 
     do {
         while(*it <= ' ' || *it == ',') {
@@ -167,9 +170,8 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
                 while (*it != '>') {
                     it++;
                 }
-                result.push_back(std::pair<Person*, Receiver>(
-                        new Person(std::string(begin_internal + 1, it - 1)),
-                        type ));
+                mail_address = std::string(begin_internal + 1, it - 1);
+                current_person = new Person(mail_address);
                 foundEmail = true;
                 // this'll iterate until the end of block
             }
@@ -179,9 +181,11 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
         // no email in <>? chunk the whole block into the vector
         if(!foundEmail) {
             //nie ma zagnieżdżonego adresu
-            result.push_back(std::pair<Person*, Receiver>(new Person(
-                std::string(begin_it, it)), type));
+            mail_address = std::string(begin_it, it);
+            current_person = new Person(mail_address);
         }
+        result.push_back(std::pair<Person*, Receiver>(current_person, type));
+        cache.insert(std::pair<std::string, Person*>(std::string(md5->md5ify(mail_address)), current_person));
     } while (*it == ',' && *it > ' ');
     
     return result;
@@ -222,6 +226,9 @@ Containers::Mail * FileParser::build(std::string& str)
 	auto it = str.begin();
 	Person * sender = NULL;
 	vector<pair<Person*, Receiver>> receivers;
+        Mail * result_mail;
+                
+        md5 = new MD5();
 
 	Headers headers;
 	std::string contents;
@@ -237,28 +244,24 @@ Containers::Mail * FileParser::build(std::string& str)
 			sender = this->addPerson(this->parseEmail(result.second));
 		} 
 		else if (result.first == "To") {
-			receivers.push_back({this->addPerson(this->parseEmail(result.second)), Receiver::Normal});
-		} 
-		else if (result.first == "Contents") {
-			 contents = result.second;
-		} 
-                else if (result.first == "To") {
                     std::vector<std::pair<Person*, Receiver>> temp = 
-                            this->parseMultiple(result.second, Normal);
+                    this->parseMultiple(result.second, Normal);
                     receivers.insert(receivers.end(), temp.begin(), temp.end());
-                }
+		} 
+		else if (result.first == "Content") {
+			 contents = result.second;
+                         result_mail = new Mail(*sender, receivers, contents, headers, time);
+                         mail_cache.insert(std::pair<std::string, Mail*>(std::string(md5->md5ify(contents)), result_mail));
+		} 
                 else if (result.first == "Cc") {
                     std::vector<std::pair<Person*, Receiver>> temp = 
                         this->parseMultiple(result.second, Copy);
-                    for(auto i : temp) {
-                        std::cout << i.first->getName();
-                    }
-                    //receivers.insert(receivers.end(), temp.begin(), temp.end());
+                    receivers.insert(receivers.end(), temp.begin(), temp.end());
                 }
                 else if (result.first == "Bcc") {
                     std::vector<std::pair<Person*, Receiver>> temp = 
                         this->parseMultiple(result.second, CarbonCopy);
-                    //receivers.insert(receivers.end(), temp.begin(), temp.end());
+                    receivers.insert(receivers.end(), temp.begin(), temp.end());
                 }
                 else if (result.first == "Reply-To") {
                     std::vector<std::pair<Person*, Receiver>> temp = 
@@ -269,7 +272,8 @@ Containers::Mail * FileParser::build(std::string& str)
 			headers.addHeader(result.first, result.second);
 		} 
 	}
-	return new Mail(*sender, receivers, contents, headers, time);
+        delete md5;
+	return result_mail;
 }
 
 std::pair<std::string, std::string> FileParser::parseEntity(std::string& fullString, std::string::iterator& startIter)
