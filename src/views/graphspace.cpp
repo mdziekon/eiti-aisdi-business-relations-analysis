@@ -4,8 +4,12 @@
 #include <QString>
 #include "graphspace.h"
 #include <iostream>
+#include <vector>
+#include <utility>
+#include "../utils/sortComparators.h"
+#include "../utils/quicksort.h"
 
-GraphSpace::GraphSpace(Graph * pobranygraf, QWidget *parent)
+GraphSpace::GraphSpace(Graph * pobranygraf)
 {
 	this->graf = pobranygraf;
     setBackgroundRole(QPalette::Base);
@@ -37,12 +41,25 @@ void GraphSpace::setLocations()
         return;
     if(vertexCount == 0)
         return;
-    std::unordered_map<Containers::Person*, Vertex*>::iterator it = graf->vertices.begin();
-    for(int i = 0 ; it != graf->vertices.end() ; ++i, ++it)
+	
+	// Konwertuj unordered_map do vector a potem posortuj,
+	// by zachować jednakową kolejność elementów na ekranie
+	std::vector<std::pair<Containers::Person* const, Vertex*>*> sortedVertices;	
+	
+	for(auto it = graf->vertices.begin(); it != graf->vertices.end(); ++it)
+	{
+		sortedVertices.push_back(&*it);
+	}
+
+	SortedVerticesComparator comp;
+	quicksort<std::pair<Containers::Person* const, Vertex*>>(sortedVertices, 0, sortedVertices.size() - 1, comp);
+	
+    auto it = sortedVertices.begin();
+    for(int i = 0 ; it != sortedVertices.end() ; ++i, ++it)
     {
         float a = r * sin( 3.14*2/vertexCount * i) + xs;
         float b = r * cos( 3.14*2/vertexCount * i) + ys;
-        it->second->setLocation(a,b);
+        (*it)->second->setLocation(a,b);
     }
 }
 
@@ -50,8 +67,6 @@ void GraphSpace::paintEvent(QPaintEvent * /* event */)
 {
     QPainter painter(this);
     QPoint pointStrzalka;
-
-
 
     //rysuj krawędzie
     float x1,y1,x2,y2;
@@ -72,26 +87,21 @@ void GraphSpace::paintEvent(QPaintEvent * /* event */)
                 painter.drawLine(x1+15,y1+15 -8,x2+15,y2+15 -8);
                 pointStrzalka = liczCwiartkeDlugosciLini(x1+15,y1+15 -8,x2+15,y2+15 -8);
             }
-
             else if(x1>x2)
             {
                 painter.drawLine(x1+15,y1+15 +8,x2+15,y2+15 +8);
                 pointStrzalka = liczCwiartkeDlugosciLini(x1+15,y1+15 +8,x2+15,y2+15 +8);
             }
-
             else if(y1<y2)//x1==x2
             {
                 painter.drawLine(x1+15 -8,y1+15,x2+15 -8,y2+15);
                 pointStrzalka = liczCwiartkeDlugosciLini(x1+15 -8,y1+15,x2+15 -8,y2+15);
             }
-
             else if(y1>y2)
             {
                 painter.drawLine(x1+15 +8,y1+15,x2+15 +8,y2+15);
                 pointStrzalka = liczCwiartkeDlugosciLini(x1+15 +8,y1+15,x2+15 +8,y2+15);
             }
-            else
-                ; //nic nie robimy jesli x1==x2, y1==y2
 
             //rysuj strzalke, kropka blizej osoby oznacza odbiorce
             painter.drawImage(pointStrzalka, imageStrzalka);

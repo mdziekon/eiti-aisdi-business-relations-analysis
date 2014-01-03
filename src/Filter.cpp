@@ -1,8 +1,9 @@
 #include "Filter.h"
 #include "models/Graph.h"
 #include <string>
-//FILTER
-bool Filter::remove(Containers::Mail& mail){return true;}
+
+bool Filter::remove(Containers::Mail& mail){return true;}   //nieuzyteczne, ale wymagane przez standard -,-
+
 
 void Filter::process(Graph& graph){ //leci po kazdym mejlu i sprawdza warunek danego filtru
 
@@ -14,9 +15,7 @@ void Filter::process(Graph& graph){ //leci po kazdym mejlu i sprawdza warunek da
             }
             //krawedz nie ma mejli, wiec ja usun
             if(edgeIt->second->mails.size()==0)
-                //////////////////////////////////////////////////////////////////////
-                delete edgeIt->second; //nie umiem into destruktor TU JSET BUGGGASDAS
-                //////////////////////////////////////////////////////////////////////
+                delete edgeIt->second;
         }
         //wierzcholek nie ma krawedzi ani zadne krawedzie na niego nie wskazuja
         if(vertexIt->second->edges.size()==0 && vertexIt->second->pointingEdges.size()==0)
@@ -25,30 +24,28 @@ void Filter::process(Graph& graph){ //leci po kazdym mejlu i sprawdza warunek da
 }
 
 
-
 void FilterSet::addNewFilter(Filter& filter){
     filters.push_back(filter);
 }
 void FilterSet::clearAllFilters(){
     filters.clear();
 }
-void FilterSet::clearFilter(Filter& filter){
-    //filters.remove(filter);
-}
+
 void FilterSet::processAll(Graph& graph){
     for (std::list<Filter>::iterator it=filters.begin(); it!=filters.end(); ++it)
         (*it).process(graph);
 }
 Graph& FilterSet::processAll(Graph& graph, int returnCopy){
-    //Graph graphCopy; //kopia przekazanego grafu
-    //for (std::list<Filter>::iterator it=filters.begin(); it!=filters.end(); ++it)
-    // (*it).process(graphCopy);
-    //return graphCopy;
+    std::list<Containers::Mail*> mails=graph.getMails();
+    std::list<Containers::Person*> people = graph.getPeople();
+
+    Graph* graphCopy = new Graph(people, mails);
+    processAll(*graphCopy);
+    return *graphCopy;
 }
 
 
 
-//TOPICSUBSTRINGFILTER
 bool TopicSubstringFilter::remove(Containers::Mail& mail){
     std::size_t found = mail.content.find(substring);
     //nie znaleziono stringa, wiec usun
@@ -62,6 +59,7 @@ TopicSubstringFilter::TopicSubstringFilter(std::string substring){
 void TopicSubstringFilter::setSubstring(std::string substring){
     this->substring=substring;
 }
+
 
 
 
@@ -99,8 +97,10 @@ bool PeopleFilter::remove(Containers::Mail& mail){
     }
     //usun jesli odbiorca jest na liscie
     else if(removeMailsFromSender==false){
-        if(people.count(mail.receiver)!=0)
-            return true;
+        for(auto recIt: mail.receivers){
+            if(people.count(recIt.first)!=0)
+                return true;
+            }
     }
 
     return false;
@@ -109,7 +109,9 @@ PeopleFilter::PeopleFilter(std::set<Containers::Person*> people, bool removeMail
     this->people=people;
     this->removeMailsFromSender=removeMailsFromSender;
 }
+
 void PeopleFilter::setPeople(std::set<Containers::Person*> people){
     this->people=people;
 }
+
 

@@ -45,7 +45,9 @@ HEADERS  += \
     src/views/loadfilewindow.h \
     src/views/helpwindow.h \
     src/models/Graph.h \
-    src/views/graphspace.h
+    src/views/graphspace.h \
+    src/utils/sortComparators.h \
+    src/utils/quicksort.h
 
 
 

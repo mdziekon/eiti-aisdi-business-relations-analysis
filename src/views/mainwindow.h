@@ -54,7 +54,7 @@ private:
     void UzupelnijZestawienie(Graph* graphObj);
 
     //od drugiej karty Szczegoly
-    void AddLine(Containers::Mail* mail, int lp);
+    void AddLine(Containers::Mail* mail);
     void ClearAll();
     void Sorting();
     void UzupelnijSzczegoly();
