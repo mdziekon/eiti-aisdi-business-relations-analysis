@@ -3,13 +3,19 @@
 
 Graph::Graph(std::unordered_map<std::string, Containers::Person*>& people, std::vector<Containers::Mail*>& mails){
     mailsNum=0;
-    //Containers::Person* mostActiveSender=0;
-    //Containers::Person* mostActiveReceiver=0;
     biggestEdge=0;
 
     addPeople(people);
     addToEdges(mails);
 }
+Graph::Graph(std::list<Containers::Person*>& people, std::list<Containers::Mail*>& mails){
+    mailsNum=0;
+    biggestEdge=0;
+
+    addPeople(people);
+    addToEdges(mails);
+}
+
 
 Graph::~Graph(){
     std::unordered_map<Containers::Person*,Vertex*>::iterator it;
@@ -18,13 +24,14 @@ Graph::~Graph(){
 }
 
 void Graph::addPeople(std::unordered_map<std::string, Containers::Person*>& people){
-	for(auto it = people.begin(); it != people.end(); ++it)
-	{
+	for(auto it = people.begin(); it != people.end(); ++it){
 		vertices.insert(std::pair<Containers::Person*,Vertex*> ((*it).second, new Vertex));
 	}
-
-
-
+}
+void Graph::addPeople(std::list<Containers::Person*>& people){
+	for(auto it = people.begin(); it != people.end(); ++it){
+		vertices.insert(std::pair<Containers::Person*,Vertex*> ((*it), new Vertex));
+	}
 }
 
 void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
@@ -35,35 +42,56 @@ void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
     for(unsigned int i=0; i<mails.size(); i++){
         //te 2 wskazniki ponizej nie sa potrzebne, ale wtedy jedna linijka mialaby 3 linijki xd
         Vertex* senderVertex=vertices.find(mails[i]->sender)->second;
-<<<<<<< HEAD
-        Vertex* receiverVertex=vertices.find(mails[i]->receiver)->second;
 
-        //jesli nie istnieje edge dla wierzcholka odbiorcy, to go utworz
-        if(senderVertex->edges.count(receiverVertex)==0){
-            Edge* newEdge = new Edge(receiverVertex);
-            //dodaj do wierzcholka odbiorcy informacje o nowym edgu wskazujacym na ten wierzcholek
-            receiverVertex->pointingEdges.push_back(newEdge);
-            senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
-        }
-=======
-		for(auto recIt: mails[i]->receivers)
-		{
+		for(auto recIt: mails[i]->receivers){
 			Vertex* receiverVertex=vertices.find(recIt.first)->second;
-
 			//jesli nie istnieje edge dla wierzcholka odbiorcy
 			if(senderVertex->edges.count(receiverVertex)==0){
 				Edge* newEdge = new Edge(receiverVertex);
-				ret=senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
+				senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
 			}
+            //dodaj do edga wskaznik na mejla
+            auto it = senderVertex->edges.find(receiverVertex);
+            it->second->mails.push_back(*mails[i]);
 		}
-        //na samym koncu dodaj mejla do zawartej w krawedzi listy mejli
-        ret.first->second->mails.push_back(*mails[i]);
->>>>>>> bdf02648584c4a4ee2cc8aeac40faf903568594a
-
-        auto it = senderVertex->edges.find(receiverVertex);
-        it->second->mails.push_back(*mails[i]);
     }
+}
+void Graph::addToEdges(std::list<Containers::Mail*>& mails){
+    mailsNum+=mails.size();
+    for(std::list<Containers::Mail*>::iterator mailsit=mails.begin(); mailsit != mails.end(); ++mailsit){
+        Vertex* senderVertex=vertices.find((*mailsit)->sender)->second;
+		for(auto recIt: (*mailsit)->receivers){
+			Vertex* receiverVertex=vertices.find(recIt.first)->second;
+			if(senderVertex->edges.count(receiverVertex)==0){
+				Edge* newEdge = new Edge(receiverVertex);
+				senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
+			}
+            auto it = senderVertex->edges.find(receiverVertex);
+            it->second->mails.push_back(*(*mailsit));
+		}
+    }
+}
 
+std::list<Containers::Person*> Graph::getPeople(){
+    std::list<Containers::Person*> list;
+
+    for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        list.push_back(vertexIt->first);
+    }
+    return list;
+}
+std::list<Containers::Mail*> Graph::getMails(){
+    std::list<Containers::Mail*> list;
+
+    for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
+                list.push_back(&(*mailsIt));
+            }
+        }
+    }
+    list.unique();
+    return list;
 }
 
 
@@ -81,8 +109,6 @@ unsigned int Graph::getBiggestEdgeSize(){
     return biggestEdge;
 }
 
-
-//Containers::Person& Graph::getMostActiveReceiver(){}
 Containers::Person& Graph::getMostActiveSender(){
     unsigned int mostMailsSent=0;
     Containers::Person* mostActiveSender=0;
@@ -105,9 +131,10 @@ Containers::Person& Graph::getMostActiveSender(){
 unsigned int Graph::getPeopleNum(){
     return this->vertices.size();
 }
-unsigned int getForwardedMailsNum(){
+unsigned int Graph::getForwardedMailsNum(){
     return 0;
 }
+
 
 
 
@@ -118,13 +145,18 @@ Edge::Edge(Vertex* pointedVertex){
     this->pointedVertex=pointedVertex;
 }
 
-
 Edge::~Edge(){
-    //pointedVertex->pointingEdges->erase(this);
+    pointedVertex->pointingEdges.remove(this);
 }
+
 void Edge::addMail(Containers::Mail& mail){
      mails.push_back(mail);
 }
+
+
+
+
+
 
 
 
@@ -139,6 +171,4 @@ Vertex::~Vertex(){
     this->x = x;
     this->y = y;
 }
-
-
 

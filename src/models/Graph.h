@@ -24,8 +24,7 @@ class Edge{
 public:
     Edge(Vertex* pointedVertex);
     ~Edge();
-
-    const Vertex* pointedVertex;//to, na co wskazuje ta krawedz ( tzn. odbiorca mejli, ktore ta krawedz zawiera)
+    Vertex* pointedVertex;//to, na co wskazuje ta krawedz ( tzn. odbiorca mejli, ktore ta krawedz zawiera)
     std::list<Containers::Mail> mails;    //wszystkie mejle ktore zawiera ta krawedz
     float x = 0;
     float y = 0;
@@ -39,28 +38,30 @@ public:
 
 
 class Graph{
-    public: //do testow
+public: //do testow
     std::unordered_map<Containers::Person*, Vertex*> vertices;
 
+    Graph(std::list<Containers::Person*>& people, std::list<Containers::Mail*>& mails);
     Graph(std::unordered_map<std::string, Containers::Person*>& people, std::vector<Containers::Mail*>& mails);
     ~Graph();
 
     unsigned int getMailsNumber();
     unsigned int getPeopleNum();
     Containers::Person& getMostActiveSender();
-    //Containers::Person& getMostActiveReceiver();
     unsigned int getForwardedMailsNum();
     unsigned int getBiggestEdgeSize();
 
-    private:
+    std::list<Containers::Person*> getPeople();
+    std::list<Containers::Mail*> getMails();
+private:
     unsigned int mailsNum;
     unsigned int biggestEdge;
-    //Containers::Person* mostActiveSender;
-    //Containers::Person* mostActiveReceiver;
     //to przyjmuje wektor UNIKALNYCH osob, dodaje wierzcholki odpowiadajce tym osobom
     void addPeople(std::unordered_map<std::string, Containers::Person*>& people);
+    void addPeople(std::list<Containers::Person*>& people);
     //to przyjmuje wektor UNIKALNYCH mejli idodaje te mejle do krawedzi. jesli krawedz nie istnieje, dodaje ja
     void addToEdges(std::vector<Containers::Mail*>& mails);
+    void addToEdges(std::list<Containers::Mail*>& mails);
 
 };
 
