@@ -12,3 +12,4 @@ SettingsWindow::~SettingsWindow()
 {
     delete ui;
 }
+

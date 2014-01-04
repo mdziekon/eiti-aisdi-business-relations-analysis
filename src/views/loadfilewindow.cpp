@@ -1,7 +1,6 @@
 #include "loadfilewindow.h"
 #include "ui_loadfilewindow.h"
 #include "mainwindow.h"
-#include <iostream>
 
 #include "../controllers/parser.hpp"
 #include "../models/Containers.hpp"
@@ -25,7 +24,6 @@ void LoadFileWindow::on_toolButton_AddFolder_clicked()
     QString *folderPath = new QString();
     QString czyZmieniony = *folderPath;
     *folderPath = QFileDialog::getExistingDirectory(this, tr("Dodaj folder"), "");
-    //QFileInfo infoPath(*folderPath);
     if(*folderPath == czyZmieniony)
         return;
     QDir mydir(*folderPath);
@@ -108,6 +106,11 @@ void LoadFileWindow::on_pushButton_Confirm_clicked()
 */
 
     myParent->UzupelnianieOkienek(tempVec, parser.getCache());
-    parentWidget()->show();
+    parentWidget()->setEnabled(true);
     close();
+}
+
+void LoadFileWindow::closeEvent (QCloseEvent *)
+{
+    parentWidget()->setEnabled(true);
 }
