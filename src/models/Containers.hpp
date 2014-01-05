@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <ctime>
 
 using namespace std;
@@ -100,8 +101,7 @@ namespace Containers
 		Person * const sender;
 		const vector<pair<Person*, Receiver>> receivers;
                 
-                const unordered_map<std::string, Mail *> forwarded_to;
-                const unordered_map<std::string, Mail *> all_forwards;
+                vector<Person *> forwarded_to;
                 bool complete_cycle;    // cykl pełny
                 bool part_of_a_cycle;   // cykl składowy
 		

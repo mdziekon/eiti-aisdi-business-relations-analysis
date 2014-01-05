@@ -191,30 +191,71 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
 
 void FileParser::checkForwards(std::string & title, std::string & contents, Mail * mail) 
 {
-    std::string fwd ("Fwd:");
-    std::size_t found = title.find_first_of(fwd);
+    vector<std::string> hashes;
+    int depth;
     int counter = 0;
-                   
-    while(found!=std::string::npos) {
-        counter++;
-        title = title.substr(found + 1);
-        found = title.find_first_of(fwd);
+    Mail * base_mail;
+            
+    std::string::iterator it = title.begin();
+    while(it < title.end() - 4) {
+        if(std::string(it, it + 4) == "Fwd:") {
+            counter++;
+            it += 3;
+        }
+        it++;
     }
+    
+    depth = counter;
+    
+    //wyczysc puste znaki z przodu i z tylu
+    {
+        std::string::iterator rear_it = contents.end();
+        std::string::iterator front_it = contents.begin();
+        while(*rear_it-- <= ' ');
+        while(*front_it++ <= ' ');
+        contents = std::string(front_it-1, rear_it+2);
+    }
+    
+    std::size_t found = 0;
+    while(counter --> -1) {
+        int i;
+        found = contents.find("Forwarded message from", found);
+        hashes.push_back(md5->md5ify(contents));
+        if(found < contents.size())
+            contents = contents.substr(found);     // get from "live" to the end
+    }
+    /* look for base mail sender in end mail vector of receivers to check
+       completeness of an eventual cycle */
 
-    while(counter --> 0) {
-        std::string fwdMsg ("Forwarded message from");
-        std::size_t found = contents.find(fwdMsg);
-        std::string hashed;
-        if(found == 0) {//no message before - just forward
-            hashed = md5->md5ify(contents);
+    // done with storing hashes, let's find forwards
+    while(hashes.size() > 1) {
+        Mail * current_mail = mail_cache.find(*(hashes.end() - 1))->second;
+        hashes.pop_back();
+        for(std::pair<Person*, Receiver> p : current_mail->receivers) {
+            base_mail->forwarded_to.push_back(p.first);
         }
-        else {
-            contents = contents.substr(contents.find('\n', found) + 1);     // get from "live" to the end
-            hashed = md5->md5ify(contents);
+        bool exit_conditional = false;
+        for ( Person * bs : base_mail->forwarded_to) {
+            for ( std::pair<Person*, Receiver> ct : current_mail->receivers ) {
+                if(bs == ct.first) {
+                    exit_conditional = true;
+                    current_mail->part_of_a_cycle = true;
+                    break;
+                }
+            }
+            if(exit_conditional) {
+                break;
+            }
         }
-        auto focus_on = mail_cache.find(hashed);
-        mail->all_forwards.insert(std::pair<std::string, Mail*>(hashed, focus_on->second));
-        focus_on->second->forwarded_to.insert(std::pair<std::string, Mail*>(hashed, mail));
+    }
+    
+    if(depth > 0) {
+        for(Person * p : base_mail->forwarded_to) {
+            if(base_mail->sender == p) {
+                base_mail->complete_cycle = true;
+                break;
+            }
+        }
     }
 }
 
@@ -356,6 +397,6 @@ std::pair<std::string, std::string> FileParser::parseEntity(std::string& fullStr
 	
 	value = std::string(startIter, it - goBack);
 	startIter = it;
-	
+
 	return std::pair<std::string&, std::string&>(key, value);
 }
