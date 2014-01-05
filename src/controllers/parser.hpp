@@ -27,6 +27,7 @@ private:
 	Containers::Person * addPerson(const std::string & email);
         vector<pair<Containers::Person*, Containers::Receiver>> parseMultiple(
                 const std::string & input, Containers::Receiver type);
+        void checkForwards(std::string & title, std::string & contents, Containers::Mail * mail);
 public:
 	std::unordered_map<std::string, Containers::Person*> getCache();
 	std::vector<Containers::Mail*> load(const std::string path);

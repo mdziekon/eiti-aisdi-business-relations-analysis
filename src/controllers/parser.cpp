@@ -99,7 +99,7 @@ Date FileParser::parseTime(const std::string & input)
 	}
 	it++;
 	/* zachowanie godziny */
-	year.reserve(2);
+	hours.reserve(2);
 	hours += *it++;
 	hours += *it++;
 	it++;
@@ -177,7 +177,6 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
             }
             it++;
         } while (*it != ',' && *it > ' ');
-        std::cout << '\n';
         // no email in <>? chunk the whole block into the vector
         if(!foundEmail) {
             //nie ma zagnieżdżonego adresu
@@ -187,8 +186,36 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
         result.push_back(std::pair<Person*, Receiver>(current_person, type));
         cache.insert(std::pair<std::string, Person*>(std::string(md5->md5ify(mail_address)), current_person));
     } while (*it == ',' && *it > ' ');
-    
     return result;
+}
+
+void FileParser::checkForwards(std::string & title, std::string & contents, Mail * mail) 
+{
+    std::string fwd ("Fwd:");
+    std::size_t found = title.find_first_of(fwd);
+    int counter = 0;
+                   
+    while(found!=std::string::npos) {
+        counter++;
+        title = title.substr(found + 1);
+        found = title.find_first_of(fwd);
+    }
+
+    while(counter --> 0) {
+        std::string fwdMsg ("Forwarded message from");
+        std::size_t found = contents.find(fwdMsg);
+        std::string hashed;
+        if(found == 0) {//no message before - just forward
+            hashed = md5->md5ify(contents);
+        }
+        else {
+            contents = contents.substr(contents.find('\n', found) + 1);     // get from "live" to the end
+            hashed = md5->md5ify(contents);
+        }
+        auto focus_on = mail_cache.find(hashed);
+        mail->all_forwards.insert(std::pair<std::string, Mail*>(hashed, focus_on->second));
+        focus_on->second->forwarded_to.insert(std::pair<std::string, Mail*>(hashed, mail));
+    }
 }
 
 Person * FileParser::addPerson(const std::string & email)
@@ -226,11 +253,12 @@ Containers::Mail * FileParser::build(std::string& str)
 	auto it = str.begin();
 	Person * sender = NULL;
 	vector<pair<Person*, Receiver>> receivers;
-        Mail * result_mail;
+        Mail * result_mail = NULL;
                 
         md5 = new MD5();
 
 	Headers headers;
+        std::string title;
 	std::string contents;
 	Date time;
 	
@@ -241,7 +269,7 @@ Containers::Mail * FileParser::build(std::string& str)
 			time = this->parseTime(result.second);
 		}
 		else if(result.first == "From") {
-			sender = this->addPerson(this->parseEmail(result.second));
+		    sender = this->addPerson(this->parseEmail(result.second));
 		} 
 		else if (result.first == "To") {
                     std::vector<std::pair<Person*, Receiver>> temp = 
@@ -249,9 +277,8 @@ Containers::Mail * FileParser::build(std::string& str)
                     receivers.insert(receivers.end(), temp.begin(), temp.end());
 		} 
 		else if (result.first == "Content") {
-			 contents = result.second;
-                         result_mail = new Mail(*sender, receivers, contents, headers, time);
-                         mail_cache.insert(std::pair<std::string, Mail*>(std::string(md5->md5ify(contents)), result_mail));
+		    contents = result.second;
+                    result_mail = new Mail(*sender, receivers, contents, headers, time);
 		} 
                 else if (result.first == "Cc") {
                     std::vector<std::pair<Person*, Receiver>> temp = 
@@ -268,10 +295,16 @@ Containers::Mail * FileParser::build(std::string& str)
                         this->parseMultiple(result.second, Reply);
                     receivers.insert(receivers.end(), temp.begin(), temp.end());
                 }
-		else {
-			headers.addHeader(result.first, result.second);
+                else if(result.first == "Subject") {
+                    headers.addHeader(result.first, result.second);
+                    title = result.second;   
+                }
+                else {
+		    headers.addHeader(result.first, result.second);
 		} 
 	}
+        this->checkForwards(title, contents, result_mail);
+        mail_cache.insert(std::pair<std::string, Mail*>(std::string(md5->md5ify(contents)), result_mail));
         delete md5;
 	return result_mail;
 }
