@@ -44,6 +44,7 @@ class GraphSpace2: public QWidget
 public:
     GraphSpace2();
     GraphSpace2(Graph * newgraph, QGridLayout* lay );
+    ~GraphSpace2();
 
     Graph * graph;
     MyQGraphicsScene * scene;

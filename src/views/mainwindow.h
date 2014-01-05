@@ -46,6 +46,7 @@ public:
     //dwa razy plikow, to po pierwszym zaladowaniu, przycisk"Zaladuj Plik" sie blokuje
 
 
+    void WyczyscGraf2();
 private slots:
     //przyciski do otwierania osobnych okienek
     void on_actionLoadFile_activated();
@@ -59,8 +60,6 @@ private slots:
 
     void on_pushButton_datefilter_clicked();
 
-    void on_pushButton_defeteselectedfilter_clicked();
-
     void on_checkBox_isbefore_clicked();
 
     void on_checkBox_isafter_clicked();
@@ -70,6 +69,10 @@ private slots:
     void on_checkBox_isrecivers_clicked();
 
     void on_comboBox_people_activated(const QString &arg1);
+
+    void on_pushButton_setfiltersaction_clicked();
+
+    void on_pushButton_deleteselectedfilter_clicked();
 
 private:
     //okienka ktore sie oddzielnie otwieraja
@@ -81,6 +84,8 @@ private:
 
     Graph* originalGraph;
     GraphSpace2* originalGraphSpace;
+    Graph* filteredGraph;
+    GraphSpace2* filteredGraphSpace;
     FilterSet* filterset;
 
     std::set<Containers::Person*> peopleSet; // do filtrow

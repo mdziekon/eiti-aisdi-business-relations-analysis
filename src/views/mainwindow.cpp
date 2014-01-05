@@ -126,13 +126,14 @@ void MainWindow::UzupelnijSzczegoly()
 void MainWindow::UzupelnijGraf2(Graph *graphObj)
 {
     QWidget * pointedWidget = ui->tab_four;
-    //this->graphspace2 = new GraphSpace2(graphObj, pointedWidget);
     QGridLayout* layout = ui->gridLayout_5;
     this->graphspace2 = new GraphSpace2(graphObj, layout);
-    std::cout << "pointedWidget" << pointedWidget <<std::endl;
     ui->graphicsView->setScene(graphspace2->scene);
-    originalGraphSpace = graphspace2;
-
+    //originalGraphSpace = graphspace2;
+}
+void MainWindow::WyczyscGraf2()
+{
+    delete graphspace2;
 }
 
 void MainWindow::AddFilterToList(QString str)
@@ -181,7 +182,7 @@ void MainWindow::on_pushButton_substringfilter_clicked()
     AddFilterToList(listtext);
 
     TopicSubstringFilter* topicsubstringfilter = new TopicSubstringFilter(stringText);
-    //filterset->addNewFilter(topicsubstringfilter);
+    filterset->addNewFilter(*topicsubstringfilter);
 }
 
 void MainWindow::on_pushButton_peoplefilter_clicked()
@@ -192,7 +193,7 @@ void MainWindow::on_pushButton_peoplefilter_clicked()
     ui->textEdit_peoplefilterinput->clear();
 
     PeopleFilter * peoplefilter = new PeopleFilter(peopleSet,ui->checkBox_issenders->checkState());
-    //filterset->addNewFilter(peoplefilter);
+    filterset->addNewFilter(*peoplefilter);
 }
 
 void MainWindow::on_pushButton_datefilter_clicked()
@@ -207,12 +208,7 @@ void MainWindow::on_pushButton_datefilter_clicked()
     AddFilterToList(listtext);
 
     DateFilter* datefilter = new DateFilter(date,ui->checkBox_isbefore->checkState());
-    //filterset->addNewFilter(datefilter);
-}
-
-void MainWindow::on_pushButton_defeteselectedfilter_clicked()
-{
-
+    filterset->addNewFilter(*datefilter);
 }
 
 void MainWindow::on_checkBox_isbefore_clicked()
@@ -238,10 +234,27 @@ void MainWindow::on_checkBox_isrecivers_clicked()
 void MainWindow::on_comboBox_people_activated(const QString &arg1)
 {
     std::string str = arg1.toStdString();
+    Containers::Person* tmpPerson = NULL;
+    tmpPerson = FindPerson(str);
+    if(tmpPerson == NULL)
+        return;
+    peopleSet.insert(tmpPerson);
     QString tmp = ui->textEdit_peoplefilterinput->toPlainText();
     tmp += arg1; tmp += ", ";
     ui->textEdit_peoplefilterinput->setText(tmp);
-    Containers::Person* tmpPerson;
-    tmpPerson = FindPerson(str);
-    peopleSet.insert(tmpPerson);
+
+}
+
+void MainWindow::on_pushButton_setfiltersaction_clicked()
+{
+    std::cout<<"tu1"<<std::endl;
+    *filteredGraph = filterset->processAll(*originalGraph,1);
+    WyczyscGraf2();
+    UzupelnijGraf2(filteredGraph);
+}
+
+void MainWindow::on_pushButton_deleteselectedfilter_clicked()
+{
+    WyczyscGraf2();
+    UzupelnijGraf2(originalGraph);
 }

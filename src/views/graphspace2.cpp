@@ -17,6 +17,12 @@ GraphSpace2::GraphSpace2(Graph * newgraph, QGridLayout * lay):
     mailsInfo = NULL;
 }
 
+GraphSpace2::~GraphSpace2()
+{
+    delete scene;
+}
+
+
 void GraphSpace2::CreateVisibleVertices()
 {
     VisibleVertex * vertex;
