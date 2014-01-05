@@ -171,7 +171,9 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
                     it++;
                 }
                 mail_address = std::string(begin_internal + 1, it - 1);
-                current_person = new Person(mail_address);
+                if(cache.find(mail_address) == cache.end()) {
+                        current_person = new Person(mail_address);
+                } 
                 foundEmail = true;
                 // this'll iterate until the end of block
             }
@@ -181,10 +183,12 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
         if(!foundEmail) {
             //nie ma zagnieżdżonego adresu
             mail_address = std::string(begin_it, it);
-            current_person = new Person(mail_address);
+            if(cache.find(mail_address) == cache.end()) {
+                current_person = new Person(mail_address);
+            }
         }
         result.push_back(std::pair<Person*, Receiver>(current_person, type));
-        cache.insert(std::pair<std::string, Person*>(std::string(md5->md5ify(mail_address)), current_person));
+        cache.insert(std::pair<std::string, Person*>(mail_address, current_person));
     } while (*it == ',' && *it > ' ');
     return result;
 }
@@ -194,7 +198,7 @@ void FileParser::checkForwards(std::string & title, std::string & contents, Mail
     vector<std::string> hashes;
     int depth;
     int counter = 0;
-    Mail * base_mail;
+    Mail * base_mail = mail;
             
     std::string::iterator it = title.begin();
     while(it < title.end() - 4) {
