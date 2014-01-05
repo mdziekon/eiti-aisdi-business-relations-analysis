@@ -14,23 +14,24 @@ void Filter::process(Graph* graph){ //leci po kazdym mejlu i sprawdza warunek da
                     mailsIt=edgeIt->second->mails.erase(mailsIt);
             }
 
-            ///TU ZACZNIJ
+           /* ///TU ZACZNIJ
             //krawedz nie ma mejli, wiec ja usun
             if(edgeIt->second->mails.size()==0){
                 delete edgeIt->second;
                 edgeIt=vertexIt->second->edges.erase(edgeIt);
             }
-            ///TU SKONCZ
+            ///TU SKONCZ*/
         }
-        ///TU ZACZNIJ
+      /*  ///TU ZACZNIJ
         //wierzcholek nie ma krawedzi ani zadne krawedzie na niego nie wskazuja
         if(vertexIt->second->edges.size()==0 && vertexIt->second->pointingEdges.size()==0){
             delete vertexIt->second;
             vertexIt=graph->vertices.erase(vertexIt);
         }
-        ///TU SKONCZ
+        ///TU SKONCZ */
 
     }
+
 }
 
 
@@ -52,6 +53,25 @@ Graph* FilterSet::processAll(Graph* graph, int returnCopy){
 
     Graph* graphCopy = new Graph(people, mails);
     processAll(graphCopy);
+
+    //sprzatanie krawedzi
+     for(auto vertexIt = graphCopy->vertices.begin(); vertexIt!=graphCopy->vertices.end(); vertexIt++){
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            if(edgeIt->second->mails.size()==0){
+                delete edgeIt->second;
+                edgeIt=vertexIt->second->edges.erase(edgeIt);
+            }
+        }
+     }
+     //sprzatanie wierzcholkow
+     for(auto vertexIt = graphCopy->vertices.begin(); vertexIt!=graphCopy->vertices.end(); vertexIt++){
+         if(vertexIt->second->edges.size()==0 && vertexIt->second->pointingEdges.size()==0){
+            delete vertexIt->second;
+            vertexIt=graphCopy->vertices.erase(vertexIt);
+        }
+     }
+
+
     return graphCopy;
 }
 
