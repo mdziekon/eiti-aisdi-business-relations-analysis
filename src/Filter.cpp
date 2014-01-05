@@ -14,19 +14,21 @@ void Filter::process(Graph* graph){ //leci po kazdym mejlu i sprawdza warunek da
                     mailsIt=edgeIt->second->mails.erase(mailsIt);
             }
 
+            ///TU ZACZNIJ
             //krawedz nie ma mejli, wiec ja usun
             if(edgeIt->second->mails.size()==0){
                 delete edgeIt->second;
                 edgeIt=vertexIt->second->edges.erase(edgeIt);
             }
-
+            ///TU SKONCZ
         }
-
+        ///TU ZACZNIJ
         //wierzcholek nie ma krawedzi ani zadne krawedzie na niego nie wskazuja
         if(vertexIt->second->edges.size()==0 && vertexIt->second->pointingEdges.size()==0){
             delete vertexIt->second;
             vertexIt=graph->vertices.erase(vertexIt);
         }
+        ///TU SKONCZ
 
     }
 }
