@@ -10,29 +10,29 @@ class Filter;
 
 class FilterSet{
     private:
-    std::list<Filter> filters;
+    std::list<Filter*> filters;
 
 public:
-    void addNewFilter(Filter& filter);
+    void addNewFilter(Filter* filter);
     void clearAllFilters();
-    void clearFilter(Filter& filter);
+    void clearFilter(Filter* filter);
 
-    void processAll(Graph& graph);
-    Graph& processAll(Graph& graph, int returnCopy);
+    void processAll(Graph* graph);
+    Graph* processAll(Graph* graph, int returnCopy);
 
 };
 class Filter{
 private:
     friend class FilterSet;
-    void process(Graph& graph);
-    virtual bool remove(Containers::Mail& mail);
+    void process(Graph* graph);
+    virtual bool remove(Containers::Mail* mail)=0;
 };
 
 
 //zostawia tylko te mejle, ktore zawieraja w temacie okreslony podciag
 class TopicSubstringFilter:public Filter{
     std::string substring;
-    bool remove(Containers::Mail& mail);
+    bool remove(Containers::Mail* mail);
 public:
     TopicSubstringFilter(std::string substring);
     void setSubstring(std::string substring);
@@ -42,7 +42,7 @@ public:
 class DateFilter:public Filter{
     bool before;
     Containers::Date date;
-    bool remove(Containers::Mail& mail);
+    bool remove(Containers::Mail* mail);
 public:
     DateFilter(Containers::Date date, bool before); //jesli before==true to ma odrzucic wszystkie mejle PO dacie
                                                     //w przeciwnym wypadku odrzuca wszystkie mejle PRZED data
@@ -52,13 +52,13 @@ public:
 
 class PeopleFilter:public Filter{
     bool removeMailsFromSender;
-    std::set<Containers::Person*> people;
-    bool remove(Containers::Mail& mail);
+    std::set<Containers::Person*>* people;
+    bool remove(Containers::Mail* mail);
 public:
     //jesli removeMailsFromSender==true to usunie mejl, ktorego nadawca jest wylistowany w secie
     //w przeciwnym wypadku usunie kazdy mejl odebrany przez wylisowane osoby
-    PeopleFilter(std::set<Containers::Person*> people, bool removeMailsFromSender);
+    PeopleFilter(std::set<Containers::Person*>* people, bool removeMailsFromSender);
 
-    void setPeople(std::set<Containers::Person*> people);
+    void setPeople(std::set<Containers::Person*>* people);
 };
 #endif // FILTER_H_INCLUDED

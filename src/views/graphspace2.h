@@ -79,6 +79,8 @@ class VisibleVertex : public QGraphicsItem
 public:
     bool ishover;
     bool ispressed;
+    bool isgrey;
+    bool isspecial;
     VisibleVertex();
     VisibleVertex(float a, float b, Vertex * vertex, Containers::Person * person);
 
@@ -106,9 +108,10 @@ class VisibleEdge : public QGraphicsLineItem
 public:
     bool ishover;
     bool ispressed;
+    bool isgrey;
+    bool isspecial;
+
     VisibleEdge();
-//    VisibleEdge(float a, float b, float c, float d, Edge * edge,
-//                std::pair <Vertex*,const Vertex*> verticles);
     VisibleEdge(
         double x1,
         double y1,

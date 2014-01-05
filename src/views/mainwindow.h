@@ -88,7 +88,7 @@ private:
     GraphSpace2* filteredGraphSpace;
     FilterSet* filterset;
 
-    std::set<Containers::Person*> peopleSet; // do filtrow
+    std::set<Containers::Person*>* peopleSet; // do filtrow
 
     //od pierwszej karty Zestawienie
     void UzupelnijZestawienie(Graph* graphObj);
@@ -101,7 +101,7 @@ private:
     QTreeWidget * treeWidget_MailList;
 
     //od czwartej karty Graf2
-    void UzupelnijGraf2(Graph* graphObj);
+    void UzupelnijGraf2(Graph *graphObj, GraphSpace2* spacetoconnect);
     GraphSpace2 * graphspace2;
 
     //od karty Filtry
@@ -115,5 +115,14 @@ class QListWidgetItemFilter : QListWidgetItem
 {
 
 };
+
+class MyQTreeWidgetItem : public QTreeWidgetItem
+{
+public:
+    Containers::Mail * myMail;
+    MyQTreeWidgetItem(QTreeWidget *parent, Containers::Mail *mail);
+};
+
+bool IsMailInList(Containers::Mail* mail, std::list<Containers::Mail*>* list);
 
 #endif // MAINWINDOW_H

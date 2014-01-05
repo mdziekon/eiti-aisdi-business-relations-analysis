@@ -150,7 +150,7 @@ VisibleVertex::VisibleVertex(float a, float b, Vertex * vertex, Containers::Pers
 {
     setPos(QPointF(a,b));
     ishover = false;
-    ispressed = false;
+    ispressed = false; isgrey = false; isspecial = false;
     setAcceptHoverEvents(true);
 }
 
@@ -164,6 +164,10 @@ void VisibleVertex::paint(QPainter *painter, const QStyleOptionGraphicsItem *, Q
     QRectF rec = boundingRect();
     QBrush brush1(Qt::blue);
     QString name = QString::fromStdString(graphPerson->getName());
+    if(isgrey)
+        brush1.setColor(Qt::gray);
+    if(isspecial)
+        brush1.setColor(Qt::red);
     painter->setBrush(brush1);
     painter->drawEllipse(rec);
     painter->drawText(QRectF(-5,-35,50,50), Qt::AlignCenter, name);
@@ -196,14 +200,6 @@ void VisibleVertex::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 }
 ////////////////////////////////////////
 
-//VisibleEdge::VisibleEdge(float a, float b, float c, float d,
-//                         Edge * edge, std::pair <Vertex*,const Vertex*> verticles)
-//    : x1(a+15),y1(b+15),x2(c+15),y2(d+15),graphEdge1(edge),verticles(verticles)
-//{
-//    setAcceptHoverEvents(true);
-//    ishover = false;
-//    ispressed = false;
-//}
 
 VisibleEdge::VisibleEdge(
   double x1,
@@ -215,7 +211,7 @@ VisibleEdge::VisibleEdge(
 {
     setAcceptHoverEvents(true);
     ishover = false;
-    ispressed = false;
+    ispressed = false; isgrey = false; isspecial = false;
     graphEdge1 = NULL;
     graphEdge2 = NULL;
 }
@@ -240,6 +236,10 @@ void VisibleEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     //drawing edge:
     QBrush brush2(Qt::black);
     painter->setBrush(brush2);
+    if(isgrey)
+        brush2.setColor(Qt::gray);
+    if(isspecial)
+        brush2.setColor(Qt::red);
     QPen pen2;
     pen2.setWidth(2);
     painter->setPen(pen2);
