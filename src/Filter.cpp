@@ -182,10 +182,15 @@ void PeopleFilter::setPerson(Containers::Person* person){
 void PeopleFilter::process(Graph* graph){
     if(removeMailsFromSender==true){
         for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
-            if(vertexIt->first==person){
-                //osoba wystepuje w secie, wiec usun jej wierzcholek
-                delete vertexIt->second;
-                vertexIt=graph->vertices.erase(vertexIt);
+            if(vertexIt->first==person){ //osoba wystepuje w secie, wiec usun jej edge
+                for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+                    delete edgeIt->second;
+                }
+                vertexIt->second->edges.clear();
+                if(vertexIt->second->pointingEdges.size()==0 ){ //wierzcholek pusty
+                    delete vertexIt->second;
+                    vertexIt=graph->vertices.erase(vertexIt);
+                }
             }
         }
     }
