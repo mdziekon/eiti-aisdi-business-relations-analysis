@@ -73,12 +73,17 @@ void FilterSet::processAll(Graph* graph){
 }
 
 Graph* FilterSet::processAll(Graph* graph, int returnCopy){
+    std::cout<<"liczba mejli przed filtrem i skopiowaniem: "<<graph->getMailsNumber()<<std::endl;
+    std::cout<<"liczba wierzcholkow przed filtrem i skopiowaniem: "<<graph->vertices.size()<<std::endl;
     std::list<Containers::Mail*> mails=graph->getMails();
     std::list<Containers::Person*> people = graph->getPeople();
 
     Graph* graphCopy = new Graph(people, mails);
+    std::cout<<"liczba mejli przed filtrem i po skopiowaniu: "<<graphCopy->getMailsNumber()<<std::endl;
+    std::cout<<"liczba wierzcholkow przed filtrem i po skopiowaniu "<<graphCopy->vertices.size()<<std::endl;
     processAll(graphCopy);
-
+    std::cout<<"liczba mejli skopiowanego grafu po filtrach: "<<graphCopy->getMailsNumber()<<std::endl;
+    std::cout<<"liczba wierzcholkow skopiowanego grafu po filtrach"<<graphCopy->vertices.size()<<std::endl;
     return graphCopy;
 }
 
