@@ -22,10 +22,9 @@ class Vertex{
 
 class Edge{
 public:
-    Edge(Vertex* pointedVertex, Vertex* owner);
+    Edge(Vertex* pointedVertex);
     ~Edge();
     Vertex* pointedVertex;//to, na co wskazuje ta krawedz ( tzn. odbiorca mejli, ktore ta krawedz zawiera)
-    Vertex* owner;
     std::list<Containers::Mail> mails;    //wszystkie mejle ktore zawiera ta krawedz
     float x = 0;
     float y = 0;
