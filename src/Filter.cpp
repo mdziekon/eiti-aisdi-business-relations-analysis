@@ -94,13 +94,17 @@ void TopicSubstringFilter::process(Graph* graph){
                      mailsIt=edgeIt->second->mails.erase(mailsIt);
             }
             if(edgeIt->second->mails.size()==0){
+                std::cout<<"probuje usunac edge...";
                 delete edgeIt->second;
                 edgeIt=vertexIt->second->edges.erase(edgeIt);
+                std::cout<<"ok"<<std::endl;
             }
         }
         if((vertexIt->second->pointingEdges.size()==0) && (vertexIt->second->edges.size()==0) ){ //wierzcholek pusty
+            std::cout<<"probuje usunac vertex...";
             delete vertexIt->second;
             vertexIt=graph->vertices.erase(vertexIt);
+            std::cout<<"ok"<<std::endl;
         }
 
     }
@@ -208,7 +212,16 @@ void PeopleFilter::process(Graph* graph){
     }
 
     else{
-
+        for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
+            for(auto edgeIt=vertexIt->second->pointingEdges.begin(); edgeIt!=vertexIt->second->pointingEdges.end(); edgeIt++){
+                delete *edgeIt;
+            }
+            if(vertexIt->second->pointingEdges.size()==0 && vertexIt->second->edges.size()==0){ //wierzcholek pusty
+                delete vertexIt->second;
+                vertexIt=graph->vertices.erase(vertexIt);
+            }
+        }
+        /*
         for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
             for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
                 for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
@@ -232,7 +245,7 @@ void PeopleFilter::process(Graph* graph){
                     vertexIt=graph->vertices.erase(vertexIt);
             }
 
-        }
+        }*/
 
     }
 

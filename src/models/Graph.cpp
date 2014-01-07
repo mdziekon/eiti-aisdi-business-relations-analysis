@@ -43,7 +43,7 @@ void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
 			Vertex* receiverVertex=vertices.find(recIt.first)->second;
 			//jesli nie istnieje edge dla wierzcholka odbiorcy
 			if(senderVertex->edges.count(receiverVertex)==0){
-				Edge* newEdge = new Edge(receiverVertex);
+				Edge* newEdge = new Edge(receiverVertex, senderVertex);
 				senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
 			}
             //dodaj do edga wskaznik na mejla
@@ -58,7 +58,7 @@ void Graph::addToEdges(std::list<Containers::Mail*>& mails){
 		for(auto recIt: (*mailsit)->receivers){
 			Vertex* receiverVertex=vertices.find(recIt.first)->second;
 			if(senderVertex->edges.count(receiverVertex)==0){
-				Edge* newEdge = new Edge(receiverVertex);
+				Edge* newEdge = new Edge(receiverVertex, senderVertex);
 				senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
 			}
             auto it = senderVertex->edges.find(receiverVertex);
@@ -144,9 +144,10 @@ unsigned int Graph::getForwardedMailsNum(){
 
 
 
-Edge::Edge(Vertex* pointedVertex){
+Edge::Edge(Vertex* pointedVertex, Vertex* owner){
     std::cout<<"tworze edga...";
     this->pointedVertex=pointedVertex;
+    this->owner=owner;
     pointedVertex->pointingEdges.push_back(this);
     std::cout<<"sukces"<<std::endl;
 }
@@ -154,6 +155,7 @@ Edge::Edge(Vertex* pointedVertex){
 Edge::~Edge(){
     std::cout<<"usuwam edga...";
     pointedVertex->pointingEdges.remove(this);
+    owner->edges.erase(pointedVertex);
     std::cout<<"sukces"<<std::endl;
 
 
