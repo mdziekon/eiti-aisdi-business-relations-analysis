@@ -2,6 +2,7 @@
 #include "models/Graph.h"
 #include <string>
 #include <iostream>
+#include <vector>
 
 
 /*
@@ -51,25 +52,6 @@ void FilterSet::clearFilter(Filter* filter){
 void FilterSet::processAll(Graph* graph){
     for (std::list<Filter*>::iterator it=filters.begin(); it!=filters.end(); ++it)
         (*it)->process(graph);
-
-    /*
-    //sprzatanie krawedzi
-     for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
-        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
-            if(edgeIt->second->mails.size()==0){
-                delete edgeIt->second;
-                edgeIt=vertexIt->second->edges.erase(edgeIt);
-            }
-        }
-     }
-     //sprzatanie wierzcholkow
-     for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
-         if(vertexIt->second->edges.size()==0 && vertexIt->second->pointingEdges.size()==0){
-            delete vertexIt->second;
-            vertexIt=graph->vertices.erase(vertexIt);
-        }
-     }
-     */
 }
 
 Graph* FilterSet::processAll(Graph* graph, int returnCopy){
@@ -90,11 +72,11 @@ Graph* FilterSet::processAll(Graph* graph, int returnCopy){
 
 
 bool TopicSubstringFilter::remove(Containers::Mail* mail){
-    std::size_t found = mail->content.find(substring);
+   /* std::size_t found = mail->content.find(substring);
     //nie znaleziono stringa, wiec usun
     if(found==std::string::npos)
         return true;
-    return false;
+    return false;*/
 }
 TopicSubstringFilter::TopicSubstringFilter(std::string substring){
     this->substring=substring;
@@ -103,6 +85,26 @@ void TopicSubstringFilter::setSubstring(std::string substring){
     this->substring=substring;
 }
 void TopicSubstringFilter::process(Graph* graph){
+    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
+                std::size_t found = (*mailsIt).content.find(substring);
+                //nie znaleziono stringa, wiec usun
+                if(found==std::string::npos)
+                     mailsIt=edgeIt->second->mails.erase(mailsIt);
+            }
+            if(edgeIt->second->mails.size()==0){
+                delete edgeIt->second;
+                edgeIt=vertexIt->second->edges.erase(edgeIt);
+            }
+        }
+        if((vertexIt->second->pointingEdges.size()==0) && (vertexIt->second->edges.size()==0) ){ //wierzcholek pusty
+            delete vertexIt->second;
+            vertexIt=graph->vertices.erase(vertexIt);
+        }
+
+    }
+
 }
 
 
@@ -127,24 +129,34 @@ DateFilter::DateFilter(Containers::Date date, bool before){
 void DateFilter::setDate(Containers::Date newDate){
     this->date=date;
 }
+
 void DateFilter::process(Graph* graph){
     for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
         for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
             for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
 
                 if(before==true){
-                    if((*mailsIt).sendDate.getUnixTimestamp()>=date.getUnixTimestamp()){
-                        //delete
+                    if((*mailsIt).sendDate.getUnixTimestamp()<date.getUnixTimestamp()){
+                        mailsIt=edgeIt->second->mails.erase(mailsIt);
                     }
                 }
                 //odrzuc jesli mejl jest za wczesnie wyslany
                 else if(before==false){
-                    if((*mailsIt).sendDate.getUnixTimestamp()>=date.getUnixTimestamp()){
-                        //delete
+                    if((*mailsIt).sendDate.getUnixTimestamp()>date.getUnixTimestamp()){
+                        mailsIt=edgeIt->second->mails.erase(mailsIt);
                     }
                 }
             }
+            if(edgeIt->second->mails.size()==0){
+                delete edgeIt->second;
+                edgeIt=vertexIt->second->edges.erase(edgeIt);
+            }
         }
+        if((vertexIt->second->pointingEdges.size()==0) && (vertexIt->second->edges.size()==0) ){ //wierzcholek pusty
+            delete vertexIt->second;
+            vertexIt=graph->vertices.erase(vertexIt);
+        }
+
     }
 }
 
@@ -196,18 +208,32 @@ void PeopleFilter::process(Graph* graph){
     }
 
     else{
-        //TODO
 
-        /*for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
+        for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
             for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
                 for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
-                    for(auto recIt: mail->receivers){
-                        if(people->count(recIt.first)!=0)
+                    for(auto recIt=(*mailsIt).receivers.begin(); recIt!=(*mailsIt).receivers.end(); recIt++){
+                        //wektor par
+                        if((*recIt).first==person){ //jesli jeden z odbiorcow tego mejla to wymieniona osoba, usun mejla
+                            mailsIt=edgeIt->second->mails.erase(mailsIt);
+                            break;
+                        }
+
                     }
                 }
+
+                if(edgeIt->second->mails.size()==0){
+                    delete edgeIt->second;
+                    edgeIt=vertexIt->second->edges.erase(edgeIt);
+                }
             }
+            if((vertexIt->second->pointingEdges.size()==0) && (vertexIt->second->edges.size()==0) ){ //wierzcholek pusty
+                    delete vertexIt->second;
+                    vertexIt=graph->vertices.erase(vertexIt);
+            }
+
         }
-        */
+
     }
 
 
