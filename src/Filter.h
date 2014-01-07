@@ -21,10 +21,11 @@ public:
     Graph* processAll(Graph* graph, int returnCopy);
 
 };
+
 class Filter{
 private:
     friend class FilterSet;
-    void process(Graph* graph);
+    virtual void process(Graph* graph)=0;
     virtual bool remove(Containers::Mail* mail)=0;
 };
 
@@ -33,6 +34,7 @@ private:
 class TopicSubstringFilter:public Filter{
     std::string substring;
     bool remove(Containers::Mail* mail);
+    void process(Graph* graph);
 public:
     TopicSubstringFilter(std::string substring);
     void setSubstring(std::string substring);
@@ -43,6 +45,7 @@ class DateFilter:public Filter{
     bool before;
     Containers::Date date;
     bool remove(Containers::Mail* mail);
+    void process(Graph* graph);
 public:
     DateFilter(Containers::Date date, bool before); //jesli before==true to ma odrzucic wszystkie mejle PO dacie
                                                     //w przeciwnym wypadku odrzuca wszystkie mejle PRZED data
@@ -52,13 +55,14 @@ public:
 
 class PeopleFilter:public Filter{
     bool removeMailsFromSender;
-    std::set<Containers::Person*>* people;
+    Containers::Person* person;
     bool remove(Containers::Mail* mail);
+    void process(Graph* graph);
 public:
     //jesli removeMailsFromSender==true to usunie mejl, ktorego nadawca jest wylistowany w secie
     //w przeciwnym wypadku usunie kazdy mejl odebrany przez wylisowane osoby
-    PeopleFilter(std::set<Containers::Person*>* people, bool removeMailsFromSender);
+    PeopleFilter(Containers::Person* person, bool removeMailsFromSender);
 
-    void setPeople(std::set<Containers::Person*>* people);
+    void setPerson(Containers::Person* person);
 };
 #endif // FILTER_H_INCLUDED

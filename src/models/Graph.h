@@ -38,6 +38,7 @@ public:
 
 
 class Graph{
+    friend class Filter;
 public: //do testow
     std::unordered_map<Containers::Person*, Vertex*> vertices;
 
@@ -54,7 +55,6 @@ public: //do testow
     std::list<Containers::Person*> getPeople();
     std::list<Containers::Mail*> getMails();
 private:
-    unsigned int mailsNum;
     unsigned int biggestEdge;
     //to przyjmuje wektor UNIKALNYCH osob, dodaje wierzcholki odpowiadajce tym osobom
     void addPeople(std::unordered_map<std::string, Containers::Person*>& people);

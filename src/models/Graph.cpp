@@ -2,14 +2,12 @@
 #include <iostream>
 
 Graph::Graph(std::unordered_map<std::string, Containers::Person*>& people, std::vector<Containers::Mail*>& mails){
-    mailsNum=0;
     biggestEdge=0;
 
     addPeople(people);
     addToEdges(mails);
 }
 Graph::Graph(std::list<Containers::Person*>& people, std::list<Containers::Mail*>& mails){
-    mailsNum=0;
     biggestEdge=0;
 
     addPeople(people);
@@ -35,8 +33,6 @@ void Graph::addPeople(std::list<Containers::Person*>& people){
 }
 
 void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
-    mailsNum+=mails.size();
-
     //dla kazdego mejla znajdz wierzcholek nadawacy, w mapie krawedzi wierzcholka nadawcy
     //znajdz krawedz odpowiadajaca wierzcholkowi i wstaw tam nowa krawedz, jesli wczesniej nie istniala zadna
     for(unsigned int i=0; i<mails.size(); i++){
@@ -57,7 +53,6 @@ void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
     }
 }
 void Graph::addToEdges(std::list<Containers::Mail*>& mails){
-    mailsNum+=mails.size();
     for(std::list<Containers::Mail*>::iterator mailsit=mails.begin(); mailsit != mails.end(); ++mailsit){
         Vertex* senderVertex=vertices.find((*mailsit)->sender)->second;
 		for(auto recIt: (*mailsit)->receivers){
@@ -97,8 +92,16 @@ std::list<Containers::Mail*> Graph::getMails(){
 
 
 unsigned int Graph::getMailsNumber(){
-    return this->mailsNum;
+    unsigned int mailsNum=0;
+
+    for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            mailsNum+=edgeIt->second->mails.size();
+        }
+    }
+    return mailsNum;
 }
+
 unsigned int Graph::getBiggestEdgeSize(){
     for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
         for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
@@ -142,11 +145,18 @@ unsigned int Graph::getForwardedMailsNum(){
 
 
 Edge::Edge(Vertex* pointedVertex){
+    std::cout<<"tworze edga...";
     this->pointedVertex=pointedVertex;
+    pointedVertex->pointingEdges.push_back(this);
+    std::cout<<"sukces"<<std::endl;
 }
 
 Edge::~Edge(){
+    std::cout<<"usuwam edga...";
     pointedVertex->pointingEdges.remove(this);
+    std::cout<<"sukces"<<std::endl;
+
+
 }
 
 void Edge::addMail(Containers::Mail& mail){
@@ -158,14 +168,12 @@ void Edge::addMail(Containers::Mail& mail){
 
 
 
-
-
-
-
 Vertex::~Vertex(){
+    std::cout<<"usuwam vertexa...";
     std::unordered_map<Vertex*,Edge*>::iterator it;
     for (it=edges.begin(); it!=edges.end(); ++it)
         delete it->second;
+    std::cout<<"sukces"<<std::endl;
 }
  void Vertex::setLocation(float x, float y){
     this->x = x;
