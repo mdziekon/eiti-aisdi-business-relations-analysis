@@ -66,6 +66,20 @@ Graph* FilterSet::processAll(Graph* graph, int returnCopy){
     processAll(graphCopy);
     std::cout<<"liczba mejli skopiowanego grafu po filtrach: "<<graphCopy->getMailsNumber()<<std::endl;
     std::cout<<"liczba wierzcholkow skopiowanego grafu po filtrach"<<graphCopy->vertices.size()<<std::endl;
+    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            if(edgeIt->second->mails.size()==0){
+
+                //delete edgeIt->second;
+                edgeIt=vertexIt->second->edges.erase(edgeIt);
+            }
+        }
+    }
+    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
+        if((vertexIt->second->edges.size()==0) && (vertexIt->second->pointingEdges.size()==0) ){
+            vertexIt=graph->vertices.erase(vertexIt);
+        }
+    }
     return graphCopy;
 }
 
@@ -147,18 +161,13 @@ void DateFilter::process(Graph* graph){
                     }
                 }
             }
-            if(edgeIt->second->mails.size()==0){
-                delete edgeIt->second;
-                edgeIt=vertexIt->second->edges.erase(edgeIt);
-            }
-        }
-        if((vertexIt->second->pointingEdges.size()==0) && (vertexIt->second->edges.size()==0) ){ //wierzcholek pusty
-            delete vertexIt->second;
-            vertexIt=graph->vertices.erase(vertexIt);
+
         }
 
     }
+
 }
+
 
 
 
@@ -211,28 +220,29 @@ void PeopleFilter::process(Graph* graph){
 
         for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
             for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
-                for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
-                    for(auto recIt=(*mailsIt).receivers.begin(); recIt!=(*mailsIt).receivers.end(); recIt++){
-                        //wektor par
-                        if((*recIt).first==person){ //jesli jeden z odbiorcow tego mejla to wymieniona osoba, usun mejla
-                            mailsIt=edgeIt->second->mails.erase(mailsIt);
-                            break;
-                        }
-
-                    }
-                }
-
-                if(edgeIt->second->mails.size()==0){
+                if(edgeIt->second->pointedVertex->owner==person){   //jesli wlasciciel wierzcholka wskazywanego przez edga to osba do usuniecia
                     delete edgeIt->second;
                     edgeIt=vertexIt->second->edges.erase(edgeIt);
                 }
             }
-            if((vertexIt->second->pointingEdges.size()==0) && (vertexIt->second->edges.size()==0) ){ //wierzcholek pusty
-                    delete vertexIt->second;
-                    vertexIt=graph->vertices.erase(vertexIt);
-            }
-
         }
+        if(graph->vertices.find(person)->second->edges.size()==0){  //wierzcholek nalezacy do odbiorcy nie wysyla juz mejli
+            delete graph->vertices.find(person)->second;
+            graph->vertices.erase(person);
+        }
+        /*
+        auto toEraseItV =  graph->vertices.find(person); //wskazuje na wierzcholek
+
+        auto vertexIt = graph->vertices.begin();
+        for(vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
+            auto toEraseItE = vertexIt->second->edges.find(toEraseItV->second); //wskazuje na krwaedz
+            if(toEraseItE!=vertexIt->second->edges.end()){
+                delete toEraseItE->second;  //usun krawedz
+                vertexIt->second->edges.erase(toEraseItE);//i referencje
+            }
+        }
+
+        */
 
     }
 

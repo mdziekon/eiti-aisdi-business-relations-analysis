@@ -10,10 +10,12 @@ class Edge;
 
 class Vertex{
     public:
+    Vertex(Containers::Person* owner);
     ~Vertex();
     friend class Graph;
     std::unordered_map<Vertex*, Edge*> edges;
     std::list<Edge*> pointingEdges;
+    Containers::Person* owner;
     float x, y;
     void setLocation(float x, float y);
 
@@ -25,6 +27,7 @@ public:
     Edge(Vertex* pointedVertex);
     ~Edge();
     Vertex* pointedVertex;//to, na co wskazuje ta krawedz ( tzn. odbiorca mejli, ktore ta krawedz zawiera)
+    Containers::Person* owner;
     std::list<Containers::Mail> mails;    //wszystkie mejle ktore zawiera ta krawedz
     float x = 0;
     float y = 0;

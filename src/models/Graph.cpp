@@ -23,12 +23,12 @@ Graph::~Graph(){
 
 void Graph::addPeople(std::unordered_map<std::string, Containers::Person*>& people){
 	for(auto it = people.begin(); it != people.end(); ++it){
-		vertices.insert(std::pair<Containers::Person*,Vertex*> ((*it).second, new Vertex));
+		vertices.insert(std::pair<Containers::Person*,Vertex*> ((*it).second, new Vertex((*it).second)));
 	}
 }
 void Graph::addPeople(std::list<Containers::Person*>& people){
 	for(auto it = people.begin(); it != people.end(); ++it){
-		vertices.insert(std::pair<Containers::Person*,Vertex*> ((*it), new Vertex));
+		vertices.insert(std::pair<Containers::Person*,Vertex*> ((*it), new Vertex(*it)));
 	}
 }
 
@@ -147,6 +147,7 @@ unsigned int Graph::getForwardedMailsNum(){
 Edge::Edge(Vertex* pointedVertex){
     std::cout<<"tworze edga...";
     this->pointedVertex=pointedVertex;
+    this->owner=owner;
     pointedVertex->pointingEdges.push_back(this);
     std::cout<<"sukces"<<std::endl;
 }
@@ -167,6 +168,9 @@ void Edge::addMail(Containers::Mail& mail){
 
 
 
+Vertex::Vertex(Containers::Person* owner){
+    this->owner=owner;
+}
 
 Vertex::~Vertex(){
     std::cout<<"usuwam vertexa...";
