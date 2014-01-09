@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 
+bool Filter::remove(Containers::Mail& mail){return true;}   //nieuzyteczne, ale wymagane przez standard -,-
 
 
 void FilterSet::addNewFilter(Filter* filter){
@@ -111,8 +112,22 @@ void DateFilter::process(Graph* graph){
 
         }
 
+
+bool PeopleFilter::remove(Containers::Mail& mail){
+    //usun jesli nadawca jest na liscie
+    if(removeMailsFromSender==true){
+        if(people.count(mail.sender)!=0)
+            return true;
+    }
+    //usun jesli odbiorca jest na liscie
+    else if(removeMailsFromSender==false){
+        for(auto recIt: mail.receivers){
+            if(people.count(recIt.first)!=0)
+                return true;
+            }
     }
 
+    return false;
 }
 
 

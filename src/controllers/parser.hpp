@@ -8,6 +8,7 @@
 
 class FileParser 
 {
+    friend class MainWindow;
 private:
 	/* statystyka */
 	int howManyMails;
