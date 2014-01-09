@@ -7,6 +7,7 @@
 #include "Containers.hpp"
 
 class Edge;
+class Graph;
 
 class Vertex{
     public:
@@ -18,6 +19,7 @@ class Vertex{
     Containers::Person* owner;
     float x, y;
     void setLocation(float x, float y);
+    void suicide(Graph* graph);
 
 };
 
@@ -35,6 +37,9 @@ public:
     void setLocation(float a, float b);
     unsigned int getMailsNumber();
     void addMail(Containers::Mail& mail);
+    void suicide(Vertex* startingVertex);
+
+
 
 
 };

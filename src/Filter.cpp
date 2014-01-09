@@ -5,39 +5,6 @@
 #include <vector>
 
 
-/*
-void Filter::process(Graph* graph){ //leci po kazdym mejlu i sprawdza warunek danego filtru
-
-    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
-        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
-            for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
-                if(this->remove(&(*mailsIt))){  //jesli spelniony dla danego filtru zostal warunek usuniecia
-                    std::cout<<"usuwam mejla o tresci:"<<(*mailsIt).content<<std::endl;
-                    mailsIt=edgeIt->second->mails.erase(mailsIt);
-                    graph->mailsNum--;
-                }
-            }
-
-            ///TU ZACZNIJ
-            //krawedz nie ma mejli, wiec ja usun
-            if(edgeIt->second->mails.size()==0){
-                delete edgeIt->second;
-                edgeIt=vertexIt->second->edges.erase(edgeIt);
-            }
-            ///TU SKONCZ
-        //}
-        ///TU ZACZNIJ
-        //wierzcholek nie ma krawedzi ani zadne krawedzie na niego nie wskazuja
-        if(vertexIt->second->edges.size()==0 && vertexIt->second->pointingEdges.size()==0){
-            delete vertexIt->second;
-            vertexIt=graph->vertices.erase(vertexIt);
-        }
-        ///TU SKONCZ
-
-    }
-
-}
-*/
 
 void FilterSet::addNewFilter(Filter* filter){
     filters.push_back(filter);
@@ -52,45 +19,32 @@ void FilterSet::clearFilter(Filter* filter){
 void FilterSet::processAll(Graph* graph){
     for (std::list<Filter*>::iterator it=filters.begin(); it!=filters.end(); ++it)
         (*it)->process(graph);
+
+    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
+        for(auto edgeIt = vertexIt->second->edges.begin();edgeIt != vertexIt->second->edges.end(); edgeIt++){
+            edgeIt->second->suicide(vertexIt->second);
+        }
+    }
+
+    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
+        vertexIt->second->suicide(graph);
+    }
 }
 
 Graph* FilterSet::processAll(Graph* graph, int returnCopy){
-    std::cout<<"liczba mejli przed filtrem i skopiowaniem: "<<graph->getMailsNumber()<<std::endl;
-    std::cout<<"liczba wierzcholkow przed filtrem i skopiowaniem: "<<graph->vertices.size()<<std::endl;
     std::list<Containers::Mail*> mails=graph->getMails();
     std::list<Containers::Person*> people = graph->getPeople();
 
     Graph* graphCopy = new Graph(people, mails);
-    std::cout<<"liczba mejli przed filtrem i po skopiowaniu: "<<graphCopy->getMailsNumber()<<std::endl;
-    std::cout<<"liczba wierzcholkow przed filtrem i po skopiowaniu "<<graphCopy->vertices.size()<<std::endl;
     processAll(graphCopy);
-    std::cout<<"liczba mejli skopiowanego grafu po filtrach: "<<graphCopy->getMailsNumber()<<std::endl;
-    std::cout<<"liczba wierzcholkow skopiowanego grafu po filtrach"<<graphCopy->vertices.size()<<std::endl;
-    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
-        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
-            if(edgeIt->second->mails.size()==0){
 
-                //delete edgeIt->second;
-                edgeIt=vertexIt->second->edges.erase(edgeIt);
-            }
-        }
-    }
-    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
-        if((vertexIt->second->edges.size()==0) && (vertexIt->second->pointingEdges.size()==0) ){
-            vertexIt=graph->vertices.erase(vertexIt);
-        }
-    }
     return graphCopy;
 }
 
 
 
 bool TopicSubstringFilter::remove(Containers::Mail* mail){
-   /* std::size_t found = mail->content.find(substring);
-    //nie znaleziono stringa, wiec usun
-    if(found==std::string::npos)
-        return true;
-    return false;*/
+
 }
 TopicSubstringFilter::TopicSubstringFilter(std::string substring){
     this->substring=substring;
@@ -104,19 +58,12 @@ void TopicSubstringFilter::process(Graph* graph){
             for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
                 std::size_t found = (*mailsIt).content.find(substring);
                 //nie znaleziono stringa, wiec usun
-                if(found==std::string::npos)
+                if(found==std::string::npos){
                      mailsIt=edgeIt->second->mails.erase(mailsIt);
-            }
-            if(edgeIt->second->mails.size()==0){
-                delete edgeIt->second;
-                edgeIt=vertexIt->second->edges.erase(edgeIt);
+                     mailsIt=edgeIt->second->mails.begin();
+                }
             }
         }
-        if((vertexIt->second->pointingEdges.size()==0) && (vertexIt->second->edges.size()==0) ){ //wierzcholek pusty
-            delete vertexIt->second;
-            vertexIt=graph->vertices.erase(vertexIt);
-        }
-
     }
 
 }
@@ -173,21 +120,7 @@ void DateFilter::process(Graph* graph){
 
 
 bool PeopleFilter::remove(Containers::Mail* mail){
-   /* //usun jesli nadawca jest na liscie
-    if(removeMailsFromSender==true){
-        if(people->count(mail->sender)!=0)
-            return true;
-    }
-    //usun jesli odbiorca jest na liscie
-    else if(removeMailsFromSender==false){
-        for(auto recIt: mail->receivers){
-            if(people->count(recIt.first)!=0)
-                return true;
-            }
-    }
 
-    return false;
-    */
 }
 
 PeopleFilter::PeopleFilter(Containers::Person* person, bool removeMailsFromSender){
@@ -202,51 +135,16 @@ void PeopleFilter::setPerson(Containers::Person* person){
 
 void PeopleFilter::process(Graph* graph){
     if(removeMailsFromSender==true){
-        for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
-            if(vertexIt->first==person){ //osoba wystepuje w secie, wiec usun jej edge
-                for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
-                    delete edgeIt->second;
-                }
-                vertexIt->second->edges.clear();
-                if(vertexIt->second->pointingEdges.size()==0 ){ //wierzcholek pusty
-                    delete vertexIt->second;
-                    vertexIt=graph->vertices.erase(vertexIt);
-                }
-            }
+        Vertex* senderVertex=graph->vertices.find(person)->second;
+        for(auto edgeIt = senderVertex->edges.begin(); edgeIt != senderVertex->edges.end(); edgeIt++){
+            edgeIt->second->mails.clear();
         }
     }
-
     else{
-
-        for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
-            for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
-                if(edgeIt->second->pointedVertex->owner==person){   //jesli wlasciciel wierzcholka wskazywanego przez edga to osba do usuniecia
-                    delete edgeIt->second;
-                    edgeIt=vertexIt->second->edges.erase(edgeIt);
-                }
-            }
+        Vertex* receiverVertex=graph->vertices.find(person)->second;
+        for(auto edgeIt = receiverVertex->pointingEdges.begin(); edgeIt != receiverVertex->pointingEdges.end(); edgeIt++){
+            (*edgeIt)->mails.clear();
         }
-        if(graph->vertices.find(person)->second->edges.size()==0){  //wierzcholek nalezacy do odbiorcy nie wysyla juz mejli
-            delete graph->vertices.find(person)->second;
-            graph->vertices.erase(person);
-        }
-        /*
-        auto toEraseItV =  graph->vertices.find(person); //wskazuje na wierzcholek
-
-        auto vertexIt = graph->vertices.begin();
-        for(vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
-            auto toEraseItE = vertexIt->second->edges.find(toEraseItV->second); //wskazuje na krwaedz
-            if(toEraseItE!=vertexIt->second->edges.end()){
-                delete toEraseItE->second;  //usun krawedz
-                vertexIt->second->edges.erase(toEraseItE);//i referencje
-            }
-        }
-
-        */
 
     }
-
-
-
-
 }

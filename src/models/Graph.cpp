@@ -153,10 +153,6 @@ Edge::Edge(Vertex* pointedVertex){
 }
 
 Edge::~Edge(){
-    std::cout<<"usuwam edga...";
-    pointedVertex->pointingEdges.remove(this);
-    std::cout<<"sukces"<<std::endl;
-
 
 }
 
@@ -164,6 +160,15 @@ void Edge::addMail(Containers::Mail& mail){
      mails.push_back(mail);
 }
 
+void Edge::suicide(Vertex* startingVertex){
+    if(mails.size()>0)
+        return;
+
+    startingVertex->edges.erase(pointedVertex);
+    pointedVertex->pointingEdges.remove(this);
+
+    //delete this;
+}
 
 
 
@@ -174,13 +179,26 @@ Vertex::Vertex(Containers::Person* owner){
 
 Vertex::~Vertex(){
     std::cout<<"usuwam vertexa...";
-    std::unordered_map<Vertex*,Edge*>::iterator it;
-    for (it=edges.begin(); it!=edges.end(); ++it)
-        delete it->second;
     std::cout<<"sukces"<<std::endl;
 }
  void Vertex::setLocation(float x, float y){
     this->x = x;
     this->y = y;
+}
+
+void Vertex::suicide(Graph* graph){
+   /* for(auto it=edges.begin();  it!=edges.end(); it++){
+        it->second->suicide(this);
+    }
+    for(auto it=pointingEdges.begin(); it!=pointingEdges.end(); it++){
+        (*it)->suicide(graph->vertices.find((*it)->owner)->second);
+    }*/
+
+    if((edges.size()>0) || (pointingEdges.size()>0))
+        return;
+
+    graph->vertices.erase(graph->vertices.find(owner));
+
+    //delete this;
 }
 
