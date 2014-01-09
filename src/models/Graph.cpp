@@ -160,13 +160,13 @@ void Edge::addMail(Containers::Mail& mail){
      mails.push_back(mail);
 }
 
-void Edge::suicide(Vertex* startingVertex){
+bool Edge::suicide(Vertex* startingVertex){
     if(mails.size()>0)
-        return;
+        return false;
 
     startingVertex->edges.erase(pointedVertex);
     pointedVertex->pointingEdges.remove(this);
-
+	return true;
     //delete this;
 }
 
@@ -186,7 +186,7 @@ Vertex::~Vertex(){
     this->y = y;
 }
 
-void Vertex::suicide(Graph* graph){
+bool Vertex::suicide(Graph* graph){
    /* for(auto it=edges.begin();  it!=edges.end(); it++){
         it->second->suicide(this);
     }
@@ -195,10 +195,10 @@ void Vertex::suicide(Graph* graph){
     }*/
 
     if((edges.size()>0) || (pointingEdges.size()>0))
-        return;
+        return false;
 
     graph->vertices.erase(graph->vertices.find(owner));
-
+	return true;
     //delete this;
 }
 

@@ -4,8 +4,6 @@
 #include <iostream>
 #include <vector>
 
-bool Filter::remove(Containers::Mail& mail){return true;}   //nieuzyteczne, ale wymagane przez standard -,-
-
 
 void FilterSet::addNewFilter(Filter* filter){
     filters.push_back(filter);
@@ -20,15 +18,31 @@ void FilterSet::clearFilter(Filter* filter){
 void FilterSet::processAll(Graph* graph){
     for (std::list<Filter*>::iterator it=filters.begin(); it!=filters.end(); ++it)
         (*it)->process(graph);
-
-    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
-        for(auto edgeIt = vertexIt->second->edges.begin();edgeIt != vertexIt->second->edges.end(); edgeIt++){
-            edgeIt->second->suicide(vertexIt->second);
+	
+	// Cleanup edges
+    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){		
+		auto edgeIt = vertexIt->second->edges.begin();
+		while(edgeIt != vertexIt->second->edges.end())
+		{
+            if (edgeIt->second->suicide(vertexIt->second))
+			{
+				edgeIt = vertexIt->second->edges.begin();
+				continue;
+			}
+			edgeIt++;
         }
     }
-
-    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
-        vertexIt->second->suicide(graph);
+	
+	// Cleanup vertices
+	auto vertexIt = graph->vertices.begin();
+	while(vertexIt != graph->vertices.end())
+	{
+        if(vertexIt->second->suicide(graph))
+		{
+			vertexIt = graph->vertices.begin();
+			continue;
+		}
+		vertexIt++;
     }
 }
 
@@ -54,6 +68,7 @@ void TopicSubstringFilter::setSubstring(std::string substring){
     this->substring=substring;
 }
 void TopicSubstringFilter::process(Graph* graph){
+	// DO POPRAWKI
     for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
         for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
             for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
@@ -93,6 +108,7 @@ void DateFilter::setDate(Containers::Date newDate){
 }
 
 void DateFilter::process(Graph* graph){
+	// DO POPRAWKI
     for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
         for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
             for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
@@ -112,22 +128,7 @@ void DateFilter::process(Graph* graph){
 
         }
 
-
-bool PeopleFilter::remove(Containers::Mail& mail){
-    //usun jesli nadawca jest na liscie
-    if(removeMailsFromSender==true){
-        if(people.count(mail.sender)!=0)
-            return true;
-    }
-    //usun jesli odbiorca jest na liscie
-    else if(removeMailsFromSender==false){
-        for(auto recIt: mail.receivers){
-            if(people.count(recIt.first)!=0)
-                return true;
-            }
-    }
-
-    return false;
+}
 }
 
 
@@ -150,16 +151,25 @@ void PeopleFilter::setPerson(Containers::Person* person){
 
 void PeopleFilter::process(Graph* graph){
     if(removeMailsFromSender==true){
+		if (graph->vertices.find(person) == graph->vertices.end())
+		{
+			return;
+		}
         Vertex* senderVertex=graph->vertices.find(person)->second;
         for(auto edgeIt = senderVertex->edges.begin(); edgeIt != senderVertex->edges.end(); edgeIt++){
             edgeIt->second->mails.clear();
         }
     }
     else{
+		if (graph->vertices.find(person) == graph->vertices.end())
+		{
+			return;
+		}
         Vertex* receiverVertex=graph->vertices.find(person)->second;
         for(auto edgeIt = receiverVertex->pointingEdges.begin(); edgeIt != receiverVertex->pointingEdges.end(); edgeIt++){
             (*edgeIt)->mails.clear();
         }
-
     }
+	
+	
 }
