@@ -55,8 +55,11 @@ public: //do testow
     unsigned int getMailsNumber();
     unsigned int getPeopleNum();
     Containers::Person& getMostActiveSender();
+    Containers::Person& getMostActiveReceiver();
     unsigned int getForwardedMailsNum();
     unsigned int getBiggestEdgeSize();
+    std::string getMostActiveDay();
+    unsigned int getRelationsNum();
 
     std::list<Containers::Person*> getPeople();
     std::list<Containers::Mail*> getMails();

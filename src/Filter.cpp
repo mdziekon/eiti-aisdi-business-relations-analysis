@@ -1,7 +1,6 @@
 #include "Filter.h"
 #include "models/Graph.h"
 #include <string>
-#include <iostream>
 #include <vector>
 
 
@@ -19,7 +18,7 @@ void FilterSet::processAll(Graph* graph){
     for (std::list<Filter*>::iterator it=filters.begin(); it!=filters.end(); ++it)
         (*it)->process(graph);
 
-	// Cleanup edges
+	//czyszczenie pustych krawedzi
     for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
 		auto edgeIt = vertexIt->second->edges.begin();
 		while(edgeIt != vertexIt->second->edges.end())
@@ -33,7 +32,7 @@ void FilterSet::processAll(Graph* graph){
         }
     }
 
-	// Cleanup vertices
+	//czyszczenie pustych wierzcholkow
 	auto vertexIt = graph->vertices.begin();
 	while(vertexIt != graph->vertices.end())
 	{
@@ -66,15 +65,14 @@ void TopicSubstringFilter::setSubstring(std::string substring){
     this->substring=substring;
 }
 void TopicSubstringFilter::process(Graph* graph){
-	// DO POPRAWKI
     for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
         for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
             auto mailsIt=edgeIt->second->mails.begin();
             while(mailsIt!=edgeIt->second->mails.end()){
 
-                std::size_t found = (*mailsIt).headers.getHeader("Subject").find(substring);
-                //nie znaleziono stringa, wiec usun
-                if(found==std::string::npos){
+                bool exists = (*mailsIt).headers.getHeader("Subject").find(substring)!= std::string::npos;
+                //string istnieje w temacie - usun mejl
+                if(exists){
                     mailsIt=edgeIt->second->mails.erase(mailsIt);
                     mailsIt=edgeIt->second->mails.begin();
                     continue;
@@ -98,28 +96,25 @@ void DateFilter::setDate(unsigned int timeStamp){
 }
 
 void DateFilter::process(Graph* graph){
-	// DO POPRAWKI
     for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
         for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
             auto mailsIt=edgeIt->second->mails.begin();
             while(mailsIt!=edgeIt->second->mails.end()){
-
-                if(before==true){
-                    if((*mailsIt).sendDate.getUnixTimestamp()<timeStamp){
-                        mailsIt=edgeIt->second->mails.erase(mailsIt);
-                        mailsIt=edgeIt->second->mails.begin();
-                        continue;
-                    }
-                }
-                //odrzuc jesli mejl jest za wczesnie wyslany
-                else if(before==false){
+                if(before==false){
                     if((*mailsIt).sendDate.getUnixTimestamp()>timeStamp){
                         mailsIt=edgeIt->second->mails.erase(mailsIt);
                         mailsIt=edgeIt->second->mails.begin();
                         continue;
                     }
                 }
-
+                //odrzuc jesli mejl jest za wczesnie wyslany
+                else{
+                    if((*mailsIt).sendDate.getUnixTimestamp()<timeStamp){
+                        mailsIt=edgeIt->second->mails.erase(mailsIt);
+                        mailsIt=edgeIt->second->mails.begin();
+                        continue;
+                    }
+                }
                 mailsIt++;
             }
 
