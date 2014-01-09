@@ -152,9 +152,6 @@ Edge::Edge(Vertex* pointedVertex){
     std::cout<<"sukces"<<std::endl;
 }
 
-Edge::~Edge(){
-
-}
 
 void Edge::addMail(Containers::Mail& mail){
      mails.push_back(mail);
@@ -177,22 +174,13 @@ Vertex::Vertex(Containers::Person* owner){
     this->owner=owner;
 }
 
-Vertex::~Vertex(){
-    std::cout<<"usuwam vertexa...";
-    std::cout<<"sukces"<<std::endl;
-}
+
  void Vertex::setLocation(float x, float y){
     this->x = x;
     this->y = y;
 }
 
 bool Vertex::suicide(Graph* graph){
-   /* for(auto it=edges.begin();  it!=edges.end(); it++){
-        it->second->suicide(this);
-    }
-    for(auto it=pointingEdges.begin(); it!=pointingEdges.end(); it++){
-        (*it)->suicide(graph->vertices.find((*it)->owner)->second);
-    }*/
 
     if((edges.size()>0) || (pointingEdges.size()>0))
         return false;
