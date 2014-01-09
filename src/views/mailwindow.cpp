@@ -32,9 +32,9 @@ void MailWindow::SetLabels()
     }
     allreceivers.pop_back();
     ui->odbiorcaText->setText( QString::fromStdString(allreceivers) );
-   // ui->tematText->setText( QString::fromStdString(mail->));
+    //ui->tematText->setText( QString::fromStdString(mail->));
     ui->czasText->setText(QString::fromStdString(mail->sendDate.formatDate("%x")));
-    ui->trescText->setText( QString::fromStdString(mail->content) );
+    ui->textEdit->setText(QString::fromStdString(mail->content));
 }
 
 void MailWindow::closeEvent(QCloseEvent *)

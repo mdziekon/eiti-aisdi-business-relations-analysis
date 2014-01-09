@@ -64,7 +64,7 @@ void MainWindow::AddLine(Containers::Mail* mail, int lp)
     allreceivers.pop_back();
 
     item->setText(1, QString::fromStdString(allreceivers) );
-    item->setText(2,QString::fromStdString(mail->content) ); //nie wiem jak zwrocic tytul
+    //item->setText(2,QString::fromStdString(mail->content) ); //nie wiem jak zwrocic tytul
     item->setText(3,QString::fromStdString(mail->sendDate.formatDate("%x")));
     item->setText(4, QString::number(lp));
 
@@ -97,7 +97,7 @@ void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMa
 
     UzupelnijSzczegoly();
     UzupelnijGraf2(loadedGraph, originalGraphSpace);
-    FillComboBoxPersons();
+    FillComboBoxPersons(vecPerson);
 	std::cout << "END OF GRAPH BUILD" << std::endl;
 }
 void MainWindow::UzupelnijZestawienie(Graph* graphObj)
@@ -146,10 +146,11 @@ void MainWindow::AddFilterToList(QString str)
     ui->listWidget_filters->addItem(str);
 }
 
-void MainWindow::FillComboBoxPersons()
+void MainWindow::FillComboBoxPersons(std::unordered_map<std::string, Containers::Person*> people)
 {
+    ui->comboBox_people->clear();
     std::unordered_map<std::string, Containers::Person*>::iterator it;
-    for( it = vecPerson.begin() ; it != vecPerson.end() ; ++it)
+    for( it = people.begin() ; it != people.end() ; ++it)
     {
         ui->comboBox_people->addItem(QString::fromStdString(it->second->getName()));
     }
