@@ -18,9 +18,9 @@ void FilterSet::clearFilter(Filter* filter){
 void FilterSet::processAll(Graph* graph){
     for (std::list<Filter*>::iterator it=filters.begin(); it!=filters.end(); ++it)
         (*it)->process(graph);
-	
+
 	// Cleanup edges
-    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){		
+    for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
 		auto edgeIt = vertexIt->second->edges.begin();
 		while(edgeIt != vertexIt->second->edges.end())
 		{
@@ -32,7 +32,7 @@ void FilterSet::processAll(Graph* graph){
 			edgeIt++;
         }
     }
-	
+
 	// Cleanup vertices
 	auto vertexIt = graph->vertices.begin();
 	while(vertexIt != graph->vertices.end())
@@ -58,9 +58,7 @@ Graph* FilterSet::processAll(Graph* graph, int returnCopy){
 
 
 
-bool TopicSubstringFilter::remove(Containers::Mail* mail){
 
-}
 TopicSubstringFilter::TopicSubstringFilter(std::string substring){
     this->substring=substring;
 }
@@ -69,75 +67,81 @@ void TopicSubstringFilter::setSubstring(std::string substring){
 }
 void TopicSubstringFilter::process(Graph* graph){
 	// DO POPRAWKI
+	std::cout << "test\n";
     for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
         for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
-            for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
+            auto mailsIt=edgeIt->second->mails.begin();
+            while(mailsIt!=edgeIt->second->mails.end()){
+
                 std::size_t found = (*mailsIt).content.find(substring);
                 //nie znaleziono stringa, wiec usun
                 if(found==std::string::npos){
-                     mailsIt=edgeIt->second->mails.erase(mailsIt);
-                     mailsIt=edgeIt->second->mails.begin();
+                    mailsIt=edgeIt->second->mails.erase(mailsIt);
+                    mailsIt=edgeIt->second->mails.begin();
+                    continue;
                 }
+                mailsIt++;
             }
+
         }
     }
+	std::cout << "endtest\n";
 
 }
 
 
 
-bool DateFilter::remove(Containers::Mail* mail){
-    if(before==true){
-        if(mail->sendDate.getUnixTimestamp()>=date.getUnixTimestamp())
-            return true;
-    }
-    //odrzuc jesli mejl jest za wczesnie wyslany
-    else if(before==false){
-        if(mail->sendDate.getUnixTimestamp()>=date.getUnixTimestamp())
-            return true;
-    }
-
-    return false;
-}
-DateFilter::DateFilter(Containers::Date date, bool before){
+DateFilter::DateFilter(unsigned int timeStamp, bool before){
+	std::cout << "[[[TEST BEFORE: " << before << "]]]\n";
     this->before=before;
-    setDate(date);
+    setDate(timeStamp);
 }
-void DateFilter::setDate(Containers::Date newDate){
-    this->date=date;
+void DateFilter::setDate(unsigned int timeStamp){
+    this->timeStamp=timeStamp;
 }
 
 void DateFilter::process(Graph* graph){
 	// DO POPRAWKI
     for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
         for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
-            for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
-
-                if(before==true){
-                    if((*mailsIt).sendDate.getUnixTimestamp()<date.getUnixTimestamp()){
+            auto mailsIt=edgeIt->second->mails.begin();
+            while(mailsIt!=edgeIt->second->mails.end()){
+				std::cout << "test: " << (*mailsIt).sendDate.getUnixTimestamp() << endl;
+                if(before==false){
+					std::cout << "before=true\n";
+                    if((*mailsIt).sendDate.getUnixTimestamp()>timeStamp){
+						std::cout << "test passed\n";
                         mailsIt=edgeIt->second->mails.erase(mailsIt);
+                        mailsIt=edgeIt->second->mails.begin();
+                        continue;
                     }
+					std::cout << "test failed\n";
                 }
                 //odrzuc jesli mejl jest za wczesnie wyslany
-                else if(before==false){
-                    if((*mailsIt).sendDate.getUnixTimestamp()>date.getUnixTimestamp()){
+                else{
+                    std::cout << "before=true\n";
+                    if((*mailsIt).sendDate.getUnixTimestamp()<timeStamp){
+						std::cout << "test passed\n";
                         mailsIt=edgeIt->second->mails.erase(mailsIt);
+                        mailsIt=edgeIt->second->mails.begin();
+                        continue;
                     }
-                }
+					std::cout << "test failed\n";
+				}
+				std::cout << "next test\n";
+                mailsIt++;
             }
 
         }
 
+    }
 }
-}
 
 
 
 
 
-bool PeopleFilter::remove(Containers::Mail* mail){
 
-}
 
 PeopleFilter::PeopleFilter(Containers::Person* person, bool removeMailsFromSender){
     this->person=person;
@@ -151,8 +155,7 @@ void PeopleFilter::setPerson(Containers::Person* person){
 
 void PeopleFilter::process(Graph* graph){
     if(removeMailsFromSender==true){
-		if (graph->vertices.find(person) == graph->vertices.end())
-		{
+		if (graph->vertices.find(person) == graph->vertices.end()){
 			return;
 		}
         Vertex* senderVertex=graph->vertices.find(person)->second;
@@ -161,8 +164,7 @@ void PeopleFilter::process(Graph* graph){
         }
     }
     else{
-		if (graph->vertices.find(person) == graph->vertices.end())
-		{
+		if (graph->vertices.find(person) == graph->vertices.end()){
 			return;
 		}
         Vertex* receiverVertex=graph->vertices.find(person)->second;
@@ -170,6 +172,6 @@ void PeopleFilter::process(Graph* graph){
             (*edgeIt)->mails.clear();
         }
     }
-	
-	
+
+
 }

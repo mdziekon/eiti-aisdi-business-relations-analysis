@@ -12,7 +12,6 @@ class Graph;
 class Vertex{
     public:
     Vertex(Containers::Person* owner);
-    ~Vertex();
     friend class Graph;
     std::unordered_map<Vertex*, Edge*> edges;
     std::list<Edge*> pointingEdges;
@@ -27,7 +26,6 @@ class Vertex{
 class Edge{
 public:
     Edge(Vertex* pointedVertex);
-    ~Edge();
     Vertex* pointedVertex;//to, na co wskazuje ta krawedz ( tzn. odbiorca mejli, ktore ta krawedz zawiera)
     Containers::Person* owner;
     std::list<Containers::Mail> mails;    //wszystkie mejle ktore zawiera ta krawedz

@@ -215,8 +215,14 @@ void MainWindow::on_pushButton_datefilter_clicked()
     QString listtext;
     listtext += " Odfiltruj date: "; listtext += qstr;
     AddFilterToList(listtext);
+	
+	bool state=true;
+	if(ui->checkBox_isbefore->checkState() == Qt::Checked){
+		state=true;
+	}
+	else state = false;
 
-    DateFilter* datefilter = new DateFilter(date,ui->checkBox_isbefore->checkState());
+    DateFilter* datefilter = new DateFilter(10,state);
     filterset->addNewFilter(datefilter);
 }
 
