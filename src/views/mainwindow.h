@@ -88,7 +88,7 @@ private:
     GraphSpace2* filteredGraphSpace;
     FilterSet* filterset;
 
-    std::set<Containers::Person*>* peopleSet; // do filtrow
+    std::vector<Containers::Person*> peopleSet; // do filtrow
 
     //od pierwszej karty Zestawienie
     void UzupelnijZestawienie(Graph* graphObj);

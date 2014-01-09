@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
         lfw->myParent = this;
     sw = new SettingsWindow(this);
     mw = new MailWindow(this);
-    peopleSet = new std::set<Containers::Person*>;
+  
     ui->setupUi(this);
 }
 
@@ -197,8 +197,12 @@ void MainWindow::on_pushButton_peoplefilter_clicked()
     AddFilterToList(listtext);
     ui->textEdit_peoplefilterinput->clear();
 
-    PeopleFilter * peoplefilter = new PeopleFilter(peopleSet,ui->checkBox_issenders->checkState());
-    filterset->addNewFilter(peoplefilter);
+	bool state = ui->checkBox_issenders->checkState() == Qt::Unchecked ? false : true;
+	for(auto x: peopleSet){
+		PeopleFilter * peoplefilter = new PeopleFilter(x,state);
+		filterset->addNewFilter(peoplefilter);
+	}
+    
 }
 
 void MainWindow::on_pushButton_datefilter_clicked()
@@ -243,7 +247,7 @@ void MainWindow::on_comboBox_people_activated(const QString &arg1)
     tmpPerson = FindPerson(str);
     if(tmpPerson == NULL)
         return;
-    peopleSet->insert(tmpPerson);
+    peopleSet.push_back(tmpPerson);
     QString tmp = ui->textEdit_peoplefilterinput->toPlainText();
     tmp += arg1; tmp += ", ";
     ui->textEdit_peoplefilterinput->setText(tmp);
@@ -259,7 +263,7 @@ void MainWindow::on_pushButton_setfiltersaction_clicked()
      UzupelnijGraf2(originalGraph, originalGraphSpace);
     //UzupelnijGraf2(filteredGraph, filteredGraphSpace);
     filterset->clearAllFilters();
-    peopleSet->clear();
+    peopleSet.clear();
     ui->listWidget_filters->clear();
 
 
