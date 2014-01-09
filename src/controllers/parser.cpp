@@ -152,6 +152,8 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
     Person * current_person;
     std::string mail_address;
 
+	std::cout << "Emails list:\n" << input << endl;
+	
     do {
         while(*it <= ' ' || *it == ',') {
             it++;
@@ -172,20 +174,27 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
                 }
                 mail_address = std::string(begin_internal + 1, it - 1);
                 if(cache.find(mail_address) == cache.end()) {
+					std::cout << "Email: " << mail_address << endl;
                         current_person = new Person(mail_address);
-                } 
+                } else {
+					current_person = cache.find(mail_address)->second;
+				}
                 foundEmail = true;
                 // this'll iterate until the end of block
             }
             it++;
-        } while (*it != ',' && *it > ' ');
+        } while (*it != ',' && *it >= ' ');
         // no email in <>? chunk the whole block into the vector
         if(!foundEmail) {
             //nie ma zagnieżdżonego adresu
             mail_address = std::string(begin_it, it);
+			
             if(cache.find(mail_address) == cache.end()) {
+				std::cout << "Email: " << mail_address << endl;
                 current_person = new Person(mail_address);
-            }
+            } else {
+					current_person = cache.find(mail_address)->second;
+				}
         }
         result.push_back(std::pair<Person*, Receiver>(current_person, type));
         cache.insert(std::pair<std::string, Person*>(mail_address, current_person));

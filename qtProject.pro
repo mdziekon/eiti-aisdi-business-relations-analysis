@@ -35,9 +35,10 @@ SOURCES +=\
     src/views/mailsinfo.cpp \
     src/views/loadfilewindow.cpp \
     src/views/helpwindow.cpp \
+    src/views/graphspace.cpp \
     src/views/graphspace2.cpp \
     src/Filter.cpp \
-    src/controllers/parser.cpp
+    src/utils/MD5.cpp
 
 
 
