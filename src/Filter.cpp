@@ -18,6 +18,7 @@ void FilterSet::processAll(Graph* graph){
     for (std::list<Filter*>::iterator it=filters.begin(); it!=filters.end(); ++it)
         (*it)->process(graph);
 
+
 	//czyszczenie pustych krawedzi
     for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
 		auto edgeIt = vertexIt->second->edges.begin();
@@ -33,6 +34,7 @@ void FilterSet::processAll(Graph* graph){
     }
 
 	//czyszczenie pustych wierzcholkow
+
 	auto vertexIt = graph->vertices.begin();
 	while(vertexIt != graph->vertices.end())
 	{
@@ -65,11 +67,11 @@ void TopicSubstringFilter::setSubstring(std::string substring){
     this->substring=substring;
 }
 void TopicSubstringFilter::process(Graph* graph){
+
     for(auto vertexIt = graph->vertices.begin(); vertexIt!=graph->vertices.end(); vertexIt++){
         for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
             auto mailsIt=edgeIt->second->mails.begin();
             while(mailsIt!=edgeIt->second->mails.end()){
-
                 bool exists = (*mailsIt).headers.getHeader("Subject").find(substring)!= std::string::npos;
                 //string istnieje w temacie - usun mejl
                 if(exists){
@@ -110,6 +112,7 @@ void DateFilter::process(Graph* graph){
                 //odrzuc jesli mejl jest za wczesnie wyslany
                 else{
                     if((*mailsIt).sendDate.getUnixTimestamp()<timeStamp){
+
                         mailsIt=edgeIt->second->mails.erase(mailsIt);
                         mailsIt=edgeIt->second->mails.begin();
                         continue;

@@ -2,6 +2,27 @@
 <configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
+      <df name="build">
+        <in>moc_graphspace.cpp</in>
+        <in>moc_helpwindow.cpp</in>
+        <in>moc_loadfilewindow.cpp</in>
+        <in>moc_mailsinfo.cpp</in>
+        <in>moc_mailwindow.cpp</in>
+        <in>moc_mainwindow.cpp</in>
+        <in>moc_personinfo.cpp</in>
+        <in>moc_settingswindow.cpp</in>
+        <in>qrc_images.cpp</in>
+        <in>ui_helpwindow.h</in>
+        <in>ui_loadfilewindow.h</in>
+        <in>ui_mailsinfo.h</in>
+        <in>ui_mailwindow.h</in>
+        <in>ui_mainwindow.h</in>
+        <in>ui_personinfo.h</in>
+        <in>ui_settingswindow.h</in>
+      </df>
+      <df name="include">
+        <in>Filter.h</in>
+      </df>
       <df name="src">
         <df name="assets">
           <df name="images">
@@ -25,26 +46,42 @@
         <df name="tests">
           <in>Containers.cpp</in>
           <in>GraphTest.cpp</in>
+          <in>heapsort_test.cpp</in>
+          <in>quicksort_test.cpp</in>
         </df>
         <df name="utils">
           <in>Exceptions.hpp</in>
           <in>GenericException.cpp</in>
           <in>UTests.cpp</in>
           <in>UTests.hpp</in>
+          <in>heapsort.h</in>
+          <in>quicksort.h</in>
+          <in>sortComparators.h</in>
         </df>
         <df name="views">
           <in>graphspace.cpp</in>
           <in>graphspace.h</in>
+          <in>graphspace2.cpp</in>
+          <in>graphspace2.h</in>
           <in>helpwindow.cpp</in>
           <in>helpwindow.h</in>
           <in>loadfilewindow.cpp</in>
           <in>loadfilewindow.h</in>
+          <in>mailsinfo.cpp</in>
+          <in>mailsinfo.h</in>
+          <in>mailwindow.cpp</in>
+          <in>mailwindow.h</in>
           <in>mainwindow.cpp</in>
           <in>mainwindow.h</in>
+          <in>personinfo.cpp</in>
+          <in>personinfo.h</in>
           <in>settingswindow.cpp</in>
           <in>settingswindow.h</in>
         </df>
         <in>AppGUI.cpp</in>
+        <in>Filter.cpp</in>
+        <in>Filter.h</in>
+        <in>main.cpp</in>
       </df>
     </df>
   </logicalFolder>

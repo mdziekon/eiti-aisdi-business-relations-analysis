@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <ctime>
 
 using namespace std;
@@ -99,6 +100,10 @@ namespace Containers
 	public:
 		Person * const sender;
 		const vector<pair<Person*, Receiver>> receivers;
+                
+                vector<Person *> forwarded_to;
+                bool complete_cycle;    // cykl pełny
+                bool part_of_a_cycle;   // cykl składowy
 		
 		const string content;
 		const Headers headers;

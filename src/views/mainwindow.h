@@ -106,7 +106,7 @@ private:
 
     //od karty Filtry
     void AddFilterToList(QString str);
-    void FillComboBoxPersons();
+    void FillComboBoxPersons(std::unordered_map<string, Containers::Person *> vecPerson);
     Containers::Person *FindPerson(std::string str);
 
 };
