@@ -110,10 +110,11 @@ void MainWindow::UzupelnijZestawienie(Graph* graphObj)
     if(graphObj->getPeopleNum() == 0)
         return;
 
-    ui->return_IloscRelacji->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
-    ui->return_LiczbaMailiForward->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
-    ui->return_UzOdebrNajwMaili->setText( QString::fromStdString( "later" /*graphObj->getMostActiveReceiver().getName()*/ ) );
+    ui->return_IloscRelacji->setText( QString::number( graphObj->getRelationsNum() ) );
+    ui->return_LiczbaMailiForward->setText( QString::number( graphObj->getForwardedMailsNum() ) );
+    ui->return_UzOdebrNajwMaili->setText( QString::fromStdString( graphObj->getMostActiveReceiver().getName() ) );
     ui->return_UzytkownikWyslNajwMaili->setText( QString::fromStdString( graphObj->getMostActiveSender().getName() ) );
+	ui->return_DzienWyslanoNajwMaili->setText(QString::fromStdString( graphObj->getMostActiveDay() ));
 
 }
 void MainWindow::UzupelnijSzczegoly()
