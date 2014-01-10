@@ -37,6 +37,8 @@ public:
     bool itemPressed;
     GraphSpace2 * space;
 
+
+
 };
 
 class GraphSpace2: public QWidget
@@ -56,8 +58,13 @@ public:
     std::vector<VisibleVertex*> visibleVertices;
     std::vector<VisibleEdge*> visibleEdges;
 
+    QBrush defaultBrush;
+    QPen defaultPen;
+
     void CreateVisibleVertices();
     void CreateVisibleEdges();
+    void ColourGraph(Graph* graphToColour, QBrush vertexBrush, QPen edgePen);
+    void DefaultColour();
 
     //dane do okienka w ktorym rysujemy graf
     int xs = 220;
@@ -72,6 +79,9 @@ public:
     bool CheckEdges( std::pair<Vertex*,const Vertex*> verticlesX, Edge* newedge );
     int vertexCount = 0;
 
+    void ColourGraph(std::list<Containers::Mail *> maillist, QBrush brush, QPen pen);
+    void ColourVertex(Containers::Person *person, QBrush brush);
+    void ColourEdge(Containers::Mail *mail, QPen pen);
 };
 
 class VisibleVertex : public QGraphicsItem
@@ -81,6 +91,7 @@ public:
     bool ispressed;
     bool isgrey;
     bool isspecial;
+    QBrush brush;
     VisibleVertex();
     VisibleVertex(float a, float b, Vertex * vertex, Containers::Person * person);
 
@@ -89,16 +100,19 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent *);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *);
+    bool operator ==( const VisibleVertex & v );
 
     Vertex * graphVertex;
     Containers::Person * graphPerson;
     GraphSpace2 *myspace;
 
-    PersonInfo * personInfo;
-    QGridLayout* layout;
-    MyQGraphicsScene * myscene;
+//    PersonInfo * personInfo;
+//    QGridLayout* layout;
+//    MyQGraphicsScene * myscene;
 
 protected:
+
+private:
 
 
 };
@@ -110,6 +124,7 @@ public:
     bool ispressed;
     bool isgrey;
     bool isspecial;
+    QPen pen;
 
     VisibleEdge();
     VisibleEdge(
@@ -126,25 +141,29 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent *);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *);
     void AddSecondEdge(Edge* newedge);
+    bool operator ==( const VisibleEdge & e );
 
     Edge * graphEdge1;
     Edge * graphEdge2;
     std::pair <Vertex*,const Vertex*> verticles;
-    GraphSpace2 *myspace;
+    GraphSpace2 * myspace;
 
-    MailsInfo* mailsInfo;
-    MyQGraphicsScene * myscene;
-    QGridLayout* layout;
+//    MailsInfo* mailsInfo;
+//    MyQGraphicsScene * myscene;
+//    QGridLayout* layout;
 
     float x1,y1,x2,y2;
 
 
 protected:
 
+private:
 
 };
 
-
+bool IsGVertexInVector(VisibleVertex* graphvertex,std::vector<VisibleVertex*> vector);
+bool IsGEdgeInVector(VisibleEdge* graphedge,std::vector<VisibleEdge*> vector);
+Containers::Person* GetPersonFromVertex(Vertex* vertex, Graph* graph);
 
 
 
