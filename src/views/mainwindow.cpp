@@ -64,7 +64,7 @@ void MainWindow::AddLine(Containers::Mail* mail, int lp)
     allreceivers.pop_back();
 
     item->setText(1, QString::fromStdString(allreceivers) );
-    //item->setText(2,QString::fromStdString(mail->content) ); //nie wiem jak zwrocic tytul
+    item->setText(2,QString::fromStdString(mail->headers.getHeader("Subject")) ); //nie wiem jak zwrocic tytul
     item->setText(3,QString::fromStdString(mail->sendDate.formatDate("%x")));
     item->setText(4, QString::number(lp));
 
@@ -208,8 +208,10 @@ void MainWindow::on_pushButton_peoplefilter_clicked()
 
 void MainWindow::on_pushButton_datefilter_clicked()
 {
+	QDateTime datetime = ui->dateTimeEdit->dateTime();
     QDate qdate = ui->dateTimeEdit->date();
     QString qstr= qdate.toString("dd.MM.yyyy");
+	
     std::string str = qstr.toStdString();
     FileParser parser;
     Containers::Date date = parser.parseTime(str);
@@ -223,7 +225,7 @@ void MainWindow::on_pushButton_datefilter_clicked()
 	}
 	else state = false;
 
-    DateFilter* datefilter = new DateFilter(10,state);
+    DateFilter* datefilter = new DateFilter(datetime.toTime_t(), state);
     filterset->addNewFilter(datefilter);
 }
 

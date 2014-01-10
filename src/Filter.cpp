@@ -73,7 +73,7 @@ void TopicSubstringFilter::process(Graph* graph){
             auto mailsIt=edgeIt->second->mails.begin();
             while(mailsIt!=edgeIt->second->mails.end()){
 
-                std::size_t found = (*mailsIt).content.find(substring);
+                std::size_t found = (*mailsIt).headers.getHeader("Subject").find(substring);
                 //nie znaleziono stringa, wiec usun
                 if(found==std::string::npos){
                     mailsIt=edgeIt->second->mails.erase(mailsIt);
