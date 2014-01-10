@@ -16,7 +16,7 @@ GraphSpace2::GraphSpace2(Graph * newgraph, QGridLayout * lay):
     personInfo = NULL;
     mailsInfo = NULL;
     defaultBrush = QBrush(Qt::blue);
-    defaultPen.setWidth(1);
+    defaultPen.setWidth(2);
     defaultPen.setColor(Qt::black);
 }
 
@@ -100,6 +100,7 @@ void GraphSpace2::ColourGraph(Graph *graphToColour, QBrush vertexBrush, QPen edg
 void GraphSpace2::DefaultColour()
 {
     ColourGraph(this->graph->getMails(),defaultBrush,defaultPen);
+    scene->update();
 }
 
 void GraphSpace2::ColourGraph(std::list<Containers::Mail*> maillist, QBrush brush, QPen pen)
@@ -279,6 +280,7 @@ void VisibleVertex::hoverEnterEvent(QGraphicsSceneHoverEvent *)
         myspace->personInfo = new PersonInfo(myspace->layout, myspace->layout->parentWidget());
         myspace->personInfo->SetPersonInfo(graphPerson->getFirstName(), graphPerson->getLastName(), graphPerson->getEmail().getFull());
         myspace->layout->addWidget(myspace->personInfo);
+
     }
 }
 

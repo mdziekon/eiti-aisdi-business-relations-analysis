@@ -46,7 +46,7 @@ public:
     bool Flagwindow1 = true; //poniewaz nie chcemy by ktos do jednego uruchomienia programu ladowal
     //dwa razy plikow, to po pierwszym zaladowaniu, przycisk"Zaladuj Plik" sie blokuje
 
-
+    void DefaultTreeView();
     void WyczyscGraf2();
     void cokolwiek();
 //    void MakeGreyGraph(Graph *originalGraph, Graph *filteredGraph);

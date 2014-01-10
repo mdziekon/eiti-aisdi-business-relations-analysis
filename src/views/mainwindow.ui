@@ -62,7 +62,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -74,111 +74,69 @@
        <attribute name="title">
         <string>1. Zestawienie</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_4">
+       <layout class="QFormLayout" name="formLayout">
         <item row="0" column="0">
-         <layout class="QFormLayout" name="formLayout">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         <widget class="QLabel" name="text_IloscOsob">
+          <property name="text">
+           <string>Ilosc osob:</string>
           </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="text_IloscOsob">
-            <property name="text">
-             <string>Ilosc osob:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="return_IloscOsob">
-            <property name="text">
-             <string>0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="text_IloscMaili">
-            <property name="text">
-             <string>Ilosc maili:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="return_IloscMaili">
-            <property name="text">
-             <string>0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="text_IloscRelacji">
-            <property name="text">
-             <string>Ilosc relacji:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLabel" name="return_IloscRelacji">
-            <property name="text">
-             <string>0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="text_UzytkownikWyslNajwMaili">
-            <property name="text">
-             <string>Użytkownik, który wysłał najwiecej maili:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLabel" name="return_UzytkownikWyslNajwMaili">
-            <property name="text">
-             <string>0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="text_UzOdebrNajwMaili">
-            <property name="text">
-             <string>Użytkownik, który odebrał najwiecej maili:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLabel" name="return_UzOdebrNajwMaili">
-            <property name="text">
-             <string>0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="text_LiczbaMailiForward">
-            <property name="text">
-             <string>Liczba maili forwardowanych:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QLabel" name="return_LiczbaMailiForward">
-            <property name="text">
-             <string>0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="text_DzienWyslanoNajwMaili">
-            <property name="text">
-             <string>Dzień, w ktorym wysłano najwięcej maili:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QLabel" name="return_DzienWyslanoNajwMaili">
-            <property name="text">
-             <string>0</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="return_IloscOsob">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="text_IloscMaili">
+          <property name="text">
+           <string>Ilosc maili:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="return_IloscMaili">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="text_UzytkownikWyslNajwMaili">
+          <property name="text">
+           <string>Użytkownik, który wysłał najwiecej maili:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="return_UzytkownikWyslNajwMaili">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="text_LiczbaMailiForward">
+          <property name="text">
+           <string>Liczba maili forwardowanych:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="return_LiczbaMailiForward">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

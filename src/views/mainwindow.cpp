@@ -38,12 +38,12 @@ void MainWindow::on_actionLoadFile_activated()
 
 void MainWindow::on_actionSettings_activated()//DO RESETOWANIA
 {
-//    QTreeWidgetItemIterator it(ui->treeWidget_MailList);
-//         while (*it) {
-//             if ((*it)->text(0) == itemText)
-//                 (*it)->setSelected(true);
-//             ++it;
-//         }
+    if(Flagwindow1)
+        return;
+    this->graphspace2->DefaultColour();
+    DefaultTreeView();
+
+
 }
 
 
@@ -70,7 +70,7 @@ void MainWindow::AddLine(Containers::Mail* mail, int lp)
     allreceivers.pop_back();
 
     item->setText(1, QString::fromStdString(allreceivers) );
-    //item->setText(2,QString::fromStdString(mail->content) ); //nie wiem jak zwrocic tytul
+    //item->setText(2,QString::fromStdString(mail->headers.getHeader("Subject");) );//odkomentowac jak bedzie aktualny costam
     item->setText(3,QString::fromStdString(mail->sendDate.formatDate("%x")));
     item->setText(4, QString::number(lp));
 
@@ -109,19 +109,26 @@ void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMa
     UzupelnijGraf2(loadedGraph, originalGraphSpace);
     FillComboBoxPersons();
 }
+
+void MainWindow::DefaultTreeView()
+{
+    QTreeWidgetItemIterator it(ui->treeWidget_MailList);
+     while (*it)
+     {
+         QTreeWidgetItem* item = *it;
+         MyQTreeWidgetItem* myitem = static_cast<MyQTreeWidgetItem*>(item);
+         ColourTreeView(myitem,Qt::white);
+         ++it;
+     }
+}
 void MainWindow::UzupelnijZestawienie(Graph* graphObj)
 {
-
-
-    ui->return_IloscOsob->setText( QString::number( vecPerson.size() ) );
-    ui->return_IloscMaili->setText( QString::number( vecMail.size() ) );
-
     if(graphObj->getPeopleNum() == 0)
         return;
 
-    ui->return_IloscRelacji->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
-    ui->return_LiczbaMailiForward->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
-    ui->return_UzOdebrNajwMaili->setText( QString::fromStdString( "later" /*graphObj->getMostActiveReceiver().getName()*/ ) );
+    ui->return_IloscOsob->setText( QString::number( vecPerson.size() ) );
+    ui->return_IloscMaili->setText( QString::number( vecMail.size() ) );
+    ui->return_LiczbaMailiForward->setText( QString::number( graphObj->getForwardedMailsNum() ) );
     ui->return_UzytkownikWyslNajwMaili->setText( QString::fromStdString( graphObj->getMostActiveSender().getName() ) );
 
 }
@@ -189,6 +196,8 @@ void MainWindow::on_treeWidget_MailList_itemDoubleClicked(QTreeWidgetItem *item,
 
 void MainWindow::on_pushButton_substringfilter_clicked()
 {
+    if(Flagwindow1)
+        return;
     QString qstringText = ui->textEdit_substringfilterinput->toPlainText();
     std::string stringText = qstringText.toStdString();
     QString listtext;
@@ -201,6 +210,8 @@ void MainWindow::on_pushButton_substringfilter_clicked()
 
 void MainWindow::on_pushButton_peoplefilter_clicked()
 {
+    if(Flagwindow1)
+        return;
     QString listtext;
     listtext += " Odfiltruj osoby: "; listtext += ui->textEdit_peoplefilterinput->toPlainText();
     AddFilterToList(listtext);
@@ -215,6 +226,8 @@ void MainWindow::on_pushButton_peoplefilter_clicked()
 
 void MainWindow::on_pushButton_datefilter_clicked()
 {
+    if(Flagwindow1)
+        return;
     QDate qdate = ui->dateTimeEdit->date();
     QString qstr= qdate.toString("dd.MM.yyyy");
     std::string str = qstr.toStdString();
@@ -271,6 +284,8 @@ void MainWindow::on_comboBox_people_activated(const QString &arg1)
 
 void MainWindow::on_pushButton_setfiltersaction_clicked()//do testowania
 {
+    if(Flagwindow1)
+        return;
     std::cout<<"tu1"<<std::endl;
     WyczyscGraf2();
     //filteredGraph = filterset->processAll(originalGraph,1);
@@ -298,6 +313,8 @@ void MainWindow::on_pushButton_setfiltersaction_clicked()//do testowania
 
 //void MainWindow::on_pushButton_setfiltersaction_clicked()//ten prawilny
 //{
+//    if(Flagwindow1)
+//        return;
 //    QBrush brush; brush.setColor(Qt::gray);
 //    QPen pen; pen.setWidth(1); pen.setColor(Qt::gray);
 //    graphspace2->ColourGraph(this->originalGraph,brush,pen);
@@ -319,6 +336,8 @@ void MainWindow::on_pushButton_setfiltersaction_clicked()//do testowania
 
 void MainWindow::on_pushButton_deleteselectedfilter_clicked()
 {
+    if(Flagwindow1)
+        return;
    // MyQTreeWidgetItem* mycurrentitem = static_cast<MyQTreeWidgetItem*>(currentitem)
     QList<QListWidgetItem *> list = ui->listWidget_filters->selectedItems();
     QListWidgetItem* item; MyQListWidgetItem* myitem;
@@ -403,6 +422,8 @@ bool IsGVertexInVector(VisibleVertex* graphvertex,std::vector<VisibleVertex*>* v
 
 void MainWindow::on_pushButton_clicked()
 {
+    if(Flagwindow1)
+        return;
     QList<QTreeWidgetItem*> list = ui->treeWidget_MailList->selectedItems();
     if(list.size() != 1)
     {
