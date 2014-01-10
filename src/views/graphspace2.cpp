@@ -27,6 +27,9 @@ GraphSpace2::GraphSpace2(Graph * newgraph, QGridLayout * lay):
     CreateVisibleVertices();
     personInfo = NULL;
     mailsInfo = NULL;
+    defaultBrush = QBrush(Qt::blue);
+    defaultPen.setWidth(2);
+    defaultPen.setColor(Qt::black);
 }
 
 GraphSpace2::~GraphSpace2()
@@ -75,7 +78,102 @@ void GraphSpace2::CreateVisibleEdges()
                 visibleEdges.push_back(edge);
             }
         }
-     }
+    }
+}
+
+void GraphSpace2::ColourGraph(Graph *graphToColour, QBrush vertexBrush, QPen edgePen)
+{
+    GraphSpace2* toColourGraphSpace = new GraphSpace2(graphToColour,NULL);
+    for(std::vector<VisibleVertex*>::iterator thisIt = this->visibleVertices.begin() ;
+        thisIt != this->visibleVertices.end(); thisIt++)
+    {
+        VisibleVertex* origVertex = *thisIt;
+        bool check = IsGVertexInVector(origVertex,toColourGraphSpace->visibleVertices);
+        if(check)
+        {
+            origVertex->brush = vertexBrush;
+            origVertex->isspecial = true;
+        }
+    }
+
+    for(std::vector<VisibleEdge*>::iterator it = this->visibleEdges.begin() ;
+        it != this->visibleEdges.end(); it++)
+    {
+        VisibleEdge* origEdge = *it;
+        bool check = IsGEdgeInVector(origEdge,toColourGraphSpace->visibleEdges);
+        if(check)
+        {
+            origEdge->pen = edgePen;
+            origEdge->isspecial = true;
+        }
+    }
+}
+
+void GraphSpace2::DefaultColour()
+{
+    ColourGraph(this->graph->getMails(),defaultBrush,defaultPen);
+    scene->update();
+}
+
+void GraphSpace2::ColourGraph(std::list<Containers::Mail*> maillist, QBrush brush, QPen pen)
+{
+    for(auto it = maillist.begin() ; it != maillist.end() ; it++)
+    {
+        Containers::Mail* mail = *it;
+        ColourEdge(mail,pen);
+        //koniec kolorowania krawedzi
+        //kolorowanie wierzcholkow
+        Containers::Person* person1 = mail->sender;
+        ColourVertex(person1,brush);
+    }
+}
+
+void GraphSpace2::ColourVertex(Containers::Person* person, QBrush brush)
+{
+    for(auto vertexit = this->visibleVertices.begin() ; vertexit != this->visibleVertices.end() ; vertexit++)
+    {
+        VisibleVertex* vertex = *vertexit;
+        Containers::Person* checkingperson = vertex->graphPerson;
+        if(person == checkingperson)
+        {
+            std::cout<<"znaleziono wierzcholek do kolorowania"<<std::endl;
+            vertex->brush = brush;
+
+        }
+    }
+}
+
+
+
+void GraphSpace2::ColourEdge(Containers::Mail* mail, QPen pen)
+{
+    for(auto edgeit = this->visibleEdges.begin() ; edgeit != this->visibleEdges.end() ; edgeit++)
+    {
+        VisibleEdge* edge = *edgeit;
+        Edge* edge1 = edge->graphEdge1;
+        for(auto edge1mailsIt = edge1->mails.begin() ; edge1mailsIt != edge1->mails.end() ; edge1mailsIt++)
+        {
+            Containers::Mail* checkingmail = &*edge1mailsIt;
+            if(mail == checkingmail)
+            {
+               std::cout<<"znaleziono krawędz do kolorowania"<<std::endl;
+               edge->pen = pen;
+            }
+        }
+        if(edge->graphEdge2)
+        {
+            Edge* edge2 = edge->graphEdge2;
+            for(auto edge2mailsIt = edge2->mails.begin() ; edge2mailsIt != edge2->mails.end() ; edge2mailsIt++)
+            {
+                Containers::Mail* checkingmail = &*edge2mailsIt;
+                if(mail == checkingmail)
+                {
+                   std::cout<<"znaleziono krawędz do kolorowania"<<std::endl;
+                   edge->pen = pen;
+                }
+            }
+        }
+    }
 }
 
 //////////////////
@@ -96,7 +194,7 @@ void GraphSpace2::SetLocations()
     if(vertexCount == 0)
         return;
 
-
+                                                        //tu trzeba wymyslec dynamiczne ustawianie promienia !!!!!!!!!!!!
 //    float maxLenght = 2*3;
 //    maxLenght *= r;
 //    float itemWidth = maxLenght/vertexCount;
@@ -176,6 +274,7 @@ VisibleVertex::VisibleVertex(float a, float b, Vertex * vertex, Containers::Pers
     ishover = false;
     ispressed = false; isgrey = false; isspecial = false;
     setAcceptHoverEvents(true);
+    brush = QBrush(Qt::blue);
 }
 
 QRectF VisibleVertex::boundingRect() const
@@ -186,13 +285,8 @@ QRectF VisibleVertex::boundingRect() const
 void VisibleVertex::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     QRectF rec = boundingRect();
-    QBrush brush1(Qt::blue);
     QString name = QString::fromStdString(graphPerson->getName());
-    if(isgrey)
-        brush1.setColor(Qt::gray);
-    if(isspecial)
-        brush1.setColor(Qt::red);
-    painter->setBrush(brush1);
+    painter->setBrush(this->brush);
     painter->drawEllipse(rec);
     painter->drawText(QRectF(-5,-35,50,50), Qt::AlignCenter, name);
 }
@@ -210,6 +304,7 @@ void VisibleVertex::hoverEnterEvent(QGraphicsSceneHoverEvent *)
         myspace->personInfo = new PersonInfo(myspace->layout, myspace->layout->parentWidget());
         myspace->personInfo->SetPersonInfo(graphPerson->getFirstName(), graphPerson->getLastName(), graphPerson->getEmail().getFull());
         myspace->layout->addWidget(myspace->personInfo);
+
     }
 }
 
@@ -221,6 +316,14 @@ void VisibleVertex::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
         myspace->personInfo = NULL;
         this->scene()->update();
     }
+}
+
+bool VisibleVertex::operator ==(const VisibleVertex &v)
+{
+        if(this->graphPerson == v.graphPerson)
+             return true;
+        else
+             return false;
 }
 ////////////////////////////////////////
 
@@ -238,6 +341,7 @@ VisibleEdge::VisibleEdge(
     ispressed = false; isgrey = false; isspecial = false;
     graphEdge1 = NULL;
     graphEdge2 = NULL;
+    pen.setWidth(2); pen.setColor(Qt::black);
 }
 
 QRectF VisibleEdge::boundingRect() const
@@ -257,16 +361,8 @@ QPainterPath VisibleEdge::shape() const
 
 void VisibleEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    //drawing edge:
-    QBrush brush2(Qt::black);
-    painter->setBrush(brush2);
-    if(isgrey)
-        brush2.setColor(Qt::gray);
-    if(isspecial)
-        brush2.setColor(Qt::red);
-    QPen pen2;
-    pen2.setWidth(2);
-    painter->setPen(pen2);
+
+    painter->setPen(this->pen);
     painter->drawLine(this->line());
 
     //drawing arrow1
@@ -323,6 +419,24 @@ void VisibleEdge::AddSecondEdge(Edge *newedge)
     graphEdge2 = newedge;
 }
 
+bool VisibleEdge::operator ==(const VisibleEdge &e)
+{
+    Containers::Person* thisperson1 = GetPersonFromVertex(this->verticles.first, this->myspace->graph);
+    Containers::Person* thisperson2 = GetPersonFromVertex((Vertex*)(this->verticles.second), this->myspace->graph);
+    Containers::Person* eperson1 = GetPersonFromVertex(e.verticles.first, e.myspace->graph);
+    Containers::Person* eperson2 = GetPersonFromVertex((Vertex*)(e.verticles.second), e.myspace->graph);
+
+    if(thisperson1 == eperson1 && thisperson2 == eperson2)
+    {
+        return true;
+    }
+    else if(thisperson2 == eperson1 && thisperson1 == eperson2)
+    {
+        return true;
+    }
+    else return false;
+}
+
 
 MyQGraphicsScene::MyQGraphicsScene(GraphSpace2* space): space(space)
 {
@@ -350,4 +464,40 @@ void MyQGraphicsScene::deleteAllMailsInfo()
     if( space->mailsInfo != NULL )
         delete space->mailsInfo;
     space->mailsInfo = NULL;
+}
+
+bool IsGVertexInVector(VisibleVertex* graphvertex,std::vector<VisibleVertex*> vector)
+{
+    std::vector<VisibleVertex*>::iterator it = vector.begin();
+    for( ; it!= vector.end() ; ++it)
+    {
+        VisibleVertex* v = *it;
+        if( *graphvertex == *v )
+            return true;
+    }
+    return false;
+}
+
+Containers::Person* GetPersonFromVertex(Vertex* vertex,Graph* graph)
+{
+    Containers::Person* person = NULL;
+    for(auto it = graph->vertices.begin() ; it != graph->vertices.end() ; ++it)
+    {
+        Vertex* itVertex = it->second;
+        if( vertex == itVertex )
+            person = it->first;
+    }
+    return person;
+}
+
+bool IsGEdgeInVector(VisibleEdge* graphedge,std::vector<VisibleEdge*> vector)
+{
+    std::vector<VisibleEdge*>::iterator it = vector.begin();
+    for( ; it!= vector.end() ; ++it)
+    {
+        VisibleEdge* e = *it;
+        if( *graphedge == *e )
+            return true;
+    }
+    return false;
 }

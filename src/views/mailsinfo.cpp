@@ -39,7 +39,7 @@ void MailsInfo::AddLine(Containers::Mail mail, int lp)
     allreceivers.pop_back();
 
     item->setText(1, QString::fromStdString(allreceivers) );
-   // item->setText(2,QString::fromStdString(mail.content) ); //nie wiem jak zwrocic tytul
+   // item->setText(2,QString::fromStdString(mail.headers.getHeader("Subject");) ); //nie wiem jak zwrocic tytul
     item->setText(3,QString::fromStdString(mail.sendDate.formatDate("%x")));
     item->setText(4, QString::number(lp));
 
