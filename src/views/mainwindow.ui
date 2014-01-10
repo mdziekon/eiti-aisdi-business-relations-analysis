@@ -75,6 +75,9 @@
         <string>1. Zestawienie</string>
        </attribute>
        <layout class="QFormLayout" name="formLayout">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        </property>
         <item row="0" column="0">
          <widget class="QLabel" name="text_IloscOsob">
           <property name="text">
@@ -132,9 +135,44 @@
          </widget>
         </item>
         <item row="4" column="0">
+         <widget class="QLabel" name="dzienmaili">
+          <property name="text">
+           <string>Dzien w ktorym wyslano najwiecej maili:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
          <widget class="QLabel" name="label_4">
           <property name="text">
-           <string>TextLabel</string>
+           <string>Uzytkownik ktory odebral najwiecej maili:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Liczba relacji:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>0</string>
           </property>
          </widget>
         </item>
@@ -522,7 +560,7 @@ p, li { white-space: pre-wrap; }
      <normaloff>:/images/015.png</normaloff>:/images/015.png</iconset>
    </property>
    <property name="text">
-    <string>Przywroc oryginalne ustawienia</string>
+    <string>Przywroc oryginalne kolory</string>
    </property>
    <property name="toolTip">
     <string>Ustawienia</string>
