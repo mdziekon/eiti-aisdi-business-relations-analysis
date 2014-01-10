@@ -1,6 +1,5 @@
 #include "Graph.h"
-#include <iostream>
-
+#include <sstream>
 Graph::Graph(std::unordered_map<std::string, Containers::Person*>& people, std::vector<Containers::Mail*>& mails){
     biggestEdge=0;
 
@@ -36,17 +35,13 @@ void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
     //dla kazdego mejla znajdz wierzcholek nadawacy, w mapie krawedzi wierzcholka nadawcy
     //znajdz krawedz odpowiadajaca wierzcholkowi i wstaw tam nowa krawedz, jesli wczesniej nie istniala zadna
     for(unsigned int i=0; i<mails.size(); i++){
-		std::cout << "add mail\n";
         //te 2 wskazniki ponizej nie sa potrzebne, ale wtedy jedna linijka mialaby 3 linijki xd
         Vertex* senderVertex=vertices.find(mails[i]->sender)->second;
-		std::cout << "found vertex\n";
+
 		for(auto recIt: mails[i]->receivers){
-			std::cout << "find\n";
 			Vertex* receiverVertex=vertices.find(recIt.first)->second;
 			//jesli nie istnieje edge dla wierzcholka odbiorcy
-			std::cout << "if\n";
 			if(senderVertex->edges.count(receiverVertex)==0){
-				std::cout << "add to edges\n";
 				Edge* newEdge = new Edge(receiverVertex);
 				senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
 			}
@@ -141,19 +136,76 @@ unsigned int Graph::getPeopleNum(){
 unsigned int Graph::getForwardedMailsNum(){
     return 0;
 }
+std::string Graph::getMostActiveDay(){
+    std::unordered_map<std::string, int> days;
 
+    for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
+                if(days.count((*mailsIt).sendDate.formatDate("%F"))==0){
+                    days.insert(std::make_pair<std::string,int>((*mailsIt).sendDate.formatDate("%F"), 1));
+                }
+                else{
+                    ++days.at((*mailsIt).sendDate.formatDate("%F"));
+                }
+            }
+        }
+    }
 
+    std::string mostActiveDay=days.begin()->first;
+    for(auto daysIt=days.begin(); daysIt!=days.end(); daysIt++){
+        if(daysIt->second>days.at(mostActiveDay))
+            mostActiveDay=daysIt->first;
+    }
 
+    std::stringstream ss;
+    ss << mostActiveDay<<" ("<<days.at(mostActiveDay)<<" wiadomosci)";
+    std::string str = ss.str();
+    return str;
+
+}
+Containers::Person& Graph::getMostActiveReceiver(){
+    unsigned int mostMailsReceived=0;
+    Containers::Person* mostActiveReceiver=0;
+
+    for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        Containers::Person* vertexOwner = vertexIt->first;
+        unsigned int allMailsFromVertex=0;
+
+        for(auto edgeIt=vertexIt->second->pointingEdges.begin(); edgeIt!=vertexIt->second->pointingEdges.end(); edgeIt++){
+            allMailsFromVertex+=(*edgeIt)->mails.size();
+        }
+        if(allMailsFromVertex>=mostMailsReceived){
+            mostMailsReceived=allMailsFromVertex;
+            mostActiveReceiver=vertexOwner;
+        }
+    }
+    return *mostActiveReceiver;
+}
+
+ unsigned int Graph::getRelationsNum(){
+     float relations=0;
+
+     for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            Vertex* pointedVertex=edgeIt->second->pointedVertex;
+            //jesli wskazywany wierzcholek nie ma edga "przeciwnego" dodaj relacje
+            if(pointedVertex->edges.count(vertexIt->second)==0)
+                relations+=1;
+            //wskazywany wierzholek ma edga, ktory wskazuje na wierzholek z ktorego wychodzi aktualny edge - ma pare
+            else relations+=0.5;
+        }
+     }
+     return (unsigned int)relations;
+ }
 
 
 
 
 Edge::Edge(Vertex* pointedVertex){
-    std::cout<<"tworze edga...";
     this->pointedVertex=pointedVertex;
     this->owner=owner;
     pointedVertex->pointingEdges.push_back(this);
-    std::cout<<"sukces"<<std::endl;
 }
 
 
@@ -167,8 +219,8 @@ bool Edge::suicide(Vertex* startingVertex){
 
     startingVertex->edges.erase(pointedVertex);
     pointedVertex->pointingEdges.remove(this);
+    delete this;
 	return true;
-    //delete this;
 }
 
 
@@ -190,7 +242,8 @@ bool Vertex::suicide(Graph* graph){
         return false;
 
     graph->vertices.erase(graph->vertices.find(owner));
+    delete this;
 	return true;
-    //delete this;
+
 }
 

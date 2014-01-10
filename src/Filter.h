@@ -41,7 +41,7 @@ public:
 
 class DateFilter:public Filter{
     bool before;
-    int timeStamp;
+    unsigned int timeStamp;
     void process(Graph* graph);
 public:
     DateFilter(unsigned int timeStamp, bool before); //jesli before==true to ma odrzucic wszystkie mejle PO dacie

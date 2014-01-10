@@ -13,7 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
         lfw->myParent = this;
     sw = new SettingsWindow(this);
     mw = new MailWindow(this);
-  
+    //peopleSet =NULL;
+    filteredGraph = NULL; specialGraph = NULL;
     ui->setupUi(this);
 }
 
@@ -35,16 +36,21 @@ void MainWindow::on_actionLoadFile_activated()
     }
 }
 
-void MainWindow::on_actionSettings_activated()
+void MainWindow::on_actionSettings_activated()//DO RESETOWANIA
 {
-    sw->show();
+    if(Flagwindow1)
+        return;
+    this->graphspace2->DefaultColour();
+    DefaultTreeView();
+
+
 }
 
 
 void MainWindow::on_actionReset_2_activated()
 {
     qApp->quit();
-    QProcess::startDetached(qApp->arguments()[0], qApp->arguments());   //sprawdzić czy występują wycieki pamięci
+    QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
 }
 
 void MainWindow::AddLine(Containers::Mail* mail, int lp)
@@ -64,12 +70,12 @@ void MainWindow::AddLine(Containers::Mail* mail, int lp)
     allreceivers.pop_back();
 
     item->setText(1, QString::fromStdString(allreceivers) );
-    //item->setText(2,QString::fromStdString(mail->content) ); //nie wiem jak zwrocic tytul
+    //item->setText(2,QString::fromStdString(mail->headers.getHeader("Subject");) );//odkomentowac jak bedzie aktualny costam
     item->setText(3,QString::fromStdString(mail->sendDate.formatDate("%x")));
     item->setText(4, QString::number(lp));
 
     ui->treeWidget_MailList->addTopLevelItem(item);
-
+//item->setBackground(0, QBrush(Qt::gray));
 
 
 }
@@ -82,46 +88,59 @@ void MainWindow::ClearAll()
     }
 }
 
-
+//do tej funkcji wchodzi po zaladowaniu plikow
 void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMail, std::unordered_map<std::string, Containers::Person*> vecPobranePerson)
 {
+    //ustawienie wskaznikow
     vecPerson = vecPobranePerson;
     vecMail = vecPobraneMail;
     Graph *loadedGraph = new Graph(vecPerson, vecMail);
     originalGraph = loadedGraph;
     filterset = new FilterSet();
 
+    //ustawienie flag
     Flagwindow1 = false;
+    //ui->checkBox_forwardshow->setCheckable(true);
+   // ui->checkBox_forwardshow->setChecked(false);
 
+    //uzupelnienie okien danymi
     UzupelnijZestawienie(loadedGraph);
-
-    UzupelnijSzczegoly();
+    UzupelnijSzczegoly(originalGraph->getMails());
     UzupelnijGraf2(loadedGraph, originalGraphSpace);
-    FillComboBoxPersons(vecPerson);
-	std::cout << "END OF GRAPH BUILD" << std::endl;
+    FillComboBoxPersons();
+}
+
+void MainWindow::DefaultTreeView()
+{
+    QTreeWidgetItemIterator it(ui->treeWidget_MailList);
+     while (*it)
+     {
+         QTreeWidgetItem* item = *it;
+         MyQTreeWidgetItem* myitem = static_cast<MyQTreeWidgetItem*>(item);
+         ColourTreeView(myitem,Qt::white);
+         ++it;
+     }
 }
 void MainWindow::UzupelnijZestawienie(Graph* graphObj)
 {
-
-
-    ui->return_IloscOsob->setText( QString::number( vecPerson.size() ) );
-    ui->return_IloscMaili->setText( QString::number( vecMail.size() ) );
-
     if(graphObj->getPeopleNum() == 0)
         return;
 
-    ui->return_IloscRelacji->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
-    ui->return_LiczbaMailiForward->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
-    ui->return_UzOdebrNajwMaili->setText( QString::fromStdString( "later" /*graphObj->getMostActiveReceiver().getName()*/ ) );
+    ui->return_IloscOsob->setText( QString::number( vecPerson.size() ) );
+    ui->return_IloscMaili->setText( QString::number( vecMail.size() ) );
+    ui->return_LiczbaMailiForward->setText( QString::number( graphObj->getForwardedMailsNum() ) );
     ui->return_UzytkownikWyslNajwMaili->setText( QString::fromStdString( graphObj->getMostActiveSender().getName() ) );
+    ui->return_dzienwysnajwmaili->setText( QString::fromStdString( 0 ) );//do uzupelnienia
+    ui->return_liczbarelacji->setText( QString::fromStdString( 0 ) );
+    ui->return_uzktoryodebrnajwmaili->setText( QString::fromStdString( 0 ) );
 
 }
-void MainWindow::UzupelnijSzczegoly()
+void MainWindow::UzupelnijSzczegoly(std::list<Containers::Mail*> mailList)
 {
     int lp = 0;
 
-        for(std::vector<Containers::Mail*>::iterator itMail = vecMail.begin();
-            itMail != vecMail.end() ; ++itMail)
+        for(std::list<Containers::Mail*>::iterator itMail = mailList.begin();
+            itMail != mailList.end() ; ++itMail)
         {
             AddLine(*itMail,lp++);
         }
@@ -146,11 +165,10 @@ void MainWindow::AddFilterToList(QString str)
     ui->listWidget_filters->addItem(str);
 }
 
-void MainWindow::FillComboBoxPersons(std::unordered_map<std::string, Containers::Person*> people)
+void MainWindow::FillComboBoxPersons()
 {
-    ui->comboBox_people->clear();
     std::unordered_map<std::string, Containers::Person*>::iterator it;
-    for( it = people.begin() ; it != people.end() ; ++it)
+    for( it = vecPerson.begin() ; it != vecPerson.end() ; ++it)
     {
         ui->comboBox_people->addItem(QString::fromStdString(it->second->getName()));
     }
@@ -181,33 +199,38 @@ void MainWindow::on_treeWidget_MailList_itemDoubleClicked(QTreeWidgetItem *item,
 
 void MainWindow::on_pushButton_substringfilter_clicked()
 {
+    if(Flagwindow1)
+        return;
     QString qstringText = ui->textEdit_substringfilterinput->toPlainText();
     std::string stringText = qstringText.toStdString();
     QString listtext;
     listtext += " Odfiltruj ciag: "; listtext += qstringText;
     AddFilterToList(listtext);
-
+    std::cout<<stringText<<std::endl;
     TopicSubstringFilter* topicsubstringfilter = new TopicSubstringFilter(stringText);
     filterset->addNewFilter(topicsubstringfilter);
 }
 
 void MainWindow::on_pushButton_peoplefilter_clicked()
 {
+    if(Flagwindow1)
+        return;
     QString listtext;
     listtext += " Odfiltruj osoby: "; listtext += ui->textEdit_peoplefilterinput->toPlainText();
     AddFilterToList(listtext);
     ui->textEdit_peoplefilterinput->clear();
 
-	bool state = ui->checkBox_issenders->checkState() == Qt::Unchecked ? false : true;
-	for(auto x: peopleSet){
-		PeopleFilter * peoplefilter = new PeopleFilter(x,state);
-		filterset->addNewFilter(peoplefilter);
-	}
-    
+    bool state = ui->checkBox_issenders->checkState() == Qt::Unchecked ? false : true;
+    for(auto x: peopleSet){
+    PeopleFilter * peoplefilter = new PeopleFilter(x,state);
+    filterset->addNewFilter(peoplefilter);
+    }
 }
 
 void MainWindow::on_pushButton_datefilter_clicked()
 {
+    if(Flagwindow1)
+        return;
     QDate qdate = ui->dateTimeEdit->date();
     QString qstr= qdate.toString("dd.MM.yyyy");
     std::string str = qstr.toStdString();
@@ -216,12 +239,12 @@ void MainWindow::on_pushButton_datefilter_clicked()
     QString listtext;
     listtext += " Odfiltruj date: "; listtext += qstr;
     AddFilterToList(listtext);
-	
-	bool state=true;
-	if(ui->checkBox_isbefore->checkState() == Qt::Checked){
-		state=true;
-	}
-	else state = false;
+
+        bool state=true;
+        if(ui->checkBox_isbefore->checkState() == Qt::Checked){
+                state=true;
+        }
+        else state = false;
 
     DateFilter* datefilter = new DateFilter(10,state);
     filterset->addNewFilter(datefilter);
@@ -254,6 +277,7 @@ void MainWindow::on_comboBox_people_activated(const QString &arg1)
     tmpPerson = FindPerson(str);
     if(tmpPerson == NULL)
         return;
+    std::cout<<"jest tu"<<tmpPerson->getName()<<std::endl;
     peopleSet.push_back(tmpPerson);
     QString tmp = ui->textEdit_peoplefilterinput->toPlainText();
     tmp += arg1; tmp += ", ";
@@ -261,8 +285,10 @@ void MainWindow::on_comboBox_people_activated(const QString &arg1)
 
 }
 
-void MainWindow::on_pushButton_setfiltersaction_clicked()
+void MainWindow::on_pushButton_setfiltersaction_clicked()//do testowania
 {
+    if(Flagwindow1)
+        return;
     std::cout<<"tu1"<<std::endl;
     WyczyscGraf2();
     //filteredGraph = filterset->processAll(originalGraph,1);
@@ -285,26 +311,153 @@ void MainWindow::on_pushButton_setfiltersaction_clicked()
         AddLine(*it,lp++);
     }
     ui->treeWidget_MailList->sortItems(0,Qt::SortOrder(0));
-    //
 
 }
 
+//void MainWindow::on_pushButton_setfiltersaction_clicked()//ten prawilny
+//{
+//    if(Flagwindow1)
+//        return;
+//    QBrush brush; brush.setColor(Qt::gray);
+//    QPen pen; pen.setWidth(1); pen.setColor(Qt::gray);
+//    graphspace2->ColourGraph(this->originalGraph,brush,pen);
+//    brush.setColor(Qt::red);
+//    pen.setWidth(2); pen.setColor(Qt::red);
+//    if(filteredGraph)
+//        delete filteredGraph;
+//    filteredGraph = filterset->processAll(originalGraph,1);
+//    graphspace2->ColourGraph(filteredGraph,brush,pen);
+////    for(int i = 0; i < ui->listWidget_filters->count(); ++i)
+////    {
+////        QListWidgetItem* item = ui->listWidget_filters->item(i);
+////        item->setBackgroundColor(Qt::gray);
+//        this->ColourTreeView(this->originalGraph->getMails(),Qt::gray);
+//        this->ColourTreeView(this->filteredGraph->getMails(),Qt::red);
+////    }
+
+//}
+
 void MainWindow::on_pushButton_deleteselectedfilter_clicked()
 {
-    WyczyscGraf2();
-    UzupelnijGraf2(originalGraph, filteredGraphSpace);
+    if(Flagwindow1)
+        return;
+   // MyQTreeWidgetItem* mycurrentitem = static_cast<MyQTreeWidgetItem*>(currentitem)
+    QList<QListWidgetItem *> list = ui->listWidget_filters->selectedItems();
+    QListWidgetItem* item; MyQListWidgetItem* myitem;
+    QList<QListWidgetItem *>::iterator i;
+    for (i = list.begin(); i != list.end(); ++i)
+    {
+        item = *i;
+        myitem = static_cast<MyQListWidgetItem*>(item);
+        //delete myitem->myFilter;
+    }
+    qDeleteAll(ui->listWidget_filters->selectedItems());
+}
+
+
+void MainWindow::ColourTreeView(std::list<Containers::Mail*> mailsToColour, QColor color)
+{
+    for( auto i = mailsToColour.begin() ; i != mailsToColour.end() ; i++)
+    {
+        Containers::Mail* mail = *i;
+        int count = ui->treeWidget_MailList->topLevelItemCount();
+        QTreeWidgetItem* currentitem = ui->treeWidget_MailList->topLevelItem(0);
+        MyQTreeWidgetItem* myitem;
+        while(count--)
+        {
+            currentitem = ui->treeWidget_MailList->itemBelow(currentitem);
+            if(currentitem == 0)
+                break;
+            myitem = static_cast<MyQTreeWidgetItem*>(currentitem);
+            if(myitem->myMail == mail)
+            {
+                ColourTreeView(myitem, color);
+                break;
+            }
+        }
+    }
+}
+
+void MainWindow::ColourTreeView(MyQTreeWidgetItem* myitem, QColor color)
+{
+    myitem->setBackground(0,color);
+    myitem->setBackground(1,color);
+    myitem->setBackground(2,color);
+    myitem->setBackground(3,color);
+    myitem->color = color;
 }
 
 MyQTreeWidgetItem::MyQTreeWidgetItem(QTreeWidget * parent,Containers::Mail *mail): QTreeWidgetItem(parent)
 {
+    color = Qt::white;
     myMail = mail;
 }
 
-bool IsMailInList(Containers::Mail* mail, std::list<Containers::Mail*>* list)
+MyQListWidgetItem::MyQListWidgetItem(QListWidget *parent, Filter *filter): QListWidgetItem(parent)
 {
-    std::list<Containers::Mail*>::iterator it = list->begin();
-    for( ; it != list->end() ; ++it)
-    {
+    myFilter = filter;
+}
 
+bool IsMailInList(Containers::Mail* mail, std::list<Containers::Mail*> list)
+{
+    std::list<Containers::Mail*>::iterator it = list.begin();
+    for( ; it != list.end() ; ++it)
+    {
+        if(mail == *it)
+            return true;
     }
+    return false;
+}
+
+bool IsGVertexInVector(VisibleVertex* graphvertex,std::vector<VisibleVertex*>* vector)
+{
+    std::vector<VisibleVertex*>::iterator it = vector->begin();
+    for( ; it!= vector->end() ; ++it)
+    {
+        VisibleVertex* v = *it;
+        if( *graphvertex == *v )
+            return true;
+    }
+    return false;
+}
+
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    if(Flagwindow1)
+        return;
+    QList<QTreeWidgetItem*> list = ui->treeWidget_MailList->selectedItems();
+    if(list.size() != 1)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("mozesz zaznaczyc tylko jeden element");
+        msgBox.exec();
+        return;
+    }
+
+    QBrush brush; QPen pen; //tutaj sobie definiuje pędzelki którymi bede kolorowac graf
+    brush = QBrush(Qt::red);
+    pen.setWidth(2); pen.setColor(Qt::red);
+
+    MyQTreeWidgetItem* myitem;
+    QList<QTreeWidgetItem*>::iterator i = list.begin() ;
+    myitem = static_cast<MyQTreeWidgetItem*>(*i);
+
+    ColourTreeView(myitem,Qt::yellow);
+    Containers::Mail* forwardedMail = myitem->myMail; // tu masz wskaznik na mail ktory wybralismy
+
+    std::list<Containers::Mail*> mailstocolour;// tu przykladowe wykorzystanie funkcji
+    mailstocolour.push_back(forwardedMail);//
+    ColourTreeView(mailstocolour, Qt::red);//
+    //tutaj trzeba zapuscic jakas petle ktora dla kazdego maila forwardowanego uruchomi funkcje
+    //ColourTreeView(std::list<Containers::Mail*> mailstoColour, QColor color);
+
+
+    this->graphspace2->ColourGraph(mailstocolour,brush,pen);
+}
+
+void MainWindow::on_actionSettings_triggered()
+{
+
 }

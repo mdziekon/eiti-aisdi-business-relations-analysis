@@ -20,6 +20,7 @@
 #include <QListWidgetItem>
 #include "../controllers/parser.hpp"
 
+class MyQTreeWidgetItem;
 
 namespace Ui {
 class MainWindow;
@@ -45,8 +46,13 @@ public:
     bool Flagwindow1 = true; //poniewaz nie chcemy by ktos do jednego uruchomienia programu ladowal
     //dwa razy plikow, to po pierwszym zaladowaniu, przycisk"Zaladuj Plik" sie blokuje
 
-
+    void DefaultTreeView();
     void WyczyscGraf2();
+    void cokolwiek();
+//    void MakeGreyGraph(Graph *originalGraph, Graph *filteredGraph);
+//    void MakeGreyTreeView(std::list<Containers::Mail *> filteredMails);
+    void ColourTreeView(std::list<Containers::Mail *> mailsToColour, QColor color);
+    void ColourTreeView(MyQTreeWidgetItem *myitem, QColor color);
 private slots:
     //przyciski do otwierania osobnych okienek
     void on_actionLoadFile_activated();
@@ -74,6 +80,13 @@ private slots:
 
     void on_pushButton_deleteselectedfilter_clicked();
 
+
+
+
+    void on_pushButton_clicked();
+
+    void on_actionSettings_triggered();
+
 private:
     //okienka ktore sie oddzielnie otwieraja
     LoadFileWindow* lfw ;
@@ -85,10 +98,13 @@ private:
     Graph* originalGraph;
     GraphSpace2* originalGraphSpace;
     Graph* filteredGraph;
-    GraphSpace2* filteredGraphSpace;
+    Graph* specialGraph;
+    //GraphSpace2* filteredGraphSpace;
     FilterSet* filterset;
 
+    //std::set<Containers::Person*>* peopleSet; // do filtrow
     std::vector<Containers::Person*> peopleSet; // do filtrow
+    //Containers::Person* peopleSet;
 
     //od pierwszej karty Zestawienie
     void UzupelnijZestawienie(Graph* graphObj);
@@ -97,7 +113,7 @@ private:
     void AddLine(Containers::Mail* mail, int lp);
     void ClearAll();
     void Sorting();
-    void UzupelnijSzczegoly();
+    void UzupelnijSzczegoly(std::list<Containers::Mail*> mailList);
     QTreeWidget * treeWidget_MailList;
 
     //od czwartej karty Graf2
@@ -106,23 +122,27 @@ private:
 
     //od karty Filtry
     void AddFilterToList(QString str);
-    void FillComboBoxPersons(std::unordered_map<string, Containers::Person *> vecPerson);
+    void FillComboBoxPersons();
     Containers::Person *FindPerson(std::string str);
 
 };
 
-class QListWidgetItemFilter : QListWidgetItem
+class MyQListWidgetItem : public QListWidgetItem
 {
-
+public:
+    Filter* myFilter;
+    MyQListWidgetItem(QListWidget *parent, Filter* filter);
 };
 
 class MyQTreeWidgetItem : public QTreeWidgetItem
 {
 public:
+    QColor color;
     Containers::Mail * myMail;
     MyQTreeWidgetItem(QTreeWidget *parent, Containers::Mail *mail);
 };
 
-bool IsMailInList(Containers::Mail* mail, std::list<Containers::Mail*>* list);
+bool IsMailInList(Containers::Mail* mail, std::list<Containers::Mail*> list);
+bool IsGVertexInVector(VisibleVertex* graphvertex,std::vector<VisibleVertex*>* vector);
 
 #endif // MAINWINDOW_H
