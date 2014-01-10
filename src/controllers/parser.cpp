@@ -172,6 +172,8 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
                 while (*it != '>') {
                     it++;
                 }
+                if(*it == '>')
+                    it++;
                 mail_address = std::string(begin_internal + 1, it - 1);
                 if(cache.find(mail_address) == cache.end()) {
 					std::cout << "Email: " << mail_address << endl;
@@ -219,6 +221,7 @@ void FileParser::checkForwards(std::string & title, std::string & contents, Mail
     }
     
     depth = counter;
+    std::cout << counter;
     
     //wyczysc puste znaki z przodu i z tylu
     {
@@ -230,18 +233,24 @@ void FileParser::checkForwards(std::string & title, std::string & contents, Mail
     }
     
     std::size_t found = 0;
-    while(counter --> -1) {
-        int i;
-        found = contents.find("Forwarded message from", found);
-        hashes.push_back(md5->md5ify(contents));
+    while(counter --> 0) {
+        found = contents.find("Message forwarded from", found);
+        std::string md5hash = md5->md5ify(contents);
+        cout << "Zawartosc: " << contents << endl;
+        cout << "Md5ify: " << md5hash << endl;
+        cout << "Found: " << found << endl;
+        hashes.push_back(md5hash);
         if(found < contents.size())
-            contents = contents.substr(found);     // get from "live" to the end
+            contents = contents.substr(found+24);     // found = Message forwarded from, 24 = size of "found"
+        cout << "Zawartosc po: " << contents << endl;
+    
     }
     /* look for base mail sender in end mail vector of receivers to check
        completeness of an eventual cycle */
 
     // done with storing hashes, let's find forwards
     while(hashes.size() > 1) {
+        cout << "jestem w while";
         Mail * current_mail = mail_cache.find(*(hashes.end() - 1))->second;
         hashes.pop_back();
         for(std::pair<Person*, Receiver> p : current_mail->receivers) {
@@ -357,7 +366,7 @@ Containers::Mail * FileParser::build(std::string& str)
 		    headers.addHeader(result.first, result.second);
 		} 
 	}
-        this->checkForwards(title, contents, result_mail);
+//        this->checkForwards(title, contents, result_mail);
         mail_cache.insert(std::pair<std::string, Mail*>(std::string(md5->md5ify(contents)), result_mail));
         delete md5;
 	return result_mail;
