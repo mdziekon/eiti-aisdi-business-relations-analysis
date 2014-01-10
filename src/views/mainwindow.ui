@@ -132,9 +132,44 @@
          </widget>
         </item>
         <item row="4" column="0">
-         <widget class="QLabel" name="label_4">
+         <widget class="QLabel" name="text_uzktoryodebrnajwmaili">
           <property name="text">
-           <string>TextLabel</string>
+           <string>Użytkownik, który odebrał najwięcej maili:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="text_liczbarelacji">
+          <property name="text">
+           <string>Liczba relacji:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="text_dzienwysnajwmaili">
+          <property name="text">
+           <string>Dzien, w którym wysłano najwięcej maili:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLabel" name="return_uzktoryodebrnajwmaili">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLabel" name="return_liczbarelacji">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLabel" name="return_dzienwysnajwmaili">
+          <property name="text">
+           <string>0</string>
           </property>
          </widget>
         </item>
@@ -545,7 +580,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionReset_2">
    <property name="icon">
-    <iconset>
+    <iconset resource="../assets/images.qrc">
      <normaloff>:/images/004.png</normaloff>:/images/004.png</iconset>
    </property>
    <property name="text">

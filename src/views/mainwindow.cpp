@@ -130,6 +130,9 @@ void MainWindow::UzupelnijZestawienie(Graph* graphObj)
     ui->return_IloscMaili->setText( QString::number( vecMail.size() ) );
     ui->return_LiczbaMailiForward->setText( QString::number( graphObj->getForwardedMailsNum() ) );
     ui->return_UzytkownikWyslNajwMaili->setText( QString::fromStdString( graphObj->getMostActiveSender().getName() ) );
+    ui->return_dzienwysnajwmaili->setText( QString::fromStdString( 0 ) );//do uzupelnienia
+    ui->return_liczbarelacji->setText( QString::fromStdString( 0 ) );
+    ui->return_uzktoryodebrnajwmaili->setText( QString::fromStdString( 0 ) );
 
 }
 void MainWindow::UzupelnijSzczegoly(std::list<Containers::Mail*> mailList)
