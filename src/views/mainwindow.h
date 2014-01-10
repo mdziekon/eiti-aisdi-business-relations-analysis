@@ -20,7 +20,7 @@
 #include <QListWidgetItem>
 #include "../controllers/parser.hpp"
 
-
+class MyQTreeWidgetItem;
 namespace Ui {
 class MainWindow;
 }
@@ -47,6 +47,9 @@ public:
 
 
     void WyczyscGraf2();
+    void ColourTreeView(MyQTreeWidgetItem *myitem, QColor color);
+    void ColourTreeView(std::list<Containers::Mail *> mailsToColour, QColor color);
+    void DefaultTreeView();
 private slots:
     //przyciski do otwierania osobnych okienek
     void on_actionLoadFile_activated();
@@ -74,6 +77,8 @@ private slots:
 
     void on_pushButton_deleteselectedfilter_clicked();
 
+    void on_pushButton_pokazforward_clicked();
+
 private:
     //okienka ktore sie oddzielnie otwieraja
     LoadFileWindow* lfw ;
@@ -97,7 +102,7 @@ private:
     void AddLine(Containers::Mail* mail, int lp);
     void ClearAll();
     void Sorting();
-    void UzupelnijSzczegoly();
+    void UzupelnijSzczegoly(std::list<Containers::Mail*> mailList);
     QTreeWidget * treeWidget_MailList;
 
     //od czwartej karty Graf2
@@ -120,6 +125,7 @@ class MyQTreeWidgetItem : public QTreeWidgetItem
 {
 public:
     Containers::Mail * myMail;
+    QColor color;
     MyQTreeWidgetItem(QTreeWidget *parent, Containers::Mail *mail);
 };
 

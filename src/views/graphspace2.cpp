@@ -15,6 +15,10 @@ GraphSpace2::GraphSpace2(Graph * newgraph, QGridLayout * lay):
     CreateVisibleVertices();
     personInfo = NULL;
     mailsInfo = NULL;
+    defaultBrush = QBrush(Qt::blue);
+    defaultPen.setWidth(2);
+    defaultPen.setColor(Qt::black);
+
 }
 
 GraphSpace2::~GraphSpace2()
@@ -66,6 +70,68 @@ void GraphSpace2::CreateVisibleEdges()
      }
 }
 
+
+void GraphSpace2::DefaultColour()
+{
+    ColourGraph(this->graph->getMails(),defaultBrush,defaultPen);
+    scene->update();
+}
+
+void GraphSpace2::ColourGraph(std::list<Containers::Mail*> maillist, QBrush brush, QPen pen)
+{
+    for(auto it = maillist.begin() ; it != maillist.end() ; it++)
+    {
+        Containers::Mail* mail = *it;
+        ColourEdge(mail,pen);
+        Containers::Person* person1 = mail->sender;
+        ColourVertex(person1,brush);
+    }
+}
+
+void GraphSpace2::ColourVertex(Containers::Person* person, QBrush brush)
+{
+    for(auto vertexit = this->visibleVertices.begin() ; vertexit != this->visibleVertices.end() ; vertexit++)
+    {
+        VisibleVertex* vertex = *vertexit;
+        Containers::Person* checkingperson = vertex->graphPerson;
+        if(person == checkingperson)
+        {
+            std::cout<<"znaleziono wierzcholek do kolorowania"<<std::endl;
+            vertex->brush = brush;
+
+        }
+    }
+}
+void GraphSpace2::ColourEdge(Containers::Mail* mail, QPen pen)
+{
+    for(auto edgeit = this->visibleEdges.begin() ; edgeit != this->visibleEdges.end() ; edgeit++)
+    {
+        VisibleEdge* edge = *edgeit;
+        Edge* edge1 = edge->graphEdge1;
+        for(auto edge1mailsIt = edge1->mails.begin() ; edge1mailsIt != edge1->mails.end() ; edge1mailsIt++)
+        {
+            Containers::Mail* checkingmail = &*edge1mailsIt;
+            if(mail == checkingmail)
+            {
+               std::cout<<"znaleziono krawędz do kolorowania"<<std::endl;
+               edge->pen = pen;
+            }
+        }
+        if(edge->graphEdge2)
+        {
+            Edge* edge2 = edge->graphEdge2;
+            for(auto edge2mailsIt = edge2->mails.begin() ; edge2mailsIt != edge2->mails.end() ; edge2mailsIt++)
+            {
+                Containers::Mail* checkingmail = &*edge2mailsIt;
+                if(mail == checkingmail)
+                {
+                   std::cout<<"znaleziono krawędz do kolorowania"<<std::endl;
+                   edge->pen = pen;
+                }
+            }
+        }
+    }
+}
 //////////////////
 //              //
 //  Wyliczenia  //
@@ -152,6 +218,7 @@ VisibleVertex::VisibleVertex(float a, float b, Vertex * vertex, Containers::Pers
     ishover = false;
     ispressed = false; isgrey = false; isspecial = false;
     setAcceptHoverEvents(true);
+    brush = QBrush(Qt::blue);
 }
 
 QRectF VisibleVertex::boundingRect() const
@@ -162,13 +229,8 @@ QRectF VisibleVertex::boundingRect() const
 void VisibleVertex::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
     QRectF rec = boundingRect();
-    QBrush brush1(Qt::blue);
     QString name = QString::fromStdString(graphPerson->getName());
-    if(isgrey)
-        brush1.setColor(Qt::gray);
-    if(isspecial)
-        brush1.setColor(Qt::red);
-    painter->setBrush(brush1);
+    painter->setBrush(this->brush);
     painter->drawEllipse(rec);
     painter->drawText(QRectF(-5,-35,50,50), Qt::AlignCenter, name);
 }
@@ -214,6 +276,7 @@ VisibleEdge::VisibleEdge(
     ispressed = false; isgrey = false; isspecial = false;
     graphEdge1 = NULL;
     graphEdge2 = NULL;
+    pen.setWidth(2); pen.setColor(Qt::black);
 }
 
 QRectF VisibleEdge::boundingRect() const
@@ -233,16 +296,7 @@ QPainterPath VisibleEdge::shape() const
 
 void VisibleEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    //drawing edge:
-    QBrush brush2(Qt::black);
-    painter->setBrush(brush2);
-    if(isgrey)
-        brush2.setColor(Qt::gray);
-    if(isspecial)
-        brush2.setColor(Qt::red);
-    QPen pen2;
-    pen2.setWidth(2);
-    painter->setPen(pen2);
+    painter->setPen(this->pen);
     painter->drawLine(this->line());
 
     //drawing arrow1

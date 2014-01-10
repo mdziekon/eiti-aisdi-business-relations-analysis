@@ -37,7 +37,10 @@ void MainWindow::on_actionLoadFile_activated()
 
 void MainWindow::on_actionSettings_activated()
 {
-    sw->show();
+    if(Flagwindow1)
+        return;
+    this->graphspace2->DefaultColour();
+    DefaultTreeView();
 }
 
 
@@ -95,7 +98,7 @@ void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMa
 
     UzupelnijZestawienie(loadedGraph);
 
-    UzupelnijSzczegoly();
+    UzupelnijSzczegoly(originalGraph->getMails());
     UzupelnijGraf2(loadedGraph, originalGraphSpace);
     FillComboBoxPersons(vecPerson);
 	std::cout << "END OF GRAPH BUILD" << std::endl;
@@ -116,12 +119,12 @@ void MainWindow::UzupelnijZestawienie(Graph* graphObj)
     ui->return_UzytkownikWyslNajwMaili->setText( QString::fromStdString( graphObj->getMostActiveSender().getName() ) );
 
 }
-void MainWindow::UzupelnijSzczegoly()
+void MainWindow::UzupelnijSzczegoly(std::list<Containers::Mail*> mailList)
 {
     int lp = 0;
 
-        for(std::vector<Containers::Mail*>::iterator itMail = vecMail.begin();
-            itMail != vecMail.end() ; ++itMail)
+        for(std::list<Containers::Mail*>::iterator itMail = mailList.begin();
+            itMail != mailList.end() ; ++itMail)
         {
             AddLine(*itMail,lp++);
         }
@@ -181,6 +184,8 @@ void MainWindow::on_treeWidget_MailList_itemDoubleClicked(QTreeWidgetItem *item,
 
 void MainWindow::on_pushButton_substringfilter_clicked()
 {
+    if(Flagwindow1)
+        return;
     QString qstringText = ui->textEdit_substringfilterinput->toPlainText();
     std::string stringText = qstringText.toStdString();
     QString listtext;
@@ -193,6 +198,8 @@ void MainWindow::on_pushButton_substringfilter_clicked()
 
 void MainWindow::on_pushButton_peoplefilter_clicked()
 {
+    if(Flagwindow1)
+        return;
     QString listtext;
     listtext += " Odfiltruj osoby: "; listtext += ui->textEdit_peoplefilterinput->toPlainText();
     AddFilterToList(listtext);
@@ -208,6 +215,8 @@ void MainWindow::on_pushButton_peoplefilter_clicked()
 
 void MainWindow::on_pushButton_datefilter_clicked()
 {
+    if(Flagwindow1)
+        return;
 	QDateTime datetime = ui->dateTimeEdit->dateTime();
     QDate qdate = ui->dateTimeEdit->date();
     QString qstr= qdate.toString("dd.MM.yyyy");
@@ -265,6 +274,8 @@ void MainWindow::on_comboBox_people_activated(const QString &arg1)
 
 void MainWindow::on_pushButton_setfiltersaction_clicked()
 {
+    if(Flagwindow1)
+        return;
     std::cout<<"tu1"<<std::endl;
     WyczyscGraf2();
     //filteredGraph = filterset->processAll(originalGraph,1);
@@ -290,6 +301,48 @@ void MainWindow::on_pushButton_setfiltersaction_clicked()
     //
 
 }
+void MainWindow::DefaultTreeView()
+{
+    QTreeWidgetItemIterator it(ui->treeWidget_MailList);
+     while (*it)
+     {
+         QTreeWidgetItem* item = *it;
+         MyQTreeWidgetItem* myitem = static_cast<MyQTreeWidgetItem*>(item);
+         ColourTreeView(myitem,Qt::white);
+         ++it;
+     }
+}
+void MainWindow::ColourTreeView(std::list<Containers::Mail*> mailsToColour, QColor color)
+{
+    for( auto i = mailsToColour.begin() ; i != mailsToColour.end() ; i++)
+    {
+        Containers::Mail* mail = *i;
+        int count = ui->treeWidget_MailList->topLevelItemCount();
+        QTreeWidgetItem* currentitem = ui->treeWidget_MailList->topLevelItem(0);
+        MyQTreeWidgetItem* myitem;
+        while(count--)
+        {
+            currentitem = ui->treeWidget_MailList->itemBelow(currentitem);
+            if(currentitem == 0)
+                break;
+            myitem = static_cast<MyQTreeWidgetItem*>(currentitem);
+            if(myitem->myMail == mail)
+            {
+                ColourTreeView(myitem, color);
+                break;
+            }
+        }
+    }
+}
+
+void MainWindow::ColourTreeView(MyQTreeWidgetItem* myitem, QColor color)
+{
+    myitem->setBackground(0,color);
+    myitem->setBackground(1,color);
+    myitem->setBackground(2,color);
+    myitem->setBackground(3,color);
+    myitem->color = color;
+}
 
 void MainWindow::on_pushButton_deleteselectedfilter_clicked()
 {
@@ -309,4 +362,39 @@ bool IsMailInList(Containers::Mail* mail, std::list<Containers::Mail*>* list)
     {
 
     }
+}
+
+void MainWindow::on_pushButton_pokazforward_clicked()
+{
+    if(Flagwindow1)
+        return;
+    QList<QTreeWidgetItem*> list = ui->treeWidget_MailList->selectedItems();
+    if(list.size() != 1)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("mozesz zaznaczyc tylko jeden element");
+        msgBox.exec();
+        return;
+    }
+
+    QBrush brush; QPen pen; //tutaj sobie definiuje pędzelki którymi bede kolorowac graf
+    brush = QBrush(Qt::red);
+    pen.setWidth(2); pen.setColor(Qt::red);
+
+    MyQTreeWidgetItem* myitem;
+    QList<QTreeWidgetItem*>::iterator i = list.begin() ;
+    myitem = static_cast<MyQTreeWidgetItem*>(*i);
+
+    ColourTreeView(myitem,Qt::yellow);
+    Containers::Mail* forwardedMail = myitem->myMail; // tu masz wskaznik na mail ktory wybralismy
+
+    std::list<Containers::Mail*> mailstocolour;// tu przykladowe wykorzystanie funkcji
+    mailstocolour.push_back(forwardedMail);//
+    ColourTreeView(mailstocolour, Qt::red);//
+    //tutaj trzeba zapuscic jakas petle ktora dla kazdego maila forwardowanego uruchomi funkcje
+    //ColourTreeView(std::list<Containers::Mail*> mailstoColour, QColor color);
+
+
+    this->graphspace2->ColourGraph(mailstocolour,brush,pen);
+    this->graphspace2->scene->update();
 }

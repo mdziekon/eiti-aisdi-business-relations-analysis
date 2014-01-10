@@ -199,7 +199,7 @@
       <string>2. Szczegoly</string>
      </attribute>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QTreeWidget" name="treeWidget_MailList">
         <property name="maximumSize">
          <size>
@@ -233,6 +233,13 @@
           <string>Data</string>
          </property>
         </column>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="pushButton_pokazforward">
+        <property name="text">
+         <string>Pokaz forward</string>
+        </property>
        </widget>
       </item>
      </layout>
@@ -554,7 +561,7 @@ p, li { white-space: pre-wrap; }
      <normaloff>:/images/015.png</normaloff>:/images/015.png</iconset>
    </property>
    <property name="text">
-    <string>Przywroc oryginalne ustawienia</string>
+    <string>Przywroc oryginalne kolory</string>
    </property>
    <property name="toolTip">
     <string>Ustawienia</string>
@@ -577,7 +584,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionReset_2">
    <property name="icon">
-    <iconset>
+    <iconset resource="../assets/images.qrc">
      <normaloff>:/images/004.png</normaloff>:/images/004.png</iconset>
    </property>
    <property name="text">

@@ -53,6 +53,9 @@ public:
     PersonInfo * personInfo;
     MailsInfo * mailsInfo;
 
+    QBrush defaultBrush;
+    QPen defaultPen;
+
     std::vector<VisibleVertex*> visibleVertices;
     std::vector<VisibleEdge*> visibleEdges;
 
@@ -72,6 +75,11 @@ public:
     bool CheckEdges( std::pair<Vertex*,const Vertex*> verticlesX, Edge* newedge );
     int vertexCount = 0;
 
+    void ColourGraph(std::list<Containers::Mail *> maillist, QBrush brush, QPen pen);
+    void ColourVertex(Containers::Person *person, QBrush brush);
+    void ColourEdge(Containers::Mail *mail, QPen pen);
+    void DefaultColour();
+
 };
 
 class VisibleVertex : public QGraphicsItem
@@ -81,6 +89,8 @@ public:
     bool ispressed;
     bool isgrey;
     bool isspecial;
+    QBrush brush;
+
     VisibleVertex();
     VisibleVertex(float a, float b, Vertex * vertex, Containers::Person * person);
 
@@ -110,6 +120,7 @@ public:
     bool ispressed;
     bool isgrey;
     bool isspecial;
+    QPen pen;
 
     VisibleEdge();
     VisibleEdge(
