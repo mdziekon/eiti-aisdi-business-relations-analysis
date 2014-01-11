@@ -52,7 +52,7 @@ class GraphSpace2: public QWidget
 {
 public:
     GraphSpace2();
-    GraphSpace2(Graph * newgraph, QGridLayout* lay );
+    GraphSpace2(Graph * newgraph, QGridLayout* lay ,float delta = 1.0f);
     ~GraphSpace2();
 
     Graph * graph;
@@ -68,8 +68,8 @@ public:
     std::vector<VisibleVertex*> visibleVertices;
     std::vector<VisibleEdge*> visibleEdges;
 
-    void CreateVisibleVertices();
-    void CreateVisibleEdges();
+    void CreateVisibleVertices(float delta = 1.0f);
+    void CreateVisibleEdges(float delta = 1.0f);
 
     //dane do okienka w ktorym rysujemy graf
     int xs = 220;

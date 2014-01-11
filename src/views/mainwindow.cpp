@@ -140,7 +140,7 @@ void MainWindow::UzupelnijGraf2(Graph *graphObj)
 {
     //QWidget * pointedWidget = ui->tab_four;
     QGridLayout* layout = ui->gridLayout_5;
-    this->graphspace2 = new GraphSpace2(graphObj, layout);
+    this->graphspace2 = new GraphSpace2(graphObj, layout, this->scale);
     ui->graphicsView->setScene(graphspace2->scene);
 }
 void MainWindow::WyczyscGraf2()
@@ -462,7 +462,16 @@ void MainWindow::on_pushButton_advancedfiltersaction_clicked()
 
 void MainWindow::on_pushButton_plus_clicked()
 {
-    //this->originalGraphSpace->scene->selectedItems()
+    this->scale += .25f;
+    this->WyczyscGraf2();
+    this->UzupelnijGraf2(this->originalGraph);
+}
+
+void MainWindow::on_pushButton_minus_clicked()
+{
+    this->scale -= .25f;
+    this->WyczyscGraf2();
+    this->UzupelnijGraf2(this->originalGraph);
 }
 
 QListWidgetItemPerson::QListWidgetItemPerson(Containers::Person *person): person(person)

@@ -7,14 +7,14 @@ GraphSpace2::GraphSpace2()
 {
 }
 
-GraphSpace2::GraphSpace2(Graph * newgraph, QGridLayout * lay):
+GraphSpace2::GraphSpace2(Graph * newgraph, QGridLayout * lay, float delta):
     graph(newgraph), layout(lay)
 {
     scene = new MyQGraphicsScene(this);
     SetvertexCount();
     SetLocations();
-    CreateVisibleEdges();
-    CreateVisibleVertices();
+    CreateVisibleEdges(delta);
+    CreateVisibleVertices(delta);
     personInfo = NULL;
     mailsInfo = NULL;
     defaultBrush = QBrush(Qt::blue);
@@ -29,20 +29,20 @@ GraphSpace2::~GraphSpace2()
 }
 
 
-void GraphSpace2::CreateVisibleVertices()
+void GraphSpace2::CreateVisibleVertices(float delta)
 {
     VisibleVertex * vertex;
     for(std::unordered_map<Containers::Person*, Vertex*>::iterator it = graph->vertices.begin();
         it != graph->vertices.end() ; ++it )
     {
-        vertex = new VisibleVertex(it->second->x, it->second->y, it->second, it->first);
+        vertex = new VisibleVertex(it->second->x*delta, it->second->y*delta, it->second, it->first);
         vertex->myspace = this;
         scene->addItem(vertex);
         visibleVertices.push_back(vertex);
     }
 }
 
-void GraphSpace2::CreateVisibleEdges()
+void GraphSpace2::CreateVisibleEdges(float delta)
 {
     float x1,y1,x2,y2;
     VisibleEdge * edge;
@@ -61,7 +61,7 @@ void GraphSpace2::CreateVisibleEdges()
             verticles = std::make_pair(it_person->second,it_edge->second->pointedVertex);
             if(CheckEdges(verticles,it_edge->second))
             {
-                edge = new VisibleEdge(x1,y1,x2,y2);
+                edge = new VisibleEdge(x1*delta,y1*delta,x2*delta,y2*delta);
                 edge->myspace = this;
                 edge->graphEdge1 = it_edge->second;
                 edge->verticles = verticles;

@@ -85,10 +85,12 @@ private slots:
     void on_pushButton_advancedfiltersaction_clicked();
 
     void on_pushButton_plus_clicked();
+    void on_pushButton_minus_clicked();
 
     void on_listWidget_people_itemDoubleClicked(QListWidgetItem *item);
 
 private:
+    float scale = 1.0f;
     //okienka ktore sie oddzielnie otwieraja
     LoadFileWindow* lfw ;
     SettingsWindow* sw;
