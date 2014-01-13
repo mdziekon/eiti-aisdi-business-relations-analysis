@@ -52,6 +52,8 @@
         <df name="utils">
           <in>Exceptions.hpp</in>
           <in>GenericException.cpp</in>
+          <in>MD5.cpp</in>
+          <in>MD5.h</in>
           <in>UTests.cpp</in>
           <in>UTests.hpp</in>
           <in>heapsort.h</in>

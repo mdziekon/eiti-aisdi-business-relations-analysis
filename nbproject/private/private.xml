@@ -9,15 +9,6 @@
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/home/michal/NetBeansProjects/aisdi_lab/arap/filtry/Makefile</file>
-            <file>file:/home/michal/NetBeansProjects/aisdi_lab/arap/filtry/src/models/Containers.hpp</file>
-            <file>file:/home/michal/NetBeansProjects/aisdi_lab/arap/filtry/src/models/Graph.h</file>
-            <file>file:/home/michal/NetBeansProjects/aisdi_lab/arap/filtry/src/Filter.cpp</file>
-            <file>file:/home/michal/NetBeansProjects/aisdi_lab/arap/filtry/src/models/Graph.cpp</file>
-            <file>file:/home/michal/NetBeansProjects/aisdi_lab/arap/filtry/src/views/mainwindow.h</file>
-            <file>file:/home/michal/NetBeansProjects/aisdi_lab/arap/filtry/src/views/mainwindow.cpp</file>
-            <file>file:/home/michal/NetBeansProjects/aisdi_lab/arap/filtry/src/Filter.h</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

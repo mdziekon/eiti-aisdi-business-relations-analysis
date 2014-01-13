@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include "Containers.hpp"
+#include <sstream>
 
 class Edge;
 class Graph;
@@ -47,6 +48,7 @@ class Graph{
     friend class Filter;
 public: //do testow
     std::unordered_map<Containers::Person*, Vertex*> vertices;
+	unsigned int fwdCount = 0;
 
     Graph(std::list<Containers::Person*>& people, std::list<Containers::Mail*>& mails);
     Graph(std::unordered_map<std::string, Containers::Person*>& people, std::vector<Containers::Mail*>& mails);
@@ -57,9 +59,15 @@ public: //do testow
     Containers::Person& getMostActiveSender();
     unsigned int getForwardedMailsNum();
     unsigned int getBiggestEdgeSize();
+	std::string getMostActiveDay();
+	Containers::Person& getMostActiveReceiver();
+	 unsigned int getRelationsNum();
 
     std::list<Containers::Person*> getPeople();
     std::list<Containers::Mail*> getMails();
+	
+	std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> fwdDetect(Containers::Mail* check);
+	Containers::Person* fwdOrigin = NULL;
 private:
     unsigned int biggestEdge;
     //to przyjmuje wektor UNIKALNYCH osob, dodaje wierzcholki odpowiadajce tym osobom

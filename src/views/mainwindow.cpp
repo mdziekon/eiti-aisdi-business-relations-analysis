@@ -4,6 +4,7 @@
 #include "ui_loadfilewindow.h"
 #include <iostream>
 #include "../models/Graph.h"
+#include <tuple>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -113,10 +114,11 @@ void MainWindow::UzupelnijZestawienie(Graph* graphObj)
     if(graphObj->getPeopleNum() == 0)
         return;
 
-    ui->return_IloscRelacji->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
-    ui->return_LiczbaMailiForward->setText( QString::number( 0 /*graphObj->getForwardedMailsNum()*/ ) );
-    ui->return_UzOdebrNajwMaili->setText( QString::fromStdString( "later" /*graphObj->getMostActiveReceiver().getName()*/ ) );
+    ui->return_IloscRelacji->setText( QString::number( graphObj->getRelationsNum() ) );
+    ui->return_LiczbaMailiForward->setText( QString::number( graphObj->fwdCount) );
+    ui->return_UzOdebrNajwMaili->setText( QString::fromStdString( graphObj->getMostActiveReceiver().getName() ) );
     ui->return_UzytkownikWyslNajwMaili->setText( QString::fromStdString( graphObj->getMostActiveSender().getName() ) );
+	ui->return_DzienWyslanoNajwMaili->setText( QString::fromStdString( graphObj->getMostActiveDay() ) );
 
 }
 void MainWindow::UzupelnijSzczegoly(std::list<Containers::Mail*> mailList)
@@ -379,6 +381,8 @@ void MainWindow::on_pushButton_pokazforward_clicked()
 
     QBrush brush; QPen pen; //tutaj sobie definiuje pędzelki którymi bede kolorowac graf
     brush = QBrush(Qt::red);
+	QBrush brush2;
+    brush2 = QBrush(Qt::green);
     pen.setWidth(2); pen.setColor(Qt::red);
 
     MyQTreeWidgetItem* myitem;
@@ -388,13 +392,18 @@ void MainWindow::on_pushButton_pokazforward_clicked()
     ColourTreeView(myitem,Qt::yellow);
     Containers::Mail* forwardedMail = myitem->myMail; // tu masz wskaznik na mail ktory wybralismy
 
-    std::list<Containers::Mail*> mailstocolour;// tu przykladowe wykorzystanie funkcji
-    mailstocolour.push_back(forwardedMail);//
-    ColourTreeView(mailstocolour, Qt::red);//
+	auto ret = this->graphspace2->graph->fwdDetect(forwardedMail);
+	
+//    std::list<Containers::Mail*> mailstocolour;// tu przykladowe wykorzystanie funkcji
+//    mailstocolour.push_back(forwardedMail);//
+    ColourTreeView(ret.second, Qt::red);//
     //tutaj trzeba zapuscic jakas petle ktora dla kazdego maila forwardowanego uruchomi funkcje
     //ColourTreeView(std::list<Containers::Mail*> mailstoColour, QColor color);
-
-
-    this->graphspace2->ColourGraph(mailstocolour,brush,pen);
+	for(auto it: ret.first)
+	{
+		this->graphspace2->ColourVertex(it, brush);
+	}
+    this->graphspace2->ColourGraph(ret.second,brush,pen);
+	this->graphspace2->ColourVertex(this->graphspace2->graph->fwdOrigin, brush2);
     this->graphspace2->scene->update();
 }

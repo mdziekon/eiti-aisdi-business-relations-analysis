@@ -1,17 +1,38 @@
 #include "Graph.h"
 #include <iostream>
+#include <set>
 
 Graph::Graph(std::unordered_map<std::string, Containers::Person*>& people, std::vector<Containers::Mail*>& mails){
     biggestEdge=0;
 
     addPeople(people);
     addToEdges(mails);
+	
+	std::set<std::string> uniq;
+	for(auto x: this->getMails())
+	{
+		if (x->headers.getHeader("Message-ID") != "<1803522542.12549.1386376839060.JavaMail.javamailuser@localhost>")
+		{
+			uniq.insert(x->headers.getHeader("Message-ID"));
+			this->fwdCount++;
+		}
+	}
+	this->fwdCount -= uniq.size();
 }
 Graph::Graph(std::list<Containers::Person*>& people, std::list<Containers::Mail*>& mails){
     biggestEdge=0;
 
     addPeople(people);
     addToEdges(mails);
+	
+	cout << "[[[SIZE: " << this->getMails().size() << "]]]\n";
+	for(auto x: this->getMails())
+	{
+		if (x->headers.getHeader("Message-ID") != "<1803522542.12549.1386376839060.JavaMail.javamailuser@localhost>")
+		{
+			this->fwdCount++;
+		}
+	}
 }
 
 
@@ -93,6 +114,38 @@ std::list<Containers::Mail*> Graph::getMails(){
     return list;
 }
 
+std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> Graph::fwdDetect(Containers::Mail* check)
+{
+	std::vector<Containers::Person*> ppl;
+	std::list<Containers::Mail*> mails;
+	Containers::Person* origin = NULL;
+	
+	if (check->headers.getHeader("Message-ID") == "<1803522542.12549.1386376839060.JavaMail.javamailuser@localhost>")
+	{
+		return {ppl, mails};
+	}
+	
+	auto allMails = this->getMails();
+	for(auto x = allMails.begin(); x != allMails.end(); ++x)
+	{
+		if ((*x)->headers.getHeader("Message-ID") == check->headers.getHeader("Message-ID"))
+		{
+			if ((*x)->headers.getHeader("Subject").at(0) != 'F')
+			{
+				origin = (*x)->sender;
+			}
+			ppl.push_back((*x)->sender);
+			for(auto y: (*x)->receivers)
+			{
+				ppl.push_back(y.first);
+			}
+			mails.push_back(*x);
+		}		
+	}
+	fwdOrigin = origin;
+	return {ppl, mails};
+}
+
 
 
 unsigned int Graph::getMailsNumber(){
@@ -141,6 +194,68 @@ unsigned int Graph::getPeopleNum(){
 unsigned int Graph::getForwardedMailsNum(){
     return 0;
 }
+std::string Graph::getMostActiveDay(){
+    std::unordered_map<std::string, int> days;
+
+    for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
+                if(days.count((*mailsIt).sendDate.formatDate("%F"))==0){
+                    days.insert(std::make_pair<std::string,int>((*mailsIt).sendDate.formatDate("%F"), 1));
+                }
+                else{
+                    ++days.at((*mailsIt).sendDate.formatDate("%F"));
+                }
+            }
+        }
+    }
+
+    std::string mostActiveDay=days.begin()->first;
+    for(auto daysIt=days.begin(); daysIt!=days.end(); daysIt++){
+        if(daysIt->second>days.at(mostActiveDay))
+            mostActiveDay=daysIt->first;
+    }
+
+    std::stringstream ss;
+    ss << mostActiveDay<<" ("<<days.at(mostActiveDay)<<" wiadomosci)";
+    std::string str = ss.str();
+    return str;
+
+}
+Containers::Person& Graph::getMostActiveReceiver(){
+    unsigned int mostMailsReceived=0;
+    Containers::Person* mostActiveReceiver=0;
+
+    for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        Containers::Person* vertexOwner = vertexIt->first;
+        unsigned int allMailsFromVertex=0;
+
+        for(auto edgeIt=vertexIt->second->pointingEdges.begin(); edgeIt!=vertexIt->second->pointingEdges.end(); edgeIt++){
+            allMailsFromVertex+=(*edgeIt)->mails.size();
+        }
+        if(allMailsFromVertex>=mostMailsReceived){
+            mostMailsReceived=allMailsFromVertex;
+            mostActiveReceiver=vertexOwner;
+        }
+    }
+    return *mostActiveReceiver;
+}
+
+ unsigned int Graph::getRelationsNum(){
+     float relations=0;
+
+     for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            Vertex* pointedVertex=edgeIt->second->pointedVertex;
+            //jesli wskazywany wierzcholek nie ma edga "przeciwnego" dodaj relacje
+            if(pointedVertex->edges.count(vertexIt->second)==0)
+                relations+=1;
+            //wskazywany wierzholek ma edga, ktory wskazuje na wierzholek z ktorego wychodzi aktualny edge - ma pare
+            else relations+=0.5;
+        }
+     }
+     return (unsigned int)relations;
+ }
 
 
 

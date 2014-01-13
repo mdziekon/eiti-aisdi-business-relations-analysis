@@ -71,11 +71,13 @@ void GraphSpace2::CreateVisibleEdges()
 }
 
 
-void GraphSpace2::DefaultColour()
-{
-    ColourGraph(this->graph->getMails(),defaultBrush,defaultPen);
-    scene->update();
-}
+void GraphSpace2::DefaultColour() { ColourGraph(this->graph->getMails(),defaultBrush,defaultPen); for(auto vertexit = this->visibleVertices.begin() ; vertexit != this->visibleVertices.end() ; vertexit++) { VisibleVertex* vertex = *vertexit; ColourVertex(vertex->graphPerson,defaultBrush); } scene->update(); }
+
+//void GraphSpace2::DefaultColour()
+//{
+//    ColourGraph(this->graph->getMails(),defaultBrush,defaultPen);
+//    scene->update();
+//}
 
 void GraphSpace2::ColourGraph(std::list<Containers::Mail*> maillist, QBrush brush, QPen pen)
 {
@@ -238,6 +240,28 @@ void VisibleVertex::paint(QPainter *painter, const QStyleOptionGraphicsItem *, Q
 void VisibleVertex::mousePressEvent(QGraphicsSceneMouseEvent *)
 {
     myspace->scene->itemPressed = true;
+	QBrush brush1, brush2; QPen pen; 
+	pen.setWidth(2); pen.setColor(Qt::red);
+	brush1 = QBrush(Qt::red);
+    brush2 = QBrush(Qt::green);
+	this->myspace->ColourVertex(this->graphPerson, brush2);
+	std::list<Containers::Mail*> lst;
+	std::cout << "COLOR\n";
+	this->graphVertex->edges;
+	std::cout << "GOTOCOLOR\n";
+	std::cout << this->graphVertex->edges.size() << endl;
+//	std::cout << this->graphVertex->edges.at(0)->mails.size() << endl;
+	std::cout << "GOTOCOLOR2\n";
+	if (this->graphVertex->edges.size() > 0 && this->graphVertex->edges.begin()->second->mails.size() > 0)
+	{
+		std::cout << "INCOLOR\n";
+		lst.push_back(&(this->graphVertex->edges.begin()->second->mails.front()));
+//		cout << (&(this->graphVertex->edges.at(0)->mails.front()))->sender->getEmail().getFull() << std::endl;
+		this->myspace->ColourGraph(lst,brush1,pen);
+		std::cout << "COLOURING\n";
+	}
+	std::cout << "OUT\n";
+    this->myspace->scene->update();
 }
 
 void VisibleVertex::hoverEnterEvent(QGraphicsSceneHoverEvent *)
@@ -366,6 +390,7 @@ void MyQGraphicsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *)
     deleteAllPersonInfo();
     deleteAllMailsInfo();
     itemPressed = false;
+	this->space->DefaultColour();
     update();
 }
 

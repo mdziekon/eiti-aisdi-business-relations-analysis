@@ -357,7 +357,7 @@ Containers::Mail * FileParser::build(std::string& str)
 		    headers.addHeader(result.first, result.second);
 		} 
 	}
-        this->checkForwards(title, contents, result_mail);
+//        this->checkForwards(title, contents, result_mail);
         mail_cache.insert(std::pair<std::string, Mail*>(std::string(md5->md5ify(contents)), result_mail));
         delete md5;
 	return result_mail;
