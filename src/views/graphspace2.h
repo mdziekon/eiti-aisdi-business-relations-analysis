@@ -21,6 +21,15 @@
 #include "personinfo.h"
 #include "mailsinfo.h"
 #include <QPointF>
+#include "../utils/sortComparators.h"
+
+class SortedVerticesComparator : public SortComparator<class std::pair<Containers::Person* const, Vertex*>>
+{
+	bool compare(std::pair<Containers::Person* const, Vertex*>* left, std::pair<Containers::Person* const, Vertex*>* right)
+	{
+		return (left->first->getEmail().getFull() > right->first->getEmail().getFull());
+	}
+};
 
 class VisibleVertex; class VisibleEdge; class GraphSpace2;
 

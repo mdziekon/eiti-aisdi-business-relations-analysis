@@ -27,7 +27,9 @@ SOURCES +=\
     src/models/Email.cpp \
     src/models/Graph.cpp \
     src/utils/GenericException.cpp \
+    src/utils/MD5.cpp \
     src/controllers/parser.cpp \
+    src/controllers/Filter.cpp \
     src/views/settingswindow.cpp \
     src/views/personinfo.cpp \
     src/views/mainwindow.cpp \
@@ -35,21 +37,21 @@ SOURCES +=\
     src/views/mailsinfo.cpp \
     src/views/loadfilewindow.cpp \
     src/views/helpwindow.cpp \
-    src/views/graphspace.cpp \
-    src/views/graphspace2.cpp \
-    src/Filter.cpp \
-    src/utils/MD5.cpp
+    src/views/graphspace2.cpp
 
 
 
 
 HEADERS  += \
     src/models/Containers.hpp \
-    src/utils/Exceptions.hpp \
     src/models/Graph.h \
+    src/models/Graph.h \
+    src/utils/Exceptions.hpp \
     src/utils/sortComparators.h \
     src/utils/quicksort.h \
     src/utils/MD5.h \
+    src/utils/sortComparators.h \
+    src/utils/quicksort.h \
     src/views/settingswindow.h \
     src/views/personinfo.h \
     src/views/mainwindow.h \
@@ -57,12 +59,8 @@ HEADERS  += \
     src/views/mailsinfo.h \
     src/views/loadfilewindow.h \
     src/views/helpwindow.h \
-    src/models/Graph.h \
-    src/views/graphspace.h \
-    src/utils/sortComparators.h \
-    src/utils/quicksort.h \
     src/views/graphspace2.h \
-    src/Filter.h \
+    src/controllers/Filter.h \
     src/controllers/parser.hpp
 
 

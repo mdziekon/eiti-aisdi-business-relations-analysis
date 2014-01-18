@@ -1,5 +1,5 @@
 #include "Filter.h"
-#include "models/Graph.h"
+#include "../models/Graph.h"
 #include <string>
 #include <iostream>
 #include <vector>

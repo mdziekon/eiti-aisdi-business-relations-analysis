@@ -231,7 +231,6 @@ void FileParser::checkForwards(std::string & title, std::string & contents, Mail
     
     std::size_t found = 0;
     while(counter --> -1) {
-        int i;
         found = contents.find("Forwarded message from", found);
         hashes.push_back(md5->md5ify(contents));
         if(found < contents.size())

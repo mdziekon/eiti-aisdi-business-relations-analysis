@@ -1,5 +1,7 @@
 #include "graphspace2.h"
 #include <iostream>
+#include "../utils/sortComparators.h"
+#include "../utils/quicksort.h"
 
 GraphSpace2::GraphSpace2()
 {
@@ -152,27 +154,38 @@ void GraphSpace2::SetLocations()
     if(vertexCount == 0)
         return;
 
+	// Konwertuj unordered_map do vector a potem posortuj,
+	// by zachować jednakową kolejność elementów na ekranie
+	std::vector<std::pair<Containers::Person* const, Vertex*>*> sortedVertices;	
+	
+	for(auto it = graph->vertices.begin(); it != graph->vertices.end(); ++it)
+	{
+		sortedVertices.push_back(&*it);
+	}
 
-//    float maxLenght = 2*3;
-//    maxLenght *= r;
-//    float itemWidth = maxLenght/vertexCount;
-//    while(itemWidth < 50)
-//    {
-//        std::cout<< "petla" <<  std::endl;
-//        r *= 2;
-//        maxLenght = 2*(3,14)*r;
-//        itemWidth = maxLenght/vertexCount;
-//    }
-//    std::cout<< "maxLenght" << maxLenght << std::endl;
-//    std::cout<< "r" << r << std::endl;
-//    std::cout<< "itemWidth" << itemWidth << std::endl;
-
-    std::unordered_map<Containers::Person*, Vertex*>::iterator it = graph->vertices.begin();
-    for(int i = 0 ; it != graph->vertices.end() ; ++i, ++it)
+	SortedVerticesComparator comp;
+	quicksort<std::pair<Containers::Person* const, Vertex*>>(sortedVertices, 0, sortedVertices.size() - 1, comp);
+	
+//	float maxLenght = 2*3;
+//	maxLenght *= r;
+//	float itemWidth = maxLenght/vertexCount;
+//	while(itemWidth < 50)
+//	{
+//		std::cout<< "petla" <<  std::endl;
+//		r *= 2;
+//		maxLenght = 2*(3,14)*r;
+//		itemWidth = maxLenght/vertexCount;
+//	}
+//	std::cout<< "maxLenght" << maxLenght << std::endl;
+//	std::cout<< "r" << r << std::endl;
+//	std::cout<< "itemWidth" << itemWidth << std::endl;
+	
+    auto it = sortedVertices.begin();
+    for(int i = 0 ; it != sortedVertices.end() ; ++i, ++it)
     {
         float a = r * sin( 3.14*2/vertexCount * i) + xs;
         float b = r * cos( 3.14*2/vertexCount * i) + ys;
-        it->second->setLocation(a,b);
+        (*it)->second->setLocation(a,b);
     }
 }
 
@@ -246,21 +259,12 @@ void VisibleVertex::mousePressEvent(QGraphicsSceneMouseEvent *)
     brush2 = QBrush(Qt::green);
 	this->myspace->ColourVertex(this->graphPerson, brush2);
 	std::list<Containers::Mail*> lst;
-	std::cout << "COLOR\n";
-	this->graphVertex->edges;
-	std::cout << "GOTOCOLOR\n";
-	std::cout << this->graphVertex->edges.size() << endl;
-//	std::cout << this->graphVertex->edges.at(0)->mails.size() << endl;
-	std::cout << "GOTOCOLOR2\n";
+	
 	if (this->graphVertex->edges.size() > 0 && this->graphVertex->edges.begin()->second->mails.size() > 0)
 	{
-		std::cout << "INCOLOR\n";
 		lst.push_back(&(this->graphVertex->edges.begin()->second->mails.front()));
-//		cout << (&(this->graphVertex->edges.at(0)->mails.front()))->sender->getEmail().getFull() << std::endl;
 		this->myspace->ColourGraph(lst,brush1,pen);
-		std::cout << "COLOURING\n";
 	}
-	std::cout << "OUT\n";
     this->myspace->scene->update();
 }
 

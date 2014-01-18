@@ -222,10 +222,7 @@ void MainWindow::on_pushButton_datefilter_clicked()
 	QDateTime datetime = ui->dateTimeEdit->dateTime();
     QDate qdate = ui->dateTimeEdit->date();
     QString qstr= qdate.toString("dd.MM.yyyy");
-	
-    std::string str = qstr.toStdString();
-    FileParser parser;
-    Containers::Date date = parser.parseTime(str);
+    
     QString listtext;
     listtext += " Odfiltruj date: "; listtext += qstr;
     AddFilterToList(listtext);
@@ -355,15 +352,6 @@ void MainWindow::on_pushButton_deleteselectedfilter_clicked()
 MyQTreeWidgetItem::MyQTreeWidgetItem(QTreeWidget * parent,Containers::Mail *mail): QTreeWidgetItem(parent)
 {
     myMail = mail;
-}
-
-bool IsMailInList(Containers::Mail* mail, std::list<Containers::Mail*>* list)
-{
-    std::list<Containers::Mail*>::iterator it = list->begin();
-    for( ; it != list->end() ; ++it)
-    {
-
-    }
 }
 
 void MainWindow::on_pushButton_pokazforward_clicked()

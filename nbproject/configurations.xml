@@ -28,8 +28,6 @@
           <in>UTests.hpp</in>
         </df>
         <df name="views">
-          <in>graphspace.cpp</in>
-          <in>graphspace.h</in>
           <in>helpwindow.cpp</in>
           <in>helpwindow.h</in>
           <in>loadfilewindow.cpp</in>
@@ -215,12 +213,6 @@
       <item path="src/utils/UTests.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/utils/UTests.hpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/views/graphspace.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool>
-        </ccTool>
-      </item>
-      <item path="src/views/graphspace.h" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/views/helpwindow.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>

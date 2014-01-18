@@ -16,7 +16,7 @@
 #include "graphspace2.h"
 #include "../models/Graph.h"
 #include "personinfo.h"
-#include "../Filter.h"
+#include "../controllers/Filter.h"
 #include <QListWidgetItem>
 #include "../controllers/parser.hpp"
 
@@ -128,7 +128,5 @@ public:
     QColor color;
     MyQTreeWidgetItem(QTreeWidget *parent, Containers::Mail *mail);
 };
-
-bool IsMailInList(Containers::Mail* mail, std::list<Containers::Mail*>* list);
 
 #endif // MAINWINDOW_H

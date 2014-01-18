@@ -20,15 +20,14 @@
         <in>ui_personinfo.h</in>
         <in>ui_settingswindow.h</in>
       </df>
-      <df name="include">
-        <in>Filter.h</in>
-      </df>
       <df name="src">
         <df name="assets">
           <df name="images">
           </df>
         </df>
         <df name="controllers">
+          <in>Filter.cpp</in>
+          <in>Filter.h</in>
           <in>parser.cpp</in>
           <in>parser.hpp</in>
         </df>
@@ -61,8 +60,6 @@
           <in>sortComparators.h</in>
         </df>
         <df name="views">
-          <in>graphspace.cpp</in>
-          <in>graphspace.h</in>
           <in>graphspace2.cpp</in>
           <in>graphspace2.h</in>
           <in>helpwindow.cpp</in>
@@ -81,9 +78,6 @@
           <in>settingswindow.h</in>
         </df>
         <in>AppGUI.cpp</in>
-        <in>Filter.cpp</in>
-        <in>Filter.h</in>
-        <in>main.cpp</in>
       </df>
     </df>
   </logicalFolder>
