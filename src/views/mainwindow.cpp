@@ -434,6 +434,21 @@ void MainWindow::on_pushButton_advancedfiltersaction_clicked()
 	
     if (fp.hasSucceded())
     {
+		WyczyscGraf2();
+		fp.applyExpression(originalGraph);
+		UzupelnijGraf2(originalGraph);
+
+		//do sparwdzenia
+		ui->treeWidget_MailList->clear();
+		int lp = 0;
+		std::list<Containers::Mail*> lista = originalGraph->getMails();
+		std::list<Containers::Mail*>::iterator it = lista.begin();
+		for( ; it != lista.end() ; ++it)
+		{
+			AddLine(*it,lp++);
+		}
+		ui->treeWidget_MailList->sortItems(0,Qt::SortOrder(0));
+		
         ui->label_statusadvancedfilters->setStyleSheet("QLabel { background-color : #2ecc40; color: #ffffff;}");
         ui->label_statusadvancedfilters->setText("Poprawna skladnia. Filtr zaladowany");
     }
