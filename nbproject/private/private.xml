@@ -9,6 +9,14 @@
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/michal/NetBeansProjects/aisdi_lab/wc/src/views/loadfilewindow.cpp</file>
+            <file>file:/home/michal/NetBeansProjects/aisdi_lab/wc/src/controllers/FiltersParser.hpp</file>
+            <file>file:/home/michal/NetBeansProjects/aisdi_lab/wc/src/controllers/FiltersParser.cpp</file>
+            <file>file:/home/michal/NetBeansProjects/aisdi_lab/wc/Makefile</file>
+            <file>file:/home/michal/NetBeansProjects/aisdi_lab/wc/src/controllers/parser.cpp</file>
+            <file>file:/home/michal/NetBeansProjects/aisdi_lab/wc/qtProject.pro</file>
+            <file>file:/home/michal/NetBeansProjects/aisdi_lab/wc/main.cpp</file>
+        </group>
     </open-files>
 </project-private>

@@ -28,6 +28,8 @@
         <df name="controllers">
           <in>Filter.cpp</in>
           <in>Filter.h</in>
+          <in>FiltersParser.cpp</in>
+          <in>FiltersParser.hpp</in>
           <in>parser.cpp</in>
           <in>parser.hpp</in>
         </df>
@@ -79,6 +81,7 @@
         </df>
         <in>AppGUI.cpp</in>
       </df>
+      <in>main.cpp</in>
     </df>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>

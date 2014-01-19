@@ -30,6 +30,7 @@ SOURCES +=\
     src/utils/MD5.cpp \
     src/controllers/parser.cpp \
     src/controllers/Filter.cpp \
+    src/controllers/FiltersParser.cpp \
     src/views/settingswindow.cpp \
     src/views/personinfo.cpp \
     src/views/mainwindow.cpp \
@@ -61,7 +62,8 @@ HEADERS  += \
     src/views/helpwindow.h \
     src/views/graphspace2.h \
     src/controllers/Filter.h \
-    src/controllers/parser.hpp
+    src/controllers/parser.hpp \
+    src/controllers/FiltersParser.hpp
 
 
 
