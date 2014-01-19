@@ -64,6 +64,8 @@ public: //do testow
 	 unsigned int getRelationsNum();
      Edge * getTheHottestEdge(Vertex *vertex);
 
+	 Containers::Person* findPerson(std::string email);
+	 std::unordered_set<Containers::Mail*> getMailsHashset();
     std::list<Containers::Person*> getPeople();
     std::list<Containers::Mail*> getMails();
 	

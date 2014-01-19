@@ -10,6 +10,11 @@
 #include <iterator>
 #include <utility>
 
+#include "../utils/Exceptions.hpp"
+#include "../controllers/Filter.h"
+#include "../models/Graph.h"
+#include "../models/Containers.hpp"
+
 using namespace std;
 
 class FiltersParser
@@ -62,6 +67,8 @@ protected:
 	string::const_iterator errorIt;
 	Error errorType = Error::ERR_NONE;
 	
+	queue<pair<Lexem, string>> opQueue;
+	
 	void parseExpression();
 	Lexem getLexem(int allowedCtx, string& getValue);
 	int getLexemPriority(Lexem lex);
@@ -71,6 +78,8 @@ public:
 	
 	bool hasSucceded();
 	string getErrorInfo(int surrounding = 3);
+	
+	Graph* applyExpression(Graph* originalGraph);
 };
 
 #endif	/* FILTERSPARSER_HPP */

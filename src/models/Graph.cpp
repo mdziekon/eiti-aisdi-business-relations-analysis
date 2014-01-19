@@ -92,6 +92,33 @@ void Graph::addToEdges(std::list<Containers::Mail*>& mails){
     }
 }
 
+Containers::Person* Graph::findPerson(std::string email)
+{
+	for (auto x: this->vertices)
+	{
+		if (x.first->getEmail().getFull() == email)
+		{
+			return x.first;
+		}
+	}
+	return NULL;
+}
+
+std::unordered_set<Containers::Mail*> Graph::getMailsHashset()
+{
+	std::unordered_set<Containers::Mail*> ret;
+	
+	for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
+				ret.insert(&*mailsIt);
+            }
+        }
+    }
+    return ret;
+}
+
+
 std::list<Containers::Person*> Graph::getPeople(){
     std::list<Containers::Person*> list;
 

@@ -3,6 +3,7 @@
 #include <list>
 #include <string>
 #include <set>
+#include <unordered_set>
 #include "../models/Containers.hpp"
 class Graph;
 class Filter;
@@ -23,9 +24,11 @@ public:
 };
 
 class Filter{
-private:
+protected:
     friend class FilterSet;
     virtual void process(Graph* graph)=0;
+public:
+	virtual unordered_set<Containers::Mail*> findMails(Graph* graph) = 0;
 };
 
 
@@ -35,8 +38,8 @@ class TopicSubstringFilter:public Filter{
     void process(Graph* graph);
 public:
     TopicSubstringFilter(std::string substring);
-    void setSubstring(std::string substring);
 
+	unordered_set<Containers::Mail*> findMails(Graph* graph);
 };
 
 class DateFilter:public Filter{
@@ -46,7 +49,7 @@ class DateFilter:public Filter{
 public:
     DateFilter(unsigned int timeStamp, bool before); //jesli before==true to ma odrzucic wszystkie mejle PO dacie
                                                     //w przeciwnym wypadku odrzuca wszystkie mejle PRZED data
-    void setDate(unsigned int newTimestamp);
+	unordered_set<Containers::Mail*> findMails(Graph* graph);
 };
 
 
@@ -58,7 +61,18 @@ public:
     //jesli removeMailsFromSender==true to usunie mejl, ktorego nadawca jest wylistowany w secie
     //w przeciwnym wypadku usunie kazdy mejl odebrany przez wylisowane osoby
     PeopleFilter(Containers::Person* person, bool removeMailsFromSender);
-
-    void setPerson(Containers::Person* person);
+	
+	unordered_set<Containers::Mail*> findMails(Graph* graph);
 };
+
+class MailsFilter: public Filter
+{
+	std::unordered_set<Containers::Mail*> mails;
+	void process(Graph* graph);
+public:
+	MailsFilter(std::unordered_set<Containers::Mail*> mails);
+	
+	unordered_set<Containers::Mail*> findMails(Graph* graph);
+};
+
 #endif // FILTER_H_INCLUDED

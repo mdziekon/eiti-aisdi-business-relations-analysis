@@ -17,7 +17,7 @@ void FiltersParser::parseExpression()
 	bool errorFound = false;
 	
 	int parenthesisCount = 0;
-	queue<pair<Lexem, string>> parserQueue;
+	queue<pair<Lexem, string>> &parserQueue = this->opQueue;
 	stack<Lexem> parserStack;
 	string prepareFilter = "";
 	
@@ -191,13 +191,7 @@ void FiltersParser::parseExpression()
 		{
 			parserQueue.push({parserStack.top(), ""});
 			parserStack.pop();
-		}
-		
-		while(!parserQueue.empty())
-		{
-//			cout << "Queue element: " << parserQueue.front().first << "(" << parserQueue.front().second << ")" << endl;
-			parserQueue.pop();
-		}		
+		}	
 		
 		this->success = true;
 	}
@@ -433,4 +427,104 @@ string FiltersParser::getErrorInfo(int surrounding)
 	}
 	
 	return errorText.str();
+}
+
+Graph* FiltersParser::applyExpression(Graph* originalGraph)
+{
+	if (!this->hasSucceded())
+	{
+		throw GenericException("Applying broken expression");
+	}
+	
+	stack<unordered_set<Containers::Mail*>> resStack;
+	
+	pair<Lexem, string> el;
+	string filterName, filterArgument;
+	while(!this->opQueue.empty())
+	{
+		el = this->opQueue.front();
+		
+		if (el.first == Lexem::LEX_FILTER)
+		{
+			filterName = string(el.second.begin(), el.second.begin() + el.second.find_first_of("|"));
+			filterArgument = string(el.second.begin() + el.second.find_first_of("|") + 1, el.second.end());
+			
+			if (filterName == "sender")
+			{
+				resStack.push(PeopleFilter(originalGraph->findPerson(filterArgument), true).findMails(originalGraph));
+			}
+			else if (filterName == "receiver")
+			{
+				resStack.push(PeopleFilter(originalGraph->findPerson(filterArgument), false).findMails(originalGraph));
+			}
+			else if (filterName == "datebefore")
+			{
+				resStack.push(DateFilter(std::stoi(filterArgument), true).findMails(originalGraph));
+			}
+			else if (filterName == "dateafter")
+			{
+				resStack.push(DateFilter(std::stoi(filterArgument), false).findMails(originalGraph));
+			}
+			else if (filterName == "subjecthas")
+			{
+				resStack.push(TopicSubstringFilter(filterArgument).findMails(originalGraph));
+			}
+		}
+		else if (el.first == Lexem::LEX_OP_NEGATE)
+		{
+			auto allMails = originalGraph->getMailsHashset();
+			allMails.erase(resStack.top().begin(), resStack.top().end());
+			resStack.pop();
+			resStack.push(allMails);
+		}
+		else if (el.first == Lexem::LEX_OP_AND)
+		{
+			unordered_set<Containers::Mail*> newCont;
+			
+			auto arg2 = resStack.top();
+			resStack.pop();
+			auto arg1 = resStack.top();
+			resStack.pop();
+			auto &bigger = (arg1.size() > arg2.size() ? arg1 : arg2);
+			auto &smaller = (arg1.size() > arg2.size() ? arg2 : arg1);
+			for(auto x: smaller)
+			{
+				if (bigger.count(x) == 1)
+				{
+					newCont.insert(x);
+				}
+			}
+			resStack.push(newCont);
+		}
+		else if (el.first == Lexem::LEX_OP_OR)
+		{			
+			auto arg2 = resStack.top();
+			resStack.pop();
+			auto arg1 = resStack.top();
+			resStack.pop();
+			
+			arg2.insert(arg1.begin(), arg1.end());
+			resStack.push(arg2);
+		}
+		else
+		{
+			throw GenericException("Unknown element in FiltersParser Queue");
+		}
+		
+		this->opQueue.pop();
+	}
+	
+	if (resStack.size() != 1)
+	{
+		std::stringstream info;
+		info << "FiltersParser resStack size is ";
+		info << resStack.size();
+		throw GenericException(info.str().c_str());
+	}
+	
+	FilterSet fSet;
+	fSet.addNewFilter(new MailsFilter(resStack.top()));
+	fSet.processAll(originalGraph);
+	
+	return originalGraph;
 }
