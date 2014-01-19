@@ -258,7 +258,7 @@ Containers::Person& Graph::getMostActiveReceiver(){
  }
 
  Edge* Graph::getTheHottestEdge(Vertex* vertex){
-     int count = 0;
+     unsigned int count = 0;
      Edge* edge = NULL ;
      for( auto it = vertex->edges.begin() ; it != vertex->edges.end() ; it++ ){
          Edge* itedge = it->second;

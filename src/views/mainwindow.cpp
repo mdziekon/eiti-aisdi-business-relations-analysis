@@ -101,7 +101,7 @@ void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMa
     UzupelnijZestawienie(loadedGraph);
 
     UzupelnijSzczegoly(originalGraph->getMails());
-    UzupelnijGraf2(loadedGraph, originalGraphSpace);
+    UzupelnijGraf2(loadedGraph);
     FillComboBoxPersons(vecPerson);
     FillPeopleList(vecPerson);
 	std::cout << "END OF GRAPH BUILD" << std::endl;
@@ -136,13 +136,12 @@ void MainWindow::UzupelnijSzczegoly(std::list<Containers::Mail*> mailList)
         ui->treeWidget_MailList->sortItems(0,Qt::SortOrder(0));
 }
 
-void MainWindow::UzupelnijGraf2(Graph *graphObj, GraphSpace2* spacetoconnect)
+void MainWindow::UzupelnijGraf2(Graph *graphObj)
 {
     //QWidget * pointedWidget = ui->tab_four;
     QGridLayout* layout = ui->gridLayout_5;
     this->graphspace2 = new GraphSpace2(graphObj, layout);
     ui->graphicsView->setScene(graphspace2->scene);
-    spacetoconnect = graphspace2;
 }
 void MainWindow::WyczyscGraf2()
 {
@@ -295,8 +294,8 @@ void MainWindow::on_pushButton_setfiltersaction_clicked()
     WyczyscGraf2();
     //filteredGraph = filterset->processAll(originalGraph,1);
     filterset->processAll(originalGraph);
-     UzupelnijGraf2(originalGraph, originalGraphSpace);
-    //UzupelnijGraf2(filteredGraph, filteredGraphSpace);
+     UzupelnijGraf2(originalGraph);
+    //UzupelnijGraf2(filteredGraph);
     filterset->clearAllFilters();
     peopleSet.clear();
     ui->listWidget_filters->clear();
@@ -362,7 +361,7 @@ void MainWindow::ColourTreeView(MyQTreeWidgetItem* myitem, QColor color)
 void MainWindow::on_pushButton_deleteselectedfilter_clicked()
 {
     WyczyscGraf2();
-    UzupelnijGraf2(originalGraph, filteredGraphSpace);
+    UzupelnijGraf2(originalGraph);
 }
 
 MyQTreeWidgetItem::MyQTreeWidgetItem(QTreeWidget * parent,Containers::Mail *mail): QTreeWidgetItem(parent)
@@ -430,23 +429,18 @@ void MainWindow::on_comboBox_people2_activated(const QString &arg1)
 void MainWindow::on_pushButton_advancedfiltersaction_clicked()
 {
     QString qstr = ui->plainTextEdit_advancedfiltertekst->toPlainText();
-    std::string wyrazenie = qstr.toStdString();
 
-    //teraz z tym "wyrazenie" masz zrobic ;P
-    //
-    //
-    //
-    bool wynik = 0/*hasSucceded()*/;
-    if (wynik)
+	FiltersParser fp(qstr.toStdString());
+	
+    if (fp.hasSucceded())
     {
-        ui->label_statusadvancedfilters->setStyleSheet("QLabel { background-color : yellow;}");
+        ui->label_statusadvancedfilters->setStyleSheet("QLabel { background-color : #2ecc40; color: #ffffff;}");
         ui->label_statusadvancedfilters->setText("Poprawna skladnia. Filtr zaladowany");
     }
     else
     {
-        ui->label_statusadvancedfilters->setStyleSheet("QLabel { background-color : red;}");
-        std::string info ="nic" /*getErrorInfo(int surrounding = 3)*/ ;
-        QString qinfo = QString::fromStdString(info);
+        ui->label_statusadvancedfilters->setStyleSheet("QLabel { background-color : #ff4136; color: #ffffff;}");
+        QString qinfo = QString::fromStdString(fp.getErrorInfo(10));
         ui->label_statusadvancedfilters->setText(qinfo);
     }
 }

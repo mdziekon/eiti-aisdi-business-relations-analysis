@@ -176,7 +176,7 @@ void FiltersParser::parseExpression()
 		
 		while(!parserQueue.empty())
 		{
-			cout << "Queue element: " << parserQueue.front().first << "(" << parserQueue.front().second << ")" << endl;
+//			cout << "Queue element: " << parserQueue.front().first << "(" << parserQueue.front().second << ")" << endl;
 			parserQueue.pop();
 		}
 		
@@ -274,7 +274,7 @@ FiltersParser::Lexem FiltersParser::getLexem(int allowedCtx, string& getValue)
 					break;
 					// Can skip iterator incrementation here because we stop parsing on error
 				}
-				else if ((filterArgStartApostrophe && *(this->it) == '\'') || !filterArgStartApostrophe && *(this->it) == '"')
+				else if ((filterArgStartApostrophe && *(this->it) == '\'') || (!filterArgStartApostrophe && *(this->it) == '"'))
 				{
 					getValue = string(itStart + 1, this->it);
 					++(this->it);

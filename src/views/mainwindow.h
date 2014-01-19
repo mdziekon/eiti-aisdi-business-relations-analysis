@@ -19,6 +19,7 @@
 #include "../controllers/Filter.h"
 #include <QListWidgetItem>
 #include "../controllers/parser.hpp"
+#include "../controllers/FiltersParser.hpp"
 
 class MyQTreeWidgetItem;
 namespace Ui {
@@ -114,7 +115,7 @@ private:
     QTreeWidget * treeWidget_MailList;
 
     //od czwartej karty Graf2
-    void UzupelnijGraf2(Graph *graphObj, GraphSpace2* spacetoconnect);
+    void UzupelnijGraf2(Graph *graphObj);
     GraphSpace2 * graphspace2;
 
     //od karty Filtry
