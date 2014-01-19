@@ -50,11 +50,12 @@ protected:
 		ERR_BADCTX,
 		ERR_ERROR,
 		ERR_PARENTHESIS_MISMATCH,
-		ERR_PARENTHESIS_USELESSCLOSE
+		ERR_PARENTHESIS_USELESSCLOSE,
+		ERR_UNEXPECTED_END
 	};
 	unordered_set<string> knownFilters {"sender", "receiver", "datebefore", "dateafter", "subjecthas"};
 	
-	const string *expression;
+	const string expression;
 	string::const_iterator it;
 	bool success = false;
 	

@@ -2,9 +2,9 @@
 #include <iostream>
 
 FiltersParser::FiltersParser(const string& expression):
-expression(&expression), it(expression.cbegin())
+expression(expression), it(expression.cbegin())
 {
-	this->errorIt = this->expression->cbegin() - 1;
+	this->errorIt = this->expression.cbegin() - 1;
 	this->parseExpression();
 }
 
@@ -21,6 +21,7 @@ void FiltersParser::parseExpression()
 	stack<Lexem> parserStack;
 	string prepareFilter = "";
 	
+	bool endMeansError = false;
 	bool inFilter = false;
 	int thisPriority;
 	Lexem tempLexem;
@@ -28,11 +29,19 @@ void FiltersParser::parseExpression()
 	do
 	{
 		lex = this->getLexem(nextCtx, value);
+		if (lex == Lexem::LEX_END && endMeansError)
+		{
+			lex = Lexem::LEX_BREAKPARSE;
+			this->errorIt = this->it;
+			continue;
+		}
 		
+		endMeansError = false;
 		switch (lex)
 		{
 			case Lexem::LEX_FILTER:
 			{
+				endMeansError = true;
 				inFilter = true;
 				nextCtx = Context::CTX_PARENTHESIS_OPEN;
 				prepareFilter = value;
@@ -41,6 +50,7 @@ void FiltersParser::parseExpression()
 			}
 			case Lexem::LEX_FILTER_ARG:
 			{
+				endMeansError = true;
 				nextCtx = Context::CTX_PARENTHESIS_CLOSE;
 				prepareFilter += value;
 				parserQueue.push({Lexem::LEX_FILTER, prepareFilter});
@@ -50,6 +60,7 @@ void FiltersParser::parseExpression()
 			{
 				if (inFilter)
 				{
+					endMeansError = true;
 					nextCtx = Context::CTX_FILTER_ARG;
 				}
 				else
@@ -101,6 +112,7 @@ void FiltersParser::parseExpression()
 			case Lexem::LEX_OP_AND:
 			case Lexem::LEX_OP_OR:
 			{
+				endMeansError = true;
 				nextCtx = Context::CTX_FILTER | Context::CTX_OP_UNARY | Context::CTX_PARENTHESIS_OPEN;
 				
 				thisPriority = this->getLexemPriority(lex);
@@ -115,10 +127,13 @@ void FiltersParser::parseExpression()
 			}
 			case Lexem::LEX_OP_NEGATE:
 			{
+				endMeansError = true;
 				nextCtx = Context::CTX_FILTER;
 				parserStack.push(lex);
 				break;
 			}
+			default:
+				break;
 		}
 	}
 	while(lex != LEX_BREAKPARSE &&
@@ -155,6 +170,10 @@ void FiltersParser::parseExpression()
 		{
 			this->errorType = Error::ERR_PARENTHESIS_MISMATCH;
 		}
+		else if (endMeansError)
+		{
+			this->errorType = Error::ERR_UNEXPECTED_END;
+		}
 		else
 		{
 			this->errorType = Error::ERR_PARENTHESIS_USELESSCLOSE;
@@ -178,8 +197,7 @@ void FiltersParser::parseExpression()
 		{
 //			cout << "Queue element: " << parserQueue.front().first << "(" << parserQueue.front().second << ")" << endl;
 			parserQueue.pop();
-		}
-		
+		}		
 		
 		this->success = true;
 	}
@@ -198,7 +216,7 @@ FiltersParser::Lexem FiltersParser::getLexem(int allowedCtx, string& getValue)
 	{
 		if (!detected)
 		{
-			if (this->it == this->expression->cend())
+			if (this->it == this->expression.cend())
 			{
 				detectedLex = Lexem::LEX_END;
 				break;
@@ -267,7 +285,7 @@ FiltersParser::Lexem FiltersParser::getLexem(int allowedCtx, string& getValue)
 			}
 			else if (detectedLex == Lexem::LEX_FILTER_ARG)
 			{
-				if (this->it == this->expression->end())
+				if (this->it == this->expression.end())
 				{
 					this->errorIt = this->it;
 					detectedLex = Lexem::LEX_ERROR;
@@ -284,7 +302,7 @@ FiltersParser::Lexem FiltersParser::getLexem(int allowedCtx, string& getValue)
 			else
 			{
 				// In FILTER or OR/AND functor detection
-				if (this->it == this->expression->cend() ||
+				if (this->it == this->expression.cend() ||
 					!((*(this->it) >= 'a' && *(this->it) <= 'z') || (*(this->it) >= 'A' && *(this->it) <= 'Z')))
 				{
 					getValue = string(itStart, this->it);
@@ -361,7 +379,6 @@ string FiltersParser::getErrorInfo(int surrounding)
 {
 	std::string errorString;
 	std::stringstream errorText;
-	
 	errorText << "Error while parsing: ";
 	switch(this->errorType)
 	{
@@ -383,33 +400,36 @@ string FiltersParser::getErrorInfo(int surrounding)
 		case Error::ERR_PARENTHESIS_USELESSCLOSE:
 			errorString = "Useless close parenthesis";
 			break;
+		case Error::ERR_UNEXPECTED_END:
+			errorString = "Unexpected expression end";
+			break;
 		default:
 			errorString = "Undefined error";
 			break;
 	}
 	errorText << errorString << std::endl;
 	
-	errorText << "Passed string: " << (*this->expression) << std::endl;
-	if (this->errorIt != (this->expression->cbegin() - 1))
+	errorText << "Passed string: " << this->expression << std::endl;
+	if (this->errorIt != (this->expression.cbegin() - 1))
 	{
 		errorText << "Error surrounding: ";
-		if (std::distance(this->expression->cbegin(), this->errorIt - surrounding) > 0)
+		if (std::distance(this->expression.cbegin(), this->errorIt - surrounding) > 0)
 		{
 			errorText << "...";
 		}
 		errorText << std::string(
-			(std::distance(this->expression->cbegin(), this->errorIt - surrounding) >= 0 ?
+			(std::distance(this->expression.cbegin(), this->errorIt - surrounding) >= 0 ?
 				this->errorIt - surrounding :
-				this->expression->cbegin()),
-			(std::distance(this->expression->cend(), this->errorIt + surrounding) <= 0 ?
+				this->expression.cbegin()),
+			(std::distance(this->expression.cend(), this->errorIt + surrounding) <= 0 ?
 				this->errorIt + surrounding :
-				this->expression->cend()));
-		if (std::distance(this->expression->cend(), this->errorIt + surrounding) < 0)
+				this->expression.cend()));
+		if (std::distance(this->expression.cend(), this->errorIt + surrounding) < 0)
 		{
 			errorText << "...";
 		}
 		errorText << std::endl;
-		errorText << "(Error position: " << std::distance(this->expression->cbegin(), this->errorIt) << ")" << std::endl;
+		errorText << "(Error position: " << std::distance(this->expression.cbegin(), this->errorIt) << ")" << std::endl;
 	}
 	
 	return errorText.str();
