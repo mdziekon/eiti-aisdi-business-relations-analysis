@@ -301,9 +301,12 @@ void VisibleVertex::mousePressEvent(QGraphicsSceneMouseEvent *)
 	this->myspace->ColourVertex(this->graphPerson, brush2);
 
     Edge* edge = this->myspace->graph->getTheHottestEdge(this->graphVertex);
-    Containers::Mail* mail = &(*(edge->mails.begin()));
-    this->myspace->ColourEdge(mail,pen);
-    this->myspace->scene->update();
+    if(edge != NULL)
+    {
+        Containers::Mail* mail = &(*(edge->mails.begin()));
+        this->myspace->ColourEdge(mail,pen);
+        this->myspace->scene->update();
+    }
 }
 
 void VisibleVertex::hoverEnterEvent(QGraphicsSceneHoverEvent *)
