@@ -89,6 +89,7 @@ public:
     void ColourEdge(Containers::Mail *mail, QPen pen);
     void DefaultColour();
 
+    void CreateVisibleEdge(VisibleVertex * pointedvertex);
 };
 
 class VisibleVertex : public QGraphicsItem

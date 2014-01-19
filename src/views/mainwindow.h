@@ -79,6 +79,14 @@ private slots:
 
     void on_pushButton_pokazforward_clicked();
 
+    void on_comboBox_people2_activated(const QString &arg1);
+
+    void on_pushButton_advancedfiltersaction_clicked();
+
+    void on_pushButton_plus_clicked();
+
+    void on_listWidget_people_itemDoubleClicked(QListWidgetItem *item);
+
 private:
     //okienka ktore sie oddzielnie otwieraja
     LoadFileWindow* lfw ;
@@ -112,13 +120,16 @@ private:
     //od karty Filtry
     void AddFilterToList(QString str);
     void FillComboBoxPersons(std::unordered_map<string, Containers::Person *> vecPerson);
+    void FillPeopleList(std::unordered_map<string, Containers::Person *> vecPerson);
     Containers::Person *FindPerson(std::string str);
 
 };
 
-class QListWidgetItemFilter : QListWidgetItem
+class QListWidgetItemPerson : public QListWidgetItem
 {
-
+public:
+    QListWidgetItemPerson(Containers::Person * person);
+    Containers::Person * person;
 };
 
 class MyQTreeWidgetItem : public QTreeWidgetItem
