@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mw = new MailWindow(this);
   
     ui->setupUi(this);
+
 }
 
 MainWindow::~MainWindow()
@@ -102,7 +103,9 @@ void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMa
     UzupelnijSzczegoly(originalGraph->getMails());
     UzupelnijGraf2(loadedGraph, originalGraphSpace);
     FillComboBoxPersons(vecPerson);
+    FillPeopleList(vecPerson);
 	std::cout << "END OF GRAPH BUILD" << std::endl;
+
 }
 void MainWindow::UzupelnijZestawienie(Graph* graphObj)
 {
@@ -158,6 +161,20 @@ void MainWindow::FillComboBoxPersons(std::unordered_map<std::string, Containers:
     for( it = people.begin() ; it != people.end() ; ++it)
     {
         ui->comboBox_people->addItem(QString::fromStdString(it->second->getName()));
+        ui->comboBox_people2->addItem(QString::fromStdString(it->second->getName()));
+    }
+}
+
+void MainWindow::FillPeopleList(std::unordered_map<std::string, Containers::Person*> people)
+{
+    ui->listWidget_people->clear();
+    std::unordered_map<std::string, Containers::Person*>::iterator it;
+    for( it = people.begin() ; it != people.end() ; ++it)
+    {
+        Containers::Person* person = it->second;
+        QListWidgetItemPerson* myitem = new QListWidgetItemPerson(person);
+        myitem->setText(QString::fromStdString(it->second->getName()));
+        ui->listWidget_people->addItem(myitem);
     }
 }
 
@@ -268,7 +285,6 @@ void MainWindow::on_comboBox_people_activated(const QString &arg1)
     QString tmp = ui->textEdit_peoplefilterinput->toPlainText();
     tmp += arg1; tmp += ", ";
     ui->textEdit_peoplefilterinput->setText(tmp);
-
 }
 
 void MainWindow::on_pushButton_setfiltersaction_clicked()
@@ -394,4 +410,60 @@ void MainWindow::on_pushButton_pokazforward_clicked()
     this->graphspace2->ColourGraph(ret.second,brush,pen);
 	this->graphspace2->ColourVertex(this->graphspace2->graph->fwdOrigin, brush2);
     this->graphspace2->scene->update();
+}
+
+
+
+void MainWindow::on_comboBox_people2_activated(const QString &arg1)
+{
+    std::string str = arg1.toStdString();
+    Containers::Person* tmpPerson = NULL;
+    tmpPerson = FindPerson(str);
+    if(tmpPerson == NULL)
+        return;
+    std::string str2 = tmpPerson->getEmail().getFull();
+    QString qstr = QString::fromStdString(str2);
+    ui->textEdit_getemail->setText(qstr);
+}
+
+
+void MainWindow::on_pushButton_advancedfiltersaction_clicked()
+{
+    QString qstr = ui->plainTextEdit_advancedfiltertekst->toPlainText();
+    std::string wyrazenie = qstr.toStdString();
+
+    //teraz z tym "wyrazenie" masz zrobic ;P
+    //
+    //
+    //
+    bool wynik = 0/*hasSucceded()*/;
+    if (wynik)
+    {
+        ui->label_statusadvancedfilters->setStyleSheet("QLabel { background-color : yellow;}");
+        ui->label_statusadvancedfilters->setText("Poprawna skladnia. Filtr zaladowany");
+    }
+    else
+    {
+        ui->label_statusadvancedfilters->setStyleSheet("QLabel { background-color : red;}");
+        std::string info ="nic" /*getErrorInfo(int surrounding = 3)*/ ;
+        QString qinfo = QString::fromStdString(info);
+        ui->label_statusadvancedfilters->setText(qinfo);
+    }
+}
+
+void MainWindow::on_pushButton_plus_clicked()
+{
+    //this->originalGraphSpace->scene->selectedItems()
+}
+
+QListWidgetItemPerson::QListWidgetItemPerson(Containers::Person *person): person(person)
+{
+}
+
+void MainWindow::on_listWidget_people_itemDoubleClicked(QListWidgetItem *item)
+{
+    QListWidgetItemPerson * myitem = static_cast<QListWidgetItemPerson*>(item);
+    Containers::Person* person = myitem->person;
+    //i tu mozna sobie wyswietlac statystyki;
+    ui->label_personfullname->setText(QString::fromStdString(person->getName()));
 }

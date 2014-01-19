@@ -257,7 +257,18 @@ Containers::Person& Graph::getMostActiveReceiver(){
      return (unsigned int)relations;
  }
 
-
+ Edge* Graph::getTheHottestEdge(Vertex* vertex){
+     int count = 0;
+     Edge* edge = NULL ;
+     for( auto it = vertex->edges.begin() ; it != vertex->edges.end() ; it++ ){
+         Edge* itedge = it->second;
+         if(itedge->mails.size() > count){
+             edge = itedge;
+             count = itedge->mails.size();
+         }
+     }
+     return edge;
+ }
 
 
 

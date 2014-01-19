@@ -18,7 +18,7 @@ GraphSpace2::GraphSpace2(Graph * newgraph, QGridLayout * lay):
     personInfo = NULL;
     mailsInfo = NULL;
     defaultBrush = QBrush(Qt::blue);
-    defaultPen.setWidth(2);
+    defaultPen.setWidth(1);
     defaultPen.setColor(Qt::black);
 
 }
@@ -70,6 +70,33 @@ void GraphSpace2::CreateVisibleEdges()
             }
         }
      }
+}
+
+void GraphSpace2::CreateVisibleEdge(VisibleVertex* pointedvertex)
+{
+    float x1,y1,x2,y2;
+    VisibleEdge * edge;
+    Vertex* vertex = pointedvertex->graphVertex;
+    x1 = vertex->x;
+    y1 = vertex->y;
+    std::unordered_map<Vertex*, Edge*>::iterator it_edge = vertex->edges.begin();
+    for( ; it_edge !=vertex->edges.end() ; ++it_edge )
+    {
+        x2 = it_edge->second->pointedVertex->x;
+        y2 = it_edge->second->pointedVertex->y;
+
+        std::pair <Vertex*,const Vertex*> verticles;
+        verticles = std::make_pair(vertex,it_edge->second->pointedVertex);
+        if(CheckEdges(verticles,it_edge->second))
+        {
+            edge = new VisibleEdge(x1,y1,x2,y2);
+            edge->myspace = this;
+            edge->graphEdge1 = it_edge->second;
+            edge->verticles = verticles;
+            scene->addItem(edge);
+            //visibleEdges.push_back(edge);
+        }
+    }
 }
 
 
@@ -165,28 +192,42 @@ void GraphSpace2::SetLocations()
 
 	SortedVerticesComparator comp;
 	quicksort<std::pair<Containers::Person* const, Vertex*>>(sortedVertices, 0, sortedVertices.size() - 1, comp);
-	
-//	float maxLenght = 2*3;
-//	maxLenght *= r;
-//	float itemWidth = maxLenght/vertexCount;
-//	while(itemWidth < 50)
-//	{
-//		std::cout<< "petla" <<  std::endl;
-//		r *= 2;
-//		maxLenght = 2*(3,14)*r;
-//		itemWidth = maxLenght/vertexCount;
-//	}
-//	std::cout<< "maxLenght" << maxLenght << std::endl;
-//	std::cout<< "r" << r << std::endl;
-//	std::cout<< "itemWidth" << itemWidth << std::endl;
-	
+
+    int iloscgrup = 4;
+    int licznoscgrup = 3;
+    int r1 = licznoscgrup * 25 / 2;
+    r = iloscgrup * 25;
+
+
+
     auto it = sortedVertices.begin();
-    for(int i = 0 ; it != sortedVertices.end() ; ++i, ++it)
+    for(int i = 0 ; i < iloscgrup ; ++i)
     {
-        float a = r * sin( 3.14*2/vertexCount * i) + xs;
-        float b = r * cos( 3.14*2/vertexCount * i) + ys;
-        (*it)->second->setLocation(a,b);
+        float a = r * sin( 3.14*2/iloscgrup * i) + xs;
+        float b = r * cos( 3.14*2/iloscgrup * i) + ys;
+        for(int ii = 0 ; (ii < licznoscgrup)&&(it != sortedVertices.end()) ; ii++, it++)
+        {
+            float aa = r1 * sin( 3.14*2/licznoscgrup * ii) + a;
+            float bb = r1 * cos( 3.14*2/licznoscgrup * ii) + b;
+            (*it)->second->setLocation(aa,bb);
+        }
     }
+
+
+
+    //dobrze
+//    r = 395/2 - 40;
+//    std::cout << "r: " << r <<std::endl;
+
+//    auto it = sortedVertices.begin();
+//    for(int i = 0 ; it != sortedVertices.end() ; ++i, ++it)
+//    {
+//        float a = r * sin( 3.14*2/vertexCount * i) + xs;
+//        float b = r * cos( 3.14*2/vertexCount * i) + ys;
+//        (*it)->second->setLocation(a,b);
+//    }
+
+
 }
 
 QPointF GraphSpace2::liczCwiartkeDlugosciLini(QPointF q1, QPointF q2)
@@ -238,7 +279,7 @@ VisibleVertex::VisibleVertex(float a, float b, Vertex * vertex, Containers::Pers
 
 QRectF VisibleVertex::boundingRect() const
 {
-    return QRectF(0,0,40,40);
+    return QRectF(0,0,20,20);
 }
 
 void VisibleVertex::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
@@ -258,14 +299,14 @@ void VisibleVertex::mousePressEvent(QGraphicsSceneMouseEvent *)
 	brush1 = QBrush(Qt::red);
     brush2 = QBrush(Qt::green);
 	this->myspace->ColourVertex(this->graphPerson, brush2);
-	std::list<Containers::Mail*> lst;
-	
-	if (this->graphVertex->edges.size() > 0 && this->graphVertex->edges.begin()->second->mails.size() > 0)
-	{
-		lst.push_back(&(this->graphVertex->edges.begin()->second->mails.front()));
-		this->myspace->ColourGraph(lst,brush1,pen);
-	}
-    this->myspace->scene->update();
+
+    Edge* edge = this->myspace->graph->getTheHottestEdge(this->graphVertex);
+    if(edge != NULL)
+    {
+        Containers::Mail* mail = &(*(edge->mails.begin()));
+        this->myspace->ColourEdge(mail,pen);
+        this->myspace->scene->update();
+    }
 }
 
 void VisibleVertex::hoverEnterEvent(QGraphicsSceneHoverEvent *)
@@ -304,7 +345,7 @@ VisibleEdge::VisibleEdge(
     ispressed = false; isgrey = false; isspecial = false;
     graphEdge1 = NULL;
     graphEdge2 = NULL;
-    pen.setWidth(2); pen.setColor(Qt::black);
+    pen.setWidth(1); pen.setColor(Qt::black);
 }
 
 QRectF VisibleEdge::boundingRect() const

@@ -62,12 +62,14 @@ public: //do testow
 	std::string getMostActiveDay();
 	Containers::Person& getMostActiveReceiver();
 	 unsigned int getRelationsNum();
+     Edge * getTheHottestEdge(Vertex *vertex);
 
     std::list<Containers::Person*> getPeople();
     std::list<Containers::Mail*> getMails();
 	
 	std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> fwdDetect(Containers::Mail* check);
-	Containers::Person* fwdOrigin = NULL;
+    Containers::Person* fwdOrigin = NULL;
+
 private:
     unsigned int biggestEdge;
     //to przyjmuje wektor UNIKALNYCH osob, dodaje wierzcholki odpowiadajce tym osobom
