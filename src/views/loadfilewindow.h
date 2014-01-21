@@ -36,6 +36,7 @@ private slots:
     void on_toolButton_AddFolder_clicked();
     void on_toolButton_AddFile_clicked();
     void on_toolButton_DeleteFile_clicked();
+    void closeEvent(QCloseEvent *);
 
 private:
     Ui::LoadFileWindow *ui;    

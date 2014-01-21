@@ -4,6 +4,8 @@
     <df root="." name="0">
       <df name="src">
         <df name="controllers">
+          <in>FiltersParser.cpp</in>
+          <in>FiltersParser.hpp</in>
           <in>parser.cpp</in>
           <in>parser.hpp</in>
         </df>
@@ -28,8 +30,6 @@
           <in>UTests.hpp</in>
         </df>
         <df name="views">
-          <in>graphspace.cpp</in>
-          <in>graphspace.h</in>
           <in>helpwindow.cpp</in>
           <in>helpwindow.h</in>
           <in>loadfilewindow.cpp</in>
@@ -39,6 +39,7 @@
         </df>
         <in>AppGUI.cpp</in>
       </df>
+      <in>main.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -150,6 +151,8 @@
           </preprocessorList>
         </ccTool>
       </folder>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="src/AppGUI.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
           <incDir>
@@ -167,6 +170,10 @@
             <Elem>_REENTRANT</Elem>
           </preprocessorList>
         </ccTool>
+      </item>
+      <item path="src/controllers/FiltersParser.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/controllers/FiltersParser.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/controllers/parser.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
@@ -215,12 +222,6 @@
       <item path="src/utils/UTests.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/utils/UTests.hpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/views/graphspace.cpp" ex="false" tool="1" flavor2="8">
-        <ccTool>
-        </ccTool>
-      </item>
-      <item path="src/views/graphspace.h" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/views/helpwindow.cpp" ex="false" tool="1" flavor2="8">
         <ccTool>
