@@ -40,6 +40,7 @@ void MainWindow::on_actionSettings_activated()
     if(Flagwindow1)
         return;
     this->graphspace2->DefaultColour();
+    this->currHighlighted = NULL;
     DefaultTreeView();
 }
 
@@ -142,6 +143,12 @@ void MainWindow::UzupelnijGraf2(Graph *graphObj)
     QGridLayout* layout = ui->gridLayout_5;
     this->graphspace2 = new GraphSpace2(graphObj, layout, this->scale);
     ui->graphicsView->setScene(graphspace2->scene);
+    if(this->currHighlighted != NULL) {
+        this->graphspace2->ColourVertex(this->currHighlighted, QBrush(Qt::yellow));
+        for(Containers::Person* p : this->groupPeople) {
+                this->graphspace2->ColourVertex(p, QBrush(Qt::black));
+        }
+    }
 }
 void MainWindow::WyczyscGraf2()
 {
@@ -363,6 +370,7 @@ void MainWindow::on_pushButton_advancedfiltersaction_clicked()
 
 void MainWindow::on_listWidget_grouppeople_itemClicked(QListWidgetItem *item)
 {
+    this->groupPeople.clear();
     QListWidgetItemPerson * myitem = static_cast<QListWidgetItemPerson*>(item);
     if(myitem->person != this->currHighlighted) {
         this->graphspace2->setAllToColor(QBrush(Qt::gray));
@@ -373,7 +381,8 @@ void MainWindow::on_listWidget_grouppeople_itemClicked(QListWidgetItem *item)
     for(VisibleVertex* v: this->graphspace2->visibleVertices) {
         for(Vertex * vertex : v->graphVertex->groups) {
             if(vertex->owner == person) {
-                this->graphspace2->ColourVertex(person, QBrush(Qt::black));
+                this->graphspace2->ColourVertex(v->graphPerson, QBrush(Qt::black));
+                this->groupPeople.push_back(v->graphPerson);
                 break;
             }
         }
@@ -498,7 +507,6 @@ void MainWindow::on_listWidget_people_itemDoubleClicked(QListWidgetItem *item)
 
 void MainWindow::on_pushButton_plus_clicked()
 {
-
     this->scale += .25f;
     this->WyczyscGraf2();
     this->UzupelnijGraf2(this->originalGraph);

@@ -82,7 +82,8 @@ private:
     SettingsWindow* sw;
     MailWindow* mw;
     PersonInfo* pi;
-    Containers::Person * currHighlighted;
+    Containers::Person * currHighlighted = NULL;
+    vector<Containers::Person*> groupPeople;
 
     Ui::MainWindow *ui;
 

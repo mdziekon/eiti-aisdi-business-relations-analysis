@@ -201,7 +201,7 @@ void GraphSpace2::SetLocations()
 	SortedVerticesComparator comp;
 	quicksort<std::pair<Containers::Person* const, Vertex*>>(sortedVertices, 0, sortedVertices.size() - 1, comp);
 
-    int iloscgrup = 4;
+    /*int iloscgrup = 7;
     int licznoscgrup = 3;
     int r1 = licznoscgrup * 25 / 2;
     r = iloscgrup * 25;
@@ -219,21 +219,21 @@ void GraphSpace2::SetLocations()
             float bb = r1 * cos( 3.14*2/licznoscgrup * ii) + b;
             (*it)->second->setLocation(aa,bb);
         }
-    }
+    }*/
 
 
 
     //dobre, stare na 1 okregu wyliczanie
-//    r = 395/2 - 40;
-//    std::cout << "r: " << r <<std::endl;
+    r = 60 + sortedVertices.size()*6;
+    std::cout << "r: " << r <<std::endl;
 
-//    auto it = sortedVertices.begin();
-//    for(int i = 0 ; it != sortedVertices.end() ; ++i, ++it)
-//    {
-//        float a = r * sin( 3.14*2/vertexCount * i) + xs;
-//        float b = r * cos( 3.14*2/vertexCount * i) + ys;
-//        (*it)->second->setLocation(a,b);
-//    }
+    auto it = sortedVertices.begin();
+    for(int i = 0 ; it != sortedVertices.end() ; ++i, ++it)
+    {
+        float a = r * sin( 3.14*2/vertexCount * i) + xs;
+        float b = r * cos( 3.14*2/vertexCount * i) + ys;
+        (*it)->second->setLocation(a,b);
+    }
 
 
 }
