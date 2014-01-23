@@ -70,37 +70,31 @@ public:
 
     void CreateVisibleVertices(float delta = 1.0f);
     void CreateVisibleEdges(float delta = 1.0f);
-
-    //dane do okienka w ktorym rysujemy graf
-    int xs = 220;
-    int ys = 220;
-    int r = 180;
-    float pi = 3.14;
-
-    void SetvertexCount();
-    void SetLocations();
-    QPointF liczCwiartkeDlugosciLini(qreal x1, qreal y1, qreal x2, qreal y2);
-    QPointF liczCwiartkeDlugosciLini(QPointF q1, QPointF q2);
+    VisibleEdge* CreateVisibleEdge(VisibleVertex * pointedvertex);
     bool CheckEdges( std::pair<Vertex*,const Vertex*> verticlesX, Edge* newedge );
-    int vertexCount = 0;
 
     void ColourGraph(std::list<Containers::Mail *> maillist, QBrush brush, QPen pen);
     void ColourVertex(Containers::Person *person, QBrush brush);
     void ColourEdge(Containers::Mail *mail, QPen pen);
     void DefaultColour();
 
-    void CreateVisibleEdge(VisibleVertex * pointedvertex);
+
+
+    //dane do okienka w ktorym rysujemy graf
+    int xs = 220;
+    int ys = 220;
+    int r = 180;
+    float pi = 3.14;
+    int vertexCount = 0;
+    void SetvertexCount();
+    void SetLocations();
+    QPointF liczCwiartkeDlugosciLini(qreal x1, qreal y1, qreal x2, qreal y2);
+    QPointF liczCwiartkeDlugosciLini(QPointF q1, QPointF q2);    
 };
 
 class VisibleVertex : public QGraphicsItem
 {
 public:
-    bool ishover;
-    bool ispressed;
-    bool isgrey;
-    bool isspecial;
-    QBrush brush;
-
     VisibleVertex();
     VisibleVertex(float a, float b, Vertex * vertex, Containers::Person * person);
 
@@ -113,67 +107,28 @@ public:
     Vertex * graphVertex;
     Containers::Person * graphPerson;
     GraphSpace2 *myspace;
-
-    PersonInfo * personInfo;
-    QGridLayout* layout;
-    MyQGraphicsScene * myscene;
-
-protected:
-
-
+    bool ishover;
+    QBrush brush;
 };
 
 class VisibleEdge : public QGraphicsLineItem
 {
 public:
-    bool ishover;
-    bool ispressed;
-    bool isgrey;
-    bool isspecial;
-    QPen pen;
-
     VisibleEdge();
-    VisibleEdge(
-        double x1,
-        double y1,
-        double x2,
-        double y2,
-        QGraphicsItem *parent = 0);
+    VisibleEdge(double x1, double y1, double x2, double y2, QGraphicsItem *parent = 0);
 
     QRectF boundingRect() const;
     QPainterPath shape() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *);
-    void mousePressEvent(QGraphicsSceneMouseEvent *);
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *);
     void AddSecondEdge(Edge* newedge);
 
     Edge * graphEdge1;
     Edge * graphEdge2;
     std::pair <Vertex*,const Vertex*> verticles;
     GraphSpace2 *myspace;
-
-    MailsInfo* mailsInfo;
-    MyQGraphicsScene * myscene;
-    QGridLayout* layout;
-
+    QPen pen;
     float x1,y1,x2,y2;
-
-
-protected:
-
-
 };
-
-
-
-
-
-
-
-
-
-
 
 
 
