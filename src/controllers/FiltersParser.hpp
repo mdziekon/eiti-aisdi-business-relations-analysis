@@ -56,7 +56,8 @@ protected:
 		ERR_ERROR,
 		ERR_PARENTHESIS_MISMATCH,
 		ERR_PARENTHESIS_USELESSCLOSE,
-		ERR_UNEXPECTED_END
+		ERR_UNEXPECTED_END,
+		ERR_EMPTY_EXPRESSION
 	};
 	unordered_set<string> knownFilters {"sender", "receiver", "datebefore", "dateafter", "subjecthas"};
 	
