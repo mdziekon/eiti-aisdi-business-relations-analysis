@@ -1,4 +1,5 @@
 #include "Graph.h"
+
 #include <iostream>
 #include <set>
 
@@ -7,7 +8,7 @@ Graph::Graph(std::unordered_map<std::string, Containers::Person*>& people, std::
 
     addPeople(people);
     addToEdges(mails);
-	
+
 	std::set<std::string> uniq;
 	for(auto x: this->getMails())
 	{
@@ -24,7 +25,7 @@ Graph::Graph(std::list<Containers::Person*>& people, std::list<Containers::Mail*
 
     addPeople(people);
     addToEdges(mails);
-	
+
 	cout << "[[[SIZE: " << this->getMails().size() << "]]]\n";
 	for(auto x: this->getMails())
 	{
@@ -92,6 +93,19 @@ void Graph::addToEdges(std::list<Containers::Mail*>& mails){
     }
 }
 
+void Graph::checkGroups(unsigned int threshold){
+    for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
+        for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
+            if(edgeIt->second->mails.size()>= threshold &&  //edge wychodzacy i zwrotny sa odpowiednio duze
+                edgeIt->second->pointedVertex->edges.at(vertexIt->second)->mails.size()>=threshold){
+                //dodaj wzajemnie vertexy do grupy
+                vertexIt->second->groups.insert(edgeIt->second->pointedVertex);
+                edgeIt->second->pointedVertex->groups.insert(vertexIt->second);
+            }
+        }
+    }
+}
+
 Containers::Person* Graph::findPerson(std::string email)
 {
 	for (auto x: this->vertices)
@@ -107,7 +121,7 @@ Containers::Person* Graph::findPerson(std::string email)
 std::unordered_set<Containers::Mail*> Graph::getMailsHashset()
 {
 	std::unordered_set<Containers::Mail*> ret;
-	
+
 	for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
         for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
             for(auto mailsIt=edgeIt->second->mails.begin(); mailsIt!=edgeIt->second->mails.end(); mailsIt++){
@@ -146,12 +160,12 @@ std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> Graph:
 	std::vector<Containers::Person*> ppl;
 	std::list<Containers::Mail*> mails;
 	Containers::Person* origin = NULL;
-	
+
 	if (check->headers.getHeader("Message-ID") == "<1803522542.12549.1386376839060.JavaMail.javamailuser@localhost>")
 	{
 		return {ppl, mails};
 	}
-	
+
 	auto allMails = this->getMails();
 	for(auto x = allMails.begin(); x != allMails.end(); ++x)
 	{
@@ -167,7 +181,7 @@ std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> Graph:
 				ppl.push_back(y.first);
 			}
 			mails.push_back(*x);
-		}		
+		}
 	}
 	fwdOrigin = origin;
 	return {ppl, mails};
