@@ -21,6 +21,7 @@ Graph::Graph(std::unordered_map<std::string, Containers::Person*>& people, std::
 		}
 	}
 	this->fwdCount -= uniq.size();
+        this->checkGroups(2);
 }
 Graph::Graph(std::list<Containers::Person*>& people, std::list<Containers::Mail*>& mails){
     biggestEdge=0;
@@ -99,7 +100,8 @@ void Graph::checkGroups(unsigned int threshold){
     for(auto vertexIt = vertices.begin(); vertexIt!=vertices.end(); vertexIt++){
         for(auto edgeIt=vertexIt->second->edges.begin(); edgeIt!=vertexIt->second->edges.end(); edgeIt++){
             if(edgeIt->second->mails.size()>= threshold &&  //edge wychodzacy i zwrotny sa odpowiednio duze
-                edgeIt->second->pointedVertex->edges.at(vertexIt->second)->mails.size()>=threshold){
+                    edgeIt->second->pointedVertex->edges.find(vertexIt->second) != edgeIt->second->pointedVertex->edges.end() &&
+                    edgeIt->second->pointedVertex->edges.at(vertexIt->second)->mails.size()>=threshold){
                 //dodaj wzajemnie vertexy do grupy
                 vertexIt->second->groups.insert(edgeIt->second->pointedVertex);
                 edgeIt->second->pointedVertex->groups.insert(vertexIt->second);

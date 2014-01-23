@@ -82,6 +82,7 @@ private:
     SettingsWindow* sw;
     MailWindow* mw;
     PersonInfo* pi;
+    Containers::Person * currHighlighted;
 
     Ui::MainWindow *ui;
 

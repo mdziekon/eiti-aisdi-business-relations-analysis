@@ -108,6 +108,15 @@ void GraphSpace2::DefaultColour() {
     } scene->update();
 }
 
+void GraphSpace2::setAllToColor(QBrush brush) {
+    ColourGraph(this->graph->getMails(),defaultBrush,defaultPen);
+    for(auto vertexit = this->visibleVertices.begin() ; vertexit != this->visibleVertices.end() ; vertexit++)
+    {
+        VisibleVertex* vertex = *vertexit;
+        ColourVertex(vertex->graphPerson, brush);
+    } scene->update();   
+}
+
 void GraphSpace2::ColourGraph(std::list<Containers::Mail*> maillist, QBrush brush, QPen pen)
 {
     for(auto it = maillist.begin() ; it != maillist.end() ; it++)

@@ -77,6 +77,7 @@ public:
     void ColourVertex(Containers::Person *person, QBrush brush);
     void ColourEdge(Containers::Mail *mail, QPen pen);
     void DefaultColour();
+    void setAllToColor(QBrush brush);
 
 
 

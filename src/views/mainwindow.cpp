@@ -364,8 +364,20 @@ void MainWindow::on_pushButton_advancedfiltersaction_clicked()
 void MainWindow::on_listWidget_grouppeople_itemClicked(QListWidgetItem *item)
 {
     QListWidgetItemPerson * myitem = static_cast<QListWidgetItemPerson*>(item);
+    if(myitem->person != this->currHighlighted) {
+        this->graphspace2->setAllToColor(QBrush(Qt::gray));
+    }
     Containers::Person* person = myitem->person;
-    //i majac obiekt person mozna sie bawic :)
+    this->graphspace2->ColourVertex(person, QBrush(Qt::yellow));
+    
+    for(VisibleVertex* v: this->graphspace2->visibleVertices) {
+        for(Vertex * vertex : v->graphVertex->groups) {
+            if(vertex->owner == person) {
+                this->graphspace2->ColourVertex(person, QBrush(Qt::black));
+                break;
+            }
+        }
+    }
 }
 
 void MainWindow::on_checkBox_isbefore_clicked()
