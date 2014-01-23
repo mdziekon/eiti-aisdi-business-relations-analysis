@@ -350,12 +350,12 @@ void MainWindow::on_pushButton_advancedfiltersaction_clicked()
                 AddLine(*it,lp++);
         }
         ui->treeWidget_MailList->sortItems(0,Qt::SortOrder(0));
-        ui->textEdit_advancedfilterstatus->setStyleSheet("QLabel { background-color : #2ecc40; color: #ffffff;}");
+        ui->textEdit_advancedfilterstatus->setStyleSheet("QTextEdit { background-color : #2ecc40; color: #ffffff;}");
         ui->textEdit_advancedfilterstatus->setText("Poprawna skladnia. Filtr zaladowany");
     }
     else
     {
-        ui->textEdit_advancedfilterstatus->setStyleSheet("QLabel { background-color : #ff4136; color: #ffffff;}");
+        ui->textEdit_advancedfilterstatus->setStyleSheet("QTextEdit { background-color : #ff4136; color: #ffffff;}");
         QString qinfo = QString::fromStdString(fp.getErrorInfo(10));
         ui->textEdit_advancedfilterstatus->setText(qinfo);
     }
