@@ -332,7 +332,10 @@ Stats Graph::getStats(Containers::Person* person){
             strftime (buffer, 20 ,"%D", timeinfo);                      //dokladna data mejla
             uniqueDays.insert (std::make_pair<char*,int>(buffer,day));  //wrzuc unikalny dzien tyg.
 
-            //tu oblicza sredni czas pracy
+
+
+
+            /*//tu oblicza sredni czas pracy
             auto gotIt = workTimeMap.find(buffer);
             if(gotIt==workTimeMap.end()){   //nie ma jeszcze takiego dnia w mapie
                 workTimeMap.insert(std::make_pair<char* , std::pair<int, int>>(buffer, std::make_pair<int, int>((*mailsIt).sendDate.getUnixTimestamp(),(*mailsIt).sendDate.getUnixTimestamp())));
@@ -343,7 +346,7 @@ Stats Graph::getStats(Containers::Person* person){
                 else if((*mailsIt).sendDate.getUnixTimestamp()<workTimeMap.at(buffer).first)
                     workTimeMap.at(buffer).first=(*mailsIt).sendDate.getUnixTimestamp();
             }
-
+            */
         }
     }
 
@@ -357,7 +360,7 @@ Stats Graph::getStats(Containers::Person* person){
     for(int i=0; i<7; i++){ //policz srednia ilsoc mejli kazdego dnia
         stats.dailySentAverage[i]=allMailsSentAtDay[i]/uniqueDaysNum[i];
     }
-
+    /*
     ///SREDNIA CZASU PRACY
     unsigned int totalWorkEndingTime=0;
      unsigned int totalWorkStartingTime=0;
@@ -368,7 +371,7 @@ Stats Graph::getStats(Containers::Person* person){
     //stats.averageWorkEndTime=totalWorkEndingTime/workTimeMap.size();
     //stats.averageWorkStartTime=totalWorkStartingTime/workTimeMap.size();
     stats.averageWorkTime=(totalWorkEndingTime-totalWorkStartingTime)/workTimeMap.size(); //srednia ilosc czasu na dobe/ilosc unikalnych dni
-
+    */
 
     ///DLA PRZYCHODZACYCH MEJLI
     uniqueDays.clear();
