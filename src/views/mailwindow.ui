@@ -71,6 +71,9 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QLabel" name="nadawcaText">
+          <property name="styleSheet">
+           <string notr="true">QLabel { background-color : white;}</string>
+          </property>
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
           </property>
@@ -81,6 +84,9 @@
         </item>
         <item>
          <widget class="QLabel" name="odbiorcaText">
+          <property name="styleSheet">
+           <string notr="true">QLabel { background-color : white;}</string>
+          </property>
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
           </property>
@@ -91,6 +97,9 @@
         </item>
         <item>
          <widget class="QLabel" name="tematText">
+          <property name="styleSheet">
+           <string notr="true">QLabel { background-color : white;}</string>
+          </property>
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
           </property>
@@ -101,6 +110,9 @@
         </item>
         <item>
          <widget class="QLabel" name="czasText">
+          <property name="styleSheet">
+           <string notr="true">QLabel { background-color : white;}</string>
+          </property>
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
           </property>

@@ -365,9 +365,22 @@ void MainWindow::on_listWidget_grouppeople_itemClicked(QListWidgetItem *item)
 {
     QListWidgetItemPerson * myitem = static_cast<QListWidgetItemPerson*>(item);
     Containers::Person* person = myitem->person;
-    //i majac obiekt person mozna sie bawic :)
-    //this->graphspace2->ColourVertex(person,QBrush(Qt::yellow));
-    //this->graphspace2->graph->
+    this->graphspace2->ColourVertex(person,QBrush(Qt::yellow));
+    for(auto it = this->graphspace2->visibleVertices.begin(); it!= this->graphspace2->visibleVertices.end(); ++it)
+    {
+        VisibleVertex* visvertex = *it;
+        Containers::Person* per = visvertex->graphPerson;
+        Vertex* vertex = visvertex->graphVertex;
+        if(per == person)
+        {
+            std::cout<<"tu: "<<vertex->groups.size()<<std::endl;
+            for(auto ii = vertex->groups.begin() ; ii!= vertex->groups.end() ; ++ii)
+            {
+                Vertex* v = *ii;
+                this->graphspace2->ColourVertex(v->owner,QBrush(Qt::yellow));
+            }
+        }
+    }
 }
 
 void MainWindow::on_checkBox_isbefore_clicked()
@@ -482,27 +495,42 @@ void MainWindow::on_listWidget_people_itemDoubleClicked(QListWidgetItem *item)
     //i tu mozna sobie wyswietlac statystyki;
 
 
-    Stats stats = filteredGraph->getStats(person);
+   // Stats stats = filteredGraph->getStats(person);
 
-    ui->label_personfullname->setText(QString::fromStdString(person->getName()));
-    ui->label_sendmon->setText(QString::number(stats.dailySentAverage[1]));
-    ui->label_sendtu->setText(QString::number(stats.dailySentAverage[2]));
-    ui->label_sendwe->setText(QString::number(stats.dailySentAverage[3]));
-    ui->label_sendthu->setText(QString::number(stats.dailySentAverage[4]));
-    ui->label_sendfri->setText(QString::number(stats.dailySentAverage[5]));
-    ui->label_sendsat->setText(QString::number(stats.dailySentAverage[6]));
-    ui->label_sendsan->setText(QString::number(stats.dailySentAverage[0]));
-    ui->label_sendall->setText(QString::number(stats.mailsSent));
-    ui->label_recivemon->setText(QString::number(stats.dailyReceivedAverage[1]));
-    ui->label_recivetu->setText(QString::number(stats.dailyReceivedAverage[2]));
-    ui->label_recivewe->setText(QString::number(stats.dailyReceivedAverage[3]));
-    ui->label_recivethu->setText(QString::number(stats.dailyReceivedAverage[4]));
-    ui->label_recivefri->setText(QString::number(stats.dailyReceivedAverage[5]));
-    ui->label_recivesat->setText(QString::number(stats.dailyReceivedAverage[6]));
-    ui->label_recivesan->setText(QString::number(stats.dailyReceivedAverage[0]));
-    ui->label_reciveall->setText(QString::number(stats.mailsReceived));
-    unsigned int time = stats.averageWorkTime;
-    ui->label_averageworktime->setText(QString::number(stats.averageWorkTime));
+//    ui->label_personfullname->setText(QString::fromStdString(person->getName()));
+//    ui->label_sendmon->setText(QString::number(stats.dailySentAverage[1]));
+//    ui->label_sendtu->setText(QString::number(stats.dailySentAverage[2]));
+//    ui->label_sendwe->setText(QString::number(stats.dailySentAverage[3]));
+//    ui->label_sendthu->setText(QString::number(stats.dailySentAverage[4]));
+//    ui->label_sendfri->setText(QString::number(stats.dailySentAverage[5]));
+//    ui->label_sendsat->setText(QString::number(stats.dailySentAverage[6]));
+//    ui->label_sendsan->setText(QString::number(stats.dailySentAverage[0]));
+//    ui->label_sendall->setText(QString::number(stats.mailsSent));
+//    ui->label_recivemon->setText(QString::number(stats.dailyReceivedAverage[1]));
+//    ui->label_recivetu->setText(QString::number(stats.dailyReceivedAverage[2]));
+//    ui->label_recivewe->setText(QString::number(stats.dailyReceivedAverage[3]));
+//    ui->label_recivethu->setText(QString::number(stats.dailyReceivedAverage[4]));
+//    ui->label_recivefri->setText(QString::number(stats.dailyReceivedAverage[5]));
+//    ui->label_recivesat->setText(QString::number(stats.dailyReceivedAverage[6]));
+//    ui->label_recivesan->setText(QString::number(stats.dailyReceivedAverage[0]));
+//    ui->label_reciveall->setText(QString::number(stats.mailsReceived));
+
+    //tu trzeba odkomentowac i usunac to 10000000
+    unsigned int time =10000000; //stats.averageWorkTime;
+    unsigned int days = time /86400;std::cout<<days<<std::endl;
+    unsigned int hours = (time- days*86400)/360;std::cout<<hours<<std::endl;
+    unsigned int minutes = (time - days*86400 - hours*360)/60;std::cout<<minutes<<std::endl;
+    unsigned int secundes = (time - days*86400 - hours*360 - minutes*60);std::cout<<secundes<<std::endl;
+    QString qtime;
+    qtime+=QString::number(days);
+    qtime+="dni ";
+    qtime+=QString::number(hours);
+    qtime+="godzin ";
+    qtime+=QString::number(minutes);
+    qtime+="minut ";
+    qtime+=QString::number(secundes);
+    qtime+="sekund ";
+    ui->label_averageworktime->setText(qtime);
 
 }
 
