@@ -64,8 +64,8 @@ Date FileParser::parseTime(const std::string & input)
 
 	std::string::const_iterator it = input.begin(); //spacja + dzień + spacja
 	std::string weekday, day, month, year, hours, minutes, seconds;
-	const char * days[7] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-	const char * months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
+	std::string days[7] {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+	std::string months[12] {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
 				"Aug", "Sep", "Oct", "Nov", "Dec"};
 	
 	time(&rawtime);
@@ -115,14 +115,17 @@ Date FileParser::parseTime(const std::string & input)
 	
 	/* zamiana dnia tygodnia na liczbę */
 	for(int i = 0; i < 7; ++i) {
-		if(days[i] == weekday.c_str()) {
+		if(days[i] == weekday) {
+//			cout << "+++Setting weekday: " << i << endl;
 			time_struct.tm_wday = i;
 			break;
 		}
 	}
+	
 	/* zamiana miesiąca na liczbę */
 	for(int i = 0; i < 12; ++i) {
-		if(months[i] == month.c_str()) {
+		if(months[i] == month) {
+//			cout << "+++Setting month: " << i << endl;
 			time_struct.tm_mon = i;
 			break;
 		}
@@ -130,6 +133,7 @@ Date FileParser::parseTime(const std::string & input)
 	/* zamiana od roku do sekund na liczby */
 	time_struct.tm_year = atoi(year.c_str()) - 1900;
 	time_struct.tm_mday = atoi(day.c_str());
+//	cout << "+++Setting day: " << time_struct.tm_mday << endl;
 	time_struct.tm_hour = atoi(hours.c_str());
 	time_struct.tm_min = atoi(minutes.c_str());
 	time_struct.tm_sec = atoi(seconds.c_str());
