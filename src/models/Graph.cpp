@@ -28,7 +28,7 @@ Graph::Graph(std::list<Containers::Person*>& people, std::list<Containers::Mail*
     addPeople(people);
     addToEdges(mails);
 
-//	cout << "[[[SIZE: " << this->getMails().size() << "]]]\n";
+	cout << "[[[SIZE: " << this->getMails().size() << "]]]\n";
 	for(auto x: this->getMails())
 	{
 		if (x->headers.getHeader("Message-ID") != "<1803522542.12549.1386376839060.JavaMail.javamailuser@localhost>")
@@ -60,17 +60,17 @@ void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
     //dla kazdego mejla znajdz wierzcholek nadawacy, w mapie krawedzi wierzcholka nadawcy
     //znajdz krawedz odpowiadajaca wierzcholkowi i wstaw tam nowa krawedz, jesli wczesniej nie istniala zadna
     for(unsigned int i=0; i<mails.size(); i++){
-//		std::cout << "add mail\n";
+		std::cout << "add mail\n";
         //te 2 wskazniki ponizej nie sa potrzebne, ale wtedy jedna linijka mialaby 3 linijki xd
         Vertex* senderVertex=vertices.find(mails[i]->sender)->second;
-//		std::cout << "found vertex\n";
+		std::cout << "found vertex\n";
 		for(auto recIt: mails[i]->receivers){
-//			std::cout << "find\n";
+			std::cout << "find\n";
 			Vertex* receiverVertex=vertices.find(recIt.first)->second;
 			//jesli nie istnieje edge dla wierzcholka odbiorcy
-//			std::cout << "if\n";
+			std::cout << "if\n";
 			if(senderVertex->edges.count(receiverVertex)==0){
-//				std::cout << "add to edges\n";
+				std::cout << "add to edges\n";
 				Edge* newEdge = new Edge(receiverVertex);
 				senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
 			}
@@ -158,62 +158,30 @@ std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> Graph:
 	std::vector<Containers::Person*> ppl;
 	std::list<Containers::Mail*> mails;
 	Containers::Person* origin = NULL;
-	std::unordered_set<Containers::Person*> addedPpl;
 
-	if (!check->partOfForwardPath)
+	if (check->headers.getHeader("Message-ID") == "<1803522542.12549.1386376839060.JavaMail.javamailuser@localhost>")
 	{
 		return {ppl, mails};
 	}
-	if (check->forwardBase == NULL && check->forwardAll.size() == 0)
+
+	auto allMails = this->getMails();
+	for(auto x = allMails.begin(); x != allMails.end(); ++x)
 	{
-		return {ppl, mails};
-	}
-	if (check->forwardBase == NULL)
-	{
-		fwdOrigin = check->sender;
-	}
-	else
-	{
-		fwdOrigin = check->forwardBase->sender;
-		check = check->forwardBase;
-	}
-		for(auto x: check->forwardAll)
+		if ((*x)->headers.getHeader("Message-ID") == check->headers.getHeader("Message-ID"))
 		{
-			mails.push_back(x);
-			if (addedPpl.find(x->sender) == addedPpl.end())
+			if ((*x)->headers.getHeader("Subject").at(0) != 'F')
 			{
-				addedPpl.insert(x->sender);
+				origin = (*x)->sender;
 			}
-			for(auto y: x->receivers)
+			ppl.push_back((*x)->sender);
+			for(auto y: (*x)->receivers)
 			{
-				if (addedPpl.find(y.first) == addedPpl.end())
-				{
-					addedPpl.insert(y.first);
-				}
+				ppl.push_back(y.first);
 			}
+			mails.push_back(*x);
 		}
-
-//	Containers::Mail* currMail = check;
-//	while(check->headers.getHeader("X-For"))
-//	
-//	auto allMails = this->getMails();
-//	for(auto x = allMails.begin(); x != allMails.end(); ++x)
-//	{
-//		if ((*x)->headers.getHeader("Message-ID") == check->headers.getHeader("Message-ID"))
-//		{
-//			if ((*x)->headers.getHeader("Subject").at(0) != 'F')
-//			{
-//				origin = (*x)->sender;
-//			}
-//			ppl.push_back((*x)->sender);
-//			for(auto y: (*x)->receivers)
-//			{
-//				ppl.push_back(y.first);
-//			}
-//			mails.push_back(*x);
-//		}
-//	}
-//	fwdOrigin = origin;
+	}
+	fwdOrigin = origin;
 	return {ppl, mails};
 }
 
@@ -345,13 +313,17 @@ Stats Graph::getStats(Containers::Person* person){
     Vertex* vertex=vertices.at(person);
     Stats stats;
 
+
     ///DLA WYCHODZACYCH MEJLI
-    std::unordered_map<char*, int> uniqueDays;                  //klucz-unikalny dzien, int-nr dnia tygodnia
-    std::unordered_map<char*, std::pair<int, int>> workTimeMap; //klucz - unikalny dzien, para-min i max czas danego dnia
+    std::unordered_map<std::string, int> uniqueDays_w;                  //klucz-unikalny dzien, int-nr dnia tygodnia
+    std::unordered_map<std::string, std::pair<int, int>> workTimeMap; //klucz - unikalny dzien, para-min i max czas danego dnia
     unsigned int allMailsSentAtDay[7]={0};  //liczba wszystkich mejli w danym dniu tygodnia
     for(auto it = vertex->edges.begin(); it!= vertex->edges.end(); it++){   //dla kazdego wych. edga
         stats.mailsSent+=it->second->mails.size();
         for(auto mailsIt=it->second->mails.begin(); mailsIt!=it->second->mails.end(); mailsIt++){    //dla kazdego mejla
+            unsigned int day=stoi((*mailsIt).sendDate.formatDate("%w"));
+            allMailsSentAtDay[day]++;                                                      //mail w dany dzien tygodnia
+            uniqueDays_w.insert (std::make_pair<std::string,int>((*mailsIt).sendDate.formatDate("%D"),day));//wrzuc unikalny dzien tyg.
 
             //tu oblicza srednia ilosc mejli
             const tm *timeinfo = &(*mailsIt).sendDate.timeStruct;
@@ -364,64 +336,69 @@ Stats Graph::getStats(Containers::Person* person){
             strftime (buffer, 20 ,"%D", timeinfo);                      //dokladna data mejla
             uniqueDays.insert (std::make_pair<char*,int>(buffer,day));  //wrzuc unikalny dzien tyg.
 
+            //tu oblicza sredni czas pracy
+            std::string day_str=(*mailsIt).sendDate.formatDate("%D");
+            auto gotIt = workTimeMap.find(day_str);
 
 
 
             /*//tu oblicza sredni czas pracy
             auto gotIt = workTimeMap.find(buffer);
             if(gotIt==workTimeMap.end()){   //nie ma jeszcze takiego dnia w mapie
-                workTimeMap.insert(std::make_pair<char* , std::pair<int, int>>(buffer, std::make_pair<int, int>((*mailsIt).sendDate.getUnixTimestamp(),(*mailsIt).sendDate.getUnixTimestamp())));
+                workTimeMap.insert(std::pair<std::string , std::pair<int, int>>(day_str, std::pair<int, int>((*mailsIt).sendDate.getUnixTimestamp(),(*mailsIt).sendDate.getUnixTimestamp())));
             }
             else{                           //jest taki dzien - sprawdz czy przesunely sie godziny pracy
-                if((*mailsIt).sendDate.getUnixTimestamp()>workTimeMap.at(buffer).second)
-                    workTimeMap.at(buffer).second=(*mailsIt).sendDate.getUnixTimestamp();
-                else if((*mailsIt).sendDate.getUnixTimestamp()<workTimeMap.at(buffer).first)
-                    workTimeMap.at(buffer).first=(*mailsIt).sendDate.getUnixTimestamp();
+                if((*mailsIt).sendDate.getUnixTimestamp()>workTimeMap.at(day_str).second)
+                    workTimeMap.at(day_str).second=(*mailsIt).sendDate.getUnixTimestamp();
+                else if((*mailsIt).sendDate.getUnixTimestamp()<workTimeMap.at(day_str).first)
+                    workTimeMap.at(day_str).first=(*mailsIt).sendDate.getUnixTimestamp();
             }
-            */
+
+
+
+
         }
     }
 
     ///SREDNIA LICZBA MEJLI WYCHODZACYCH
     //policz ile unikalnych dni bylo
-    unsigned int uniqueDaysNum[7]={0};
-    for(auto it=uniqueDays.begin(); it!=uniqueDays.end(); it++){
-        uniqueDaysNum[it->second]++;
+    float uniqueDaysNum_w[7]={0};
+    for(auto it=uniqueDays_w.begin(); it!=uniqueDays_w.end(); it++){
+        uniqueDaysNum_w[it->second]++;
     }
 
     for(int i=0; i<7; i++){ //policz srednia ilsoc mejli kazdego dnia
-        stats.dailySentAverage[i]=allMailsSentAtDay[i]/uniqueDaysNum[i];
+        stats.dailySentAverage[i]=allMailsSentAtDay[i]/uniqueDaysNum_w[i];
     }
-    /*
+
+
     ///SREDNIA CZASU PRACY
     unsigned int totalWorkEndingTime=0;
-     unsigned int totalWorkStartingTime=0;
+    unsigned int totalWorkStartingTime=0;
     for(auto it=workTimeMap.begin(); it!=workTimeMap.end(); it++){
         totalWorkStartingTime+=it->second.first;
         totalWorkEndingTime+=it->second.second;
     }
     //stats.averageWorkEndTime=totalWorkEndingTime/workTimeMap.size();
     //stats.averageWorkStartTime=totalWorkStartingTime/workTimeMap.size();
-    stats.averageWorkTime=(totalWorkEndingTime-totalWorkStartingTime)/workTimeMap.size(); //srednia ilosc czasu na dobe/ilosc unikalnych dni
-    */
+    if(workTimeMap.size()!=0)
+        stats.averageWorkTime=(totalWorkEndingTime-totalWorkStartingTime)/workTimeMap.size(); //srednia ilosc czasu na dobe/ilosc unikalnych dni
+    else stats.averageWorkTime=0;
 
     ///DLA PRZYCHODZACYCH MEJLI
+    std::unordered_map<std::string, int> uniqueDays;
     uniqueDays.clear();
     unsigned int allMailsReceivedAtDay[7]={0};
     for(auto it = vertex->pointingEdges.begin(); it!=vertex->pointingEdges.end(); it++){
         stats.mailsReceived+=(*it)->mails.size();
         for(auto mailsIt=(*it)->mails.begin(); mailsIt!=(*it)->mails.end(); mailsIt++){
-            const tm *timeinfo = &(*mailsIt).sendDate.timeStruct;
-            char buffer [20];
-            strftime (buffer, 20 ,"%w", timeinfo);   //wrzuca do buffer numer dnia tygodnia
-            unsigned int day=atoi(buffer);
-            allMailsReceivedAtDay[day]++;               //mail w dany dzien tygodnia
-            strftime (buffer, 20 ,"%D", timeinfo);  //dokladna data mejla
-            uniqueDays.insert (std::make_pair<char*,int>(buffer,day));//wrzuc unikalny dzien tyg.
+            unsigned int day=stoi((*mailsIt).sendDate.formatDate("%w"));
+            allMailsReceivedAtDay[day]++;                                                                 //mail w dany dzien tygodnia
+            uniqueDays.insert (std::make_pair<std::string,int>((*mailsIt).sendDate.formatDate("%D"),day));//wrzuc unikalny dzien tyg.
         }
     }
-
-    uniqueDaysNum[7]={0};
+    ///SREDNIA ILOSC MEJLI PRZYCH.
+    float uniqueDaysNum[7]={0};
     for(auto it=uniqueDays.begin(); it!=uniqueDays.end(); it++){
         uniqueDaysNum[it->second]++;
     }
@@ -438,11 +415,11 @@ Stats Graph::getStats(Containers::Person* person){
 
 
 Edge::Edge(Vertex* pointedVertex){
-//    std::cout<<"tworze edga...";
+    std::cout<<"tworze edga...";
     this->pointedVertex=pointedVertex;
     this->owner=owner;
     pointedVertex->pointingEdges.push_back(this);
-//    std::cout<<"sukces"<<std::endl;
+    std::cout<<"sukces"<<std::endl;
 }
 
 
