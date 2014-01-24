@@ -81,7 +81,11 @@ void MainWindow::AddLine(Containers::Mail* mail, int lp)
 
     item->setText(1, QString::fromStdString(allreceivers) );
     item->setText(2,QString::fromStdString(mail->headers.getHeader("Subject")) );
-    item->setText(3,QString::fromStdString(mail->sendDate.formatDate("%x")));
+    QString qstr =QString::fromStdString(mail->sendDate.formatDate("%x"));
+            qstr+= " (";
+            qstr+=QString::number(mail->sendDate.getUnixTimestamp());
+            qstr+=")";
+    item->setText(3,qstr);
     item->setText(4, QString::number(lp));
 
     ui->treeWidget_MailList->addTopLevelItem(item);
