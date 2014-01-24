@@ -5,6 +5,7 @@
 #include "../controllers/parser.hpp"
 #include "../models/Containers.hpp"
 
+#include "../utils/quicksort.h"
 
 LoadFileWindow::LoadFileWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -70,6 +71,10 @@ std:: vector<std::string> LoadFileWindow::GetPathList()
     return mainFileNameList;
 }
 
+bool myfunction (Containers::Mail* left,Containers::Mail* right) {
+	return (left->sendDate.getUnixTimestamp() < right->sendDate.getUnixTimestamp());
+}
+
 //ostatnia dzialajaca funkcja w tym oknie przed zamknieciem !!!
 void LoadFileWindow::on_pushButton_Confirm_clicked()
 {
@@ -91,6 +96,11 @@ void LoadFileWindow::on_pushButton_Confirm_clicked()
     {
         tempVec.push_back(parser.load_plik(it.c_str()));
     }
+//	SortedMailsComparator comp;
+//	quicksort<Containers::Mail>(tempVec, 0, tempVec.size() - 1, comp);
+//	parser.checkForwards(tempVec);
+	std::sort (tempVec.begin(), tempVec.end(), myfunction);
+	
 
 /*
     w tym miejscu powininien zostac uruchomiony modul parsujacy do ktorego zostanie przekazany vector stringow
@@ -105,7 +115,20 @@ void LoadFileWindow::on_pushButton_Confirm_clicked()
 
 */
 
-    myParent->UzupelnianieOkienek(tempVec, parser.getCache());
+	cout << "---Check forwards---\n";
+	parser.loadFwds(tempVec);
+	cout << "---END---\n";
+	
+	for(auto x: tempVec)
+	{
+		cout << "Subject: " << x->headers.getHeader("Subject") << ": " << endl;
+		cout << "basePointer = " << x->forwardBase << endl;
+		cout << "other pointers count = " << x->forwardAll.size() << (x->forwardAll.size() > 0 ? "!!!" : "") << endl;
+		cout << "---\n";
+	}
+	
+	
+    myParent->UzupelnianieOkienek(tempVec, parser.getCache(), &parser);
     parentWidget()->setEnabled(true);
     close();
 }

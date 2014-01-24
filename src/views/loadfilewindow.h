@@ -10,7 +10,18 @@
 #include <QTreeWidget>
 #include <string>
 #include <vector>
+#include "../utils/sortComparators.h"
+#include <algorithm>
 
+
+
+class SortedMailsComparator : public SortComparator<Containers::Mail>
+{
+	bool compare(Containers::Mail* left, Containers::Mail* right)
+	{
+		return (left->sendDate.getUnixTimestamp() > right->sendDate.getUnixTimestamp());
+	}
+};
 
 class MainWindow;
 

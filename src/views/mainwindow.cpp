@@ -95,13 +95,14 @@ void MainWindow::ClearAll()
     }
 }
 
-void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMail, std::unordered_map<std::string, Containers::Person*> vecPobranePerson)
+void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMail, std::unordered_map<std::string, Containers::Person*> vecPobranePerson, FileParser* fp)
 {
     Flagwindow1 = false;
     vecPerson = vecPobranePerson;
     vecMail = vecPobraneMail;
     originalGraph = new Graph(vecPerson, vecMail);
     filteredGraph = new Graph(vecPerson, vecMail);
+	originalGraph->forwards_hashes = filteredGraph->forwards_hashes = fp->forwards_hashes;
     filterset = new FilterSet();
 
     UzupelnijZestawienie(originalGraph);

@@ -48,6 +48,8 @@ public:
 class Graph{
     friend class Filter;
 public: //do testow
+	std::unordered_map<std::string, Containers::Mail*> forwards_hashes;
+	
     std::unordered_map<Containers::Person*, Vertex*> vertices;
 	unsigned int fwdCount = 0;
     Containers::Person* fwdOrigin = NULL;
@@ -73,7 +75,7 @@ public: //do testow
     std::unordered_set<Containers::Mail*> getMailsHashset();
     std::list<Containers::Person*> getPeople();
     std::list<Containers::Mail*> getMails();
-std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> fwdDetect(Containers::Mail* check);
+	std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> fwdDetect(Containers::Mail* check);
 private:
     unsigned int biggestEdge;
     //to przyjmuje wektor UNIKALNYCH osob, dodaje wierzcholki odpowiadajce tym osobom

@@ -137,8 +137,9 @@ Date FileParser::parseTime(const std::string & input)
 	time_struct.tm_hour = atoi(hours.c_str());
 	time_struct.tm_min = atoi(minutes.c_str());
 	time_struct.tm_sec = atoi(seconds.c_str());
-	time_struct.tm_isdst = -1;
+	time_struct.tm_isdst = 0;
 
+//	cout << "Form: " << time_struct.tm_year << "." << time_struct.tm_mon << "." << time_struct.tm_mday << "." << time_struct.tm_wday << "." << time_struct.tm_hour << "." << time_struct.tm_min << "." << time_struct.tm_sec << "." << "." << time_struct.tm_isdst << endl;
 	return Date(time_struct);
 }
 	
@@ -156,7 +157,7 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
     Person * current_person;
     std::string mail_address;
 
-	std::cout << "Emails list:\n" << input << endl;
+//	std::cout << "Emails list:\n" << input << endl;
 	
     do {
         while(*it <= ' ' || *it == ',') {
@@ -178,7 +179,7 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
                 }
                 mail_address = std::string(begin_internal + 1, it - 1);
                 if(cache.find(mail_address) == cache.end()) {
-					std::cout << "Email: " << mail_address << endl;
+//					std::cout << "Email: " << mail_address << endl;
                         current_person = new Person(mail_address);
                 } else {
 					current_person = cache.find(mail_address)->second;
@@ -194,7 +195,7 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
             mail_address = std::string(begin_it, it);
 			
             if(cache.find(mail_address) == cache.end()) {
-				std::cout << "Email: " << mail_address << endl;
+//				std::cout << "Email: " << mail_address << endl;
                 current_person = new Person(mail_address);
             } else {
 					current_person = cache.find(mail_address)->second;
@@ -206,73 +207,15 @@ vector<pair<Person*, Receiver>> FileParser::parseMultiple(
     return result;
 }
 
-void FileParser::checkForwards(std::string & title, std::string & contents, Mail * mail) 
+void FileParser::checkForwards(vector<Containers::Mail*>& mails)
 {
-    vector<std::string> hashes;
-    int depth;
-    int counter = 0;
-    Mail * base_mail = mail;
-            
-    std::string::iterator it = title.begin();
-    while(it < title.end() - 4) {
-        if(std::string(it, it + 4) == "Fwd:") {
-            counter++;
-            it += 3;
-        }
-        it++;
-    }
-    
-    depth = counter;
-    
-    //wyczysc puste znaki z przodu i z tylu
-    {
-        std::string::iterator rear_it = contents.end();
-        std::string::iterator front_it = contents.begin();
-        while(*rear_it-- <= ' ');
-        while(*front_it++ <= ' ');
-        contents = std::string(front_it-1, rear_it+2);
-    }
-    
-    std::size_t found = 0;
-    while(counter --> -1) {
-        found = contents.find("Forwarded message from", found);
-        hashes.push_back(md5->md5ify(contents));
-        if(found < contents.size())
-            contents = contents.substr(found);     // get from "live" to the end
-    }
-    /* look for base mail sender in end mail vector of receivers to check
-       completeness of an eventual cycle */
-
-    // done with storing hashes, let's find forwards
-    while(hashes.size() > 1) {
-        Mail * current_mail = mail_cache.find(*(hashes.end() - 1))->second;
-        hashes.pop_back();
-        for(std::pair<Person*, Receiver> p : current_mail->receivers) {
-            base_mail->forwarded_to.push_back(p.first);
-        }
-        bool exit_conditional = false;
-        for ( Person * bs : base_mail->forwarded_to) {
-            for ( std::pair<Person*, Receiver> ct : current_mail->receivers ) {
-                if(bs == ct.first) {
-                    exit_conditional = true;
-                    current_mail->part_of_a_cycle = true;
-                    break;
-                }
-            }
-            if(exit_conditional) {
-                break;
-            }
-        }
-    }
-    
-    if(depth > 0) {
-        for(Person * p : base_mail->forwarded_to) {
-            if(base_mail->sender == p) {
-                base_mail->complete_cycle = true;
-                break;
-            }
-        }
-    }
+	for(auto x: mails)
+	{
+		if (x->headers.getHeader("X-Forwarded-From").size() == 0)
+		{
+			continue;
+		}
+	}
 }
 
 Person * FileParser::addPerson(const std::string & email)
@@ -304,65 +247,210 @@ int FileParser::cacheSize()
 	return cache.size();
 }
 
+void FileParser::loadFwds(vector<Containers::Mail*>& mails) {
+
+	for(auto x: mails)
+	{
+		cout << "a";
+		if (!x->partOfForwardPath)
+		{
+			cout << "Not in forward---\n";
+			continue;
+		}
+		if (x->headers.getHeader("X-Forwarded-Hash") == "")
+		{
+			cout << "Not forwarded---\n";
+			continue;
+		}
+		
+		auto it = this->forwards_hashes.find(x->headers.getHeader("X-Forwarded-Hash"));
+		if (it == this->forwards_hashes.end())
+		{
+			continue;
+		}
+		Containers::Mail* node = it->second;
+		if (node == NULL)
+		{
+			continue;
+		}
+		
+		if (node->headers.getHeader("X-Forwarded-Hash") == "")
+		{
+			x->forwardBase = node;
+			node->forwardAll.push_back(x);
+		}
+		else
+		{
+			x->forwardBase = node->forwardBase;
+			node->forwardBase->forwardAll.push_back(x);
+		}
+	}
+}
+
+
 Containers::Mail * FileParser::build(std::string& str)
-{	
+{
 	this->parser_foundHeadersEnd = false;
 	auto it = str.begin();
 	Person * sender = NULL;
 	vector<pair<Person*, Receiver>> receivers;
-        Mail * result_mail = NULL;
-                
-        md5 = new MD5();
+	Mail * result_mail = NULL;
 
 	Headers headers;
-        std::string title;
+	std::string title;
 	std::string contents;
 	Date time;
+	unsigned int forwardHashDetectionState = 0;
+	unsigned int hashBuilderState = 0;
+	std::stringstream strStream;
 	
+	bool setAsPartOfForward = false;
+	bool isBaseForward = true;
+	
+	cout << "=== BUILD\n";
 	while(it != str.end())
-	{
-		auto result = this->parseEntity(str, it);
-		if(result.first == "Date") {
-			time = this->parseTime(result.second);
+	{		
+		if (hashBuilderState == 2)
+		{
+//			cout << "Build hash stamp: " << time.getUnixTimestamp() << " (" << time.formatDate("%c") << ")" << endl;
+			strStream.str("");
+			strStream << sender->getEmail().getFull();
+			strStream << "|" ;
+			strStream << time.getUnixTimestamp();
+			headers.addHeader("Fwd-Hash", strStream.str());
+//			cout << headers.getHeader("Fwd-Hash") << endl;
+			hashBuilderState = 0;
 		}
-		else if(result.first == "From") {
+		
+		if (forwardHashDetectionState == 2)
+		{
+			isBaseForward = false;
+			
+			strStream.str("");
+			strStream << headers.getHeader("X-Forwarded-From");
+			strStream << "|" ;
+			strStream << headers.getHeader("X-Forwarded-Original-Date");
+			headers.addHeader("X-Forwarded-Hash", strStream.str());
+			
+			cout << ">>> Found HASH: " << strStream.str() << endl;
+			auto fwdIt = this->forwards_hashes.find(strStream.str());
+			if (fwdIt == this->forwards_hashes.end())
+			{
+				cout << "no match\n";
+				this->forwards_hashes.insert({{strStream.str(), NULL}});
+			}
+			else if ((*fwdIt).second != NULL)
+			{
+				cout << "match\n";
+				(*fwdIt).second->partOfForwardPath = true;
+			}
+			
+			setAsPartOfForward = true;
+			
+//			cout << headers.getHeader("Fwd-Hash") << endl;
+			forwardHashDetectionState = 0;
+		}
+		
+//		cout << "^^^^^^^^^^^^\n";
+//		cout << "Entity found\n";
+		auto result = this->parseEntity(str, it);
+//		cout << result.first << endl;
+//		cout << "---" << endl;
+//		cout << result.second << endl;
+//		cout << "============\n";
+		
+		if(result.first == "X-Forwarded-Original-Date")
+		{
+//			cout << "Found XDATE: " << result.second << endl;
+			strStream.str("");
+			strStream << this->parseTime(result.second).getUnixTimestamp();
+//			cout << "Date stamp: " << strStream.str() << " (" << this->parseTime(result.second).formatDate("%c") << ")" << endl;
+			headers.addHeader(result.first, strStream.str());
+			++forwardHashDetectionState;
+		}
+		else if(result.first == "Date")
+		{
+//			cout << "Found date: " << result.second << endl;
+			time = this->parseTime(result.second);
+//			cout << "Date stamp: " << time.getUnixTimestamp() << " (" << time.formatDate("%c") << ")" << endl;
+			++hashBuilderState;
+		}
+		else if(result.first == "From")
+		{
 		    sender = this->addPerson(this->parseEmail(result.second));
+			++hashBuilderState;
 		} 
-		else if (result.first == "To") {
-                    std::vector<std::pair<Person*, Receiver>> temp = 
-                    this->parseMultiple(result.second, Normal);
-                    receivers.insert(receivers.end(), temp.begin(), temp.end());
+		else if (result.first == "To")
+		{
+			std::vector<std::pair<Person*, Receiver>> temp = 
+				this->parseMultiple(result.second, Normal);
+			receivers.insert(receivers.end(), temp.begin(), temp.end());
 		} 
-		else if (result.first == "Content") {
+		else if (result.first == "Content")
+		{
 		    contents = result.second;
-                    result_mail = new Mail(*sender, receivers, contents, headers, time);
+			result_mail = new Mail(*sender, receivers, contents, headers, time);
 		} 
-                else if (result.first == "Cc") {
-                    std::vector<std::pair<Person*, Receiver>> temp = 
-                        this->parseMultiple(result.second, Copy);
-                    receivers.insert(receivers.end(), temp.begin(), temp.end());
-                }
-                else if (result.first == "Bcc") {
-                    std::vector<std::pair<Person*, Receiver>> temp = 
-                        this->parseMultiple(result.second, CarbonCopy);
-                    receivers.insert(receivers.end(), temp.begin(), temp.end());
-                }
-                else if (result.first == "Reply-To") {
-                    std::vector<std::pair<Person*, Receiver>> temp = 
-                        this->parseMultiple(result.second, Reply);
-                    receivers.insert(receivers.end(), temp.begin(), temp.end());
-                }
-                else if(result.first == "Subject") {
-                    headers.addHeader(result.first, result.second);
-                    title = result.second;   
-                }
-                else {
-		    headers.addHeader(result.first, result.second);
+		else if (result.first == "Cc")
+		{
+			std::vector<std::pair<Person*, Receiver>> temp = 
+				this->parseMultiple(result.second, Copy);
+			receivers.insert(receivers.end(), temp.begin(), temp.end());
+		}
+		else if (result.first == "Bcc")
+		{
+			std::vector<std::pair<Person*, Receiver>> temp = 
+				this->parseMultiple(result.second, CarbonCopy);
+			receivers.insert(receivers.end(), temp.begin(), temp.end());
+		}
+		else if (result.first == "Reply-To")
+		{
+			std::vector<std::pair<Person*, Receiver>> temp = 
+				this->parseMultiple(result.second, Reply);
+			receivers.insert(receivers.end(), temp.begin(), temp.end());
+		}
+		else if(result.first == "Subject")
+		{
+			headers.addHeader(result.first, result.second);
+			title = result.second;   
+		}
+		else
+		{
+			if (result.first == "X-Forwarded-From")
+			{
+				++forwardHashDetectionState;
+			}
+			
+			headers.addHeader(result.first, result.second);
 		} 
+		
 	}
-//        this->checkForwards(title, contents, result_mail);
-        mail_cache.insert(std::pair<std::string, Mail*>(std::string(md5->md5ify(contents)), result_mail));
-        delete md5;
+	
+	cout << "--- For mail: " << result_mail->headers.getHeader("Subject") << endl;
+	cout << "Hash: " << headers.getHeader("Fwd-Hash") << endl;
+	auto fwdIt = this->forwards_hashes.find(headers.getHeader("Fwd-Hash"));
+	if (fwdIt == this->forwards_hashes.end())
+	{
+//		cout << "Not found\n";
+		this->forwards_hashes.insert({{headers.getHeader("Fwd-Hash"), result_mail}});
+	}
+	else if ((*fwdIt).second == NULL)
+	{
+//		cout << "Found and null\n";
+		(*fwdIt).second = result_mail;
+		result_mail->partOfForwardPath = true;
+	}
+	if (setAsPartOfForward)
+	{
+		result_mail->partOfForwardPath = true;
+	}
+	
+//	if (isBaseForward)
+//	{
+//		this->forwards_struct.insert({{result_mail, {NULL, {result_mail}}}});
+//	}
+	
+//	cout << "=== BUILD END\n";
 	return result_mail;
 }
 
@@ -373,7 +461,7 @@ std::pair<std::string, std::string> FileParser::parseEntity(std::string& fullStr
 	if (this->parser_foundHeadersEnd)
 	{
 		startIter = fullString.end();
-		return std::pair<std::string, std::string>("Content", std::string(it, startIter));
+		return std::pair<std::string, std::string>("Content", std::string(it, startIter - 1));
 	}
 	
 	unsigned int goBack = 0;
@@ -386,13 +474,13 @@ std::pair<std::string, std::string> FileParser::parseEntity(std::string& fullStr
 	key = std::string(startIter, it);
 	startIter = ++++it;
 	
-	while(true)
+	while(it != fullString.end())
 	{
-		if (*it == 0x0D && *(it + 1) == 0x0A)
+		if (*it == 0x0A)
 		{
-			it += 2;
+			it += 1;
 			// Check if it's end of header, line break of end of all headers
-			if (*it == ' ')
+			if (*it == ' ' || *it == 0x9)
 			{
 				// Line break, continue;
 				continue;
@@ -401,10 +489,21 @@ std::pair<std::string, std::string> FileParser::parseEntity(std::string& fullStr
 			{
 				// End of all headers found
 				this->parser_foundHeadersEnd = true;
-				goBack = 4;
+				goBack += 2;
 				break;
 			}
-			goBack = 2;
+			else if (*it == 0x0A)
+			{
+				// End of all headers found
+				this->parser_foundHeadersEnd = true;
+				goBack += 1;
+				break;
+			}
+			goBack += 1;
+			if ((it - 1) != fullString.begin() &&  *(it - 2) == 0x0D)
+			{
+				goBack += 1;
+			}			
 			break;
 		}
 		

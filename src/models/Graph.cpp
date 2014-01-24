@@ -28,7 +28,7 @@ Graph::Graph(std::list<Containers::Person*>& people, std::list<Containers::Mail*
     addPeople(people);
     addToEdges(mails);
 
-	cout << "[[[SIZE: " << this->getMails().size() << "]]]\n";
+//	cout << "[[[SIZE: " << this->getMails().size() << "]]]\n";
 	for(auto x: this->getMails())
 	{
 		if (x->headers.getHeader("Message-ID") != "<1803522542.12549.1386376839060.JavaMail.javamailuser@localhost>")
@@ -60,17 +60,17 @@ void Graph::addToEdges(std::vector<Containers::Mail*>& mails){
     //dla kazdego mejla znajdz wierzcholek nadawacy, w mapie krawedzi wierzcholka nadawcy
     //znajdz krawedz odpowiadajaca wierzcholkowi i wstaw tam nowa krawedz, jesli wczesniej nie istniala zadna
     for(unsigned int i=0; i<mails.size(); i++){
-		std::cout << "add mail\n";
+//		std::cout << "add mail\n";
         //te 2 wskazniki ponizej nie sa potrzebne, ale wtedy jedna linijka mialaby 3 linijki xd
         Vertex* senderVertex=vertices.find(mails[i]->sender)->second;
-		std::cout << "found vertex\n";
+//		std::cout << "found vertex\n";
 		for(auto recIt: mails[i]->receivers){
-			std::cout << "find\n";
+//			std::cout << "find\n";
 			Vertex* receiverVertex=vertices.find(recIt.first)->second;
 			//jesli nie istnieje edge dla wierzcholka odbiorcy
-			std::cout << "if\n";
+//			std::cout << "if\n";
 			if(senderVertex->edges.count(receiverVertex)==0){
-				std::cout << "add to edges\n";
+//				std::cout << "add to edges\n";
 				Edge* newEdge = new Edge(receiverVertex);
 				senderVertex->edges.insert(std::pair<Vertex*, Edge*>(receiverVertex, newEdge));
 			}
@@ -158,30 +158,62 @@ std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> Graph:
 	std::vector<Containers::Person*> ppl;
 	std::list<Containers::Mail*> mails;
 	Containers::Person* origin = NULL;
+	std::unordered_set<Containers::Person*> addedPpl;
 
-	if (check->headers.getHeader("Message-ID") == "<1803522542.12549.1386376839060.JavaMail.javamailuser@localhost>")
+	if (!check->partOfForwardPath)
 	{
 		return {ppl, mails};
 	}
-
-	auto allMails = this->getMails();
-	for(auto x = allMails.begin(); x != allMails.end(); ++x)
+	if (check->forwardBase == NULL && check->forwardAll.size() == 0)
 	{
-		if ((*x)->headers.getHeader("Message-ID") == check->headers.getHeader("Message-ID"))
-		{
-			if ((*x)->headers.getHeader("Subject").at(0) != 'F')
-			{
-				origin = (*x)->sender;
-			}
-			ppl.push_back((*x)->sender);
-			for(auto y: (*x)->receivers)
-			{
-				ppl.push_back(y.first);
-			}
-			mails.push_back(*x);
-		}
+		return {ppl, mails};
 	}
-	fwdOrigin = origin;
+	if (check->forwardBase == NULL)
+	{
+		fwdOrigin = check->sender;
+	}
+	else
+	{
+		fwdOrigin = check->forwardBase->sender;
+		check = check->forwardBase;
+	}
+		for(auto x: check->forwardAll)
+		{
+			mails.push_back(x);
+			if (addedPpl.find(x->sender) == addedPpl.end())
+			{
+				addedPpl.insert(x->sender);
+			}
+			for(auto y: x->receivers)
+			{
+				if (addedPpl.find(y.first) == addedPpl.end())
+				{
+					addedPpl.insert(y.first);
+				}
+			}
+		}
+
+//	Containers::Mail* currMail = check;
+//	while(check->headers.getHeader("X-For"))
+//	
+//	auto allMails = this->getMails();
+//	for(auto x = allMails.begin(); x != allMails.end(); ++x)
+//	{
+//		if ((*x)->headers.getHeader("Message-ID") == check->headers.getHeader("Message-ID"))
+//		{
+//			if ((*x)->headers.getHeader("Subject").at(0) != 'F')
+//			{
+//				origin = (*x)->sender;
+//			}
+//			ppl.push_back((*x)->sender);
+//			for(auto y: (*x)->receivers)
+//			{
+//				ppl.push_back(y.first);
+//			}
+//			mails.push_back(*x);
+//		}
+//	}
+//	fwdOrigin = origin;
 	return {ppl, mails};
 }
 
@@ -406,11 +438,11 @@ Stats Graph::getStats(Containers::Person* person){
 
 
 Edge::Edge(Vertex* pointedVertex){
-    std::cout<<"tworze edga...";
+//    std::cout<<"tworze edga...";
     this->pointedVertex=pointedVertex;
     this->owner=owner;
     pointedVertex->pointingEdges.push_back(this);
-    std::cout<<"sukces"<<std::endl;
+//    std::cout<<"sukces"<<std::endl;
 }
 
 
