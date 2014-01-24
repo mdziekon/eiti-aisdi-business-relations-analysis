@@ -39,7 +39,15 @@ void MailWindow::SetLabels()
     ui->odbiorcaText->setText( QString::fromStdString(allreceivers) );
     ui->tematText->setText( QString::fromStdString(mail->headers.getHeader("Subject")));
     ui->czasText->setText(QString::fromStdString(mail->sendDate.formatDate("%x")));
-    ui->textEdit->setText(QString::fromStdString(mail->content));
+
+            QString qstr= " (";
+            qstr+=QString::number(mail->sendDate.getUnixTimestamp());
+            qstr+=")";
+            qstr+="\n";
+     qstr +=QString::fromStdString(mail->content);
+    //item->setText(3,qstr);
+
+    ui->textEdit->setText(qstr);
 }
 
 void MailWindow::closeEvent(QCloseEvent *)

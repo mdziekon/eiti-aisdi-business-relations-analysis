@@ -111,7 +111,7 @@ void GraphSpace2::DefaultColour() {
 void GraphSpace2::ColourGraph(std::list<Containers::Mail*> maillist, QBrush brush, QPen pen)
 {
     for(auto it = maillist.begin() ; it != maillist.end() ; it++)
-    {
+    {std::cout<<"mail"<<std::endl;
         Containers::Mail* mail = *it;
         ColourEdge(mail,pen);
         Containers::Person* person1 = mail->sender;
@@ -141,10 +141,10 @@ void GraphSpace2::ColourEdge(Containers::Mail* mail, QPen pen)
         VisibleEdge* edge = *edgeit;
         Edge* edge1 = edge->graphEdge1;
         for(auto edge1mailsIt = edge1->mails.begin() ; edge1mailsIt != edge1->mails.end() ; edge1mailsIt++)
-        {
+        {std::cout<<"t"<<std::endl;
             Containers::Mail* checkingmail = &*edge1mailsIt;
             if(mail == checkingmail)
-            {
+            {std::cout<<"tg"<<std::endl;
                edge->pen = pen;
             }
         }
@@ -152,7 +152,7 @@ void GraphSpace2::ColourEdge(Containers::Mail* mail, QPen pen)
         {
             Edge* edge2 = edge->graphEdge2;
             for(auto edge2mailsIt = edge2->mails.begin() ; edge2mailsIt != edge2->mails.end() ; edge2mailsIt++)
-            {
+            {std::cout<<"tkk"<<std::endl;
                 Containers::Mail* checkingmail = &*edge2mailsIt;
                 if(mail == checkingmail)
                 {

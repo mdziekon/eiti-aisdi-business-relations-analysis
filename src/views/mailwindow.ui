@@ -110,6 +110,9 @@
         </item>
         <item>
          <widget class="QLabel" name="czasText">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="styleSheet">
            <string notr="true">QLabel { background-color : white;}</string>
           </property>
