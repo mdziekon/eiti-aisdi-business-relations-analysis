@@ -73,7 +73,7 @@ public: //do testow
     std::unordered_set<Containers::Mail*> getMailsHashset();
     std::list<Containers::Person*> getPeople();
     std::list<Containers::Mail*> getMails();
-
+std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> fwdDetect(Containers::Mail* check);
 private:
     unsigned int biggestEdge;
     //to przyjmuje wektor UNIKALNYCH osob, dodaje wierzcholki odpowiadajce tym osobom
@@ -82,7 +82,7 @@ private:
     //to przyjmuje wektor UNIKALNYCH mejli idodaje te mejle do krawedzi. jesli krawedz nie istnieje, dodaje ja
     void addToEdges(std::vector<Containers::Mail*>& mails);
     void addToEdges(std::list<Containers::Mail*>& mails);
-    std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> fwdDetect(Containers::Mail* check);
+
 
 };
 
