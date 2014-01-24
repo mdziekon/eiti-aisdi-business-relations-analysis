@@ -18,5 +18,9 @@
         <file>images/picture.png</file>
         <file>images/strzalka.png</file>
         <file>images/004.png</file>
+        <file>images/010.png</file>
+        <file>images/013.png</file>
+        <file>images/014.png</file>
+        <file>images/018.png</file>
     </qresource>
 </RCC>

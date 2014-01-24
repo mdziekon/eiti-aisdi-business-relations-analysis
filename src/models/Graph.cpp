@@ -1,7 +1,9 @@
 #include "Graph.h"
 
 #include <iostream>
-#include <set>
+#include <cstdlib>
+#include <unordered_map>
+#include <ctime>
 
 Graph::Graph(std::unordered_map<std::string, Containers::Person*>& people, std::vector<Containers::Mail*>& mails){
     biggestEdge=0;
@@ -106,15 +108,11 @@ void Graph::checkGroups(unsigned int threshold){
     }
 }
 
-Containers::Person* Graph::findPerson(std::string email)
-{
+Containers::Person* Graph::findPerson(std::string email){
 	for (auto x: this->vertices)
-	{
 		if (x.first->getEmail().getFull() == email)
-		{
 			return x.first;
-		}
-	}
+
 	return NULL;
 }
 
@@ -311,6 +309,98 @@ Containers::Person& Graph::getMostActiveReceiver(){
      return edge;
  }
 
+Stats Graph::getStats(Containers::Person* person){
+    Vertex* vertex=vertices.at(person);
+    Stats stats;
+
+    ///DLA WYCHODZACYCH MEJLI
+    std::unordered_map<char*, int> uniqueDays;                  //klucz-unikalny dzien, int-nr dnia tygodnia
+    std::unordered_map<char*, std::pair<int, int>> workTimeMap; //klucz - unikalny dzien, para-min i max czas danego dnia
+    unsigned int allMailsSentAtDay[7]={0};  //liczba wszystkich mejli w danym dniu tygodnia
+    for(auto it = vertex->edges.begin(); it!= vertex->edges.end(); it++){   //dla kazdego wych. edga
+        stats.mailsSent+=it->second->mails.size();
+        for(auto mailsIt=it->second->mails.begin(); mailsIt!=it->second->mails.end(); mailsIt++){    //dla kazdego mejla
+
+            //tu oblicza srednia ilosc mejli
+            const tm *timeinfo = &(*mailsIt).sendDate.timeStruct;
+            char buffer [20];
+            strftime (buffer, 20 ,"%w", timeinfo);                      //wrzuca do buffer numer dnia tygodnia
+            unsigned int day=atoi(buffer);
+
+            //unsigned int day=atoi((*mailsIt).sendDate.formatDate("%w"));
+            allMailsSentAtDay[day]++;                                   //mail w dany dzien tygodnia
+            strftime (buffer, 20 ,"%D", timeinfo);                      //dokladna data mejla
+            uniqueDays.insert (std::make_pair<char*,int>(buffer,day));  //wrzuc unikalny dzien tyg.
+
+
+
+
+            /*//tu oblicza sredni czas pracy
+            auto gotIt = workTimeMap.find(buffer);
+            if(gotIt==workTimeMap.end()){   //nie ma jeszcze takiego dnia w mapie
+                workTimeMap.insert(std::make_pair<char* , std::pair<int, int>>(buffer, std::make_pair<int, int>((*mailsIt).sendDate.getUnixTimestamp(),(*mailsIt).sendDate.getUnixTimestamp())));
+            }
+            else{                           //jest taki dzien - sprawdz czy przesunely sie godziny pracy
+                if((*mailsIt).sendDate.getUnixTimestamp()>workTimeMap.at(buffer).second)
+                    workTimeMap.at(buffer).second=(*mailsIt).sendDate.getUnixTimestamp();
+                else if((*mailsIt).sendDate.getUnixTimestamp()<workTimeMap.at(buffer).first)
+                    workTimeMap.at(buffer).first=(*mailsIt).sendDate.getUnixTimestamp();
+            }
+            */
+        }
+    }
+
+    ///SREDNIA LICZBA MEJLI WYCHODZACYCH
+    //policz ile unikalnych dni bylo
+    unsigned int uniqueDaysNum[7]={0};
+    for(auto it=uniqueDays.begin(); it!=uniqueDays.end(); it++){
+        uniqueDaysNum[it->second]++;
+    }
+
+    for(int i=0; i<7; i++){ //policz srednia ilsoc mejli kazdego dnia
+        stats.dailySentAverage[i]=allMailsSentAtDay[i]/uniqueDaysNum[i];
+    }
+    /*
+    ///SREDNIA CZASU PRACY
+    unsigned int totalWorkEndingTime=0;
+     unsigned int totalWorkStartingTime=0;
+    for(auto it=workTimeMap.begin(); it!=workTimeMap.end(); it++){
+        totalWorkStartingTime+=it->second.first;
+        totalWorkEndingTime+=it->second.second;
+    }
+    //stats.averageWorkEndTime=totalWorkEndingTime/workTimeMap.size();
+    //stats.averageWorkStartTime=totalWorkStartingTime/workTimeMap.size();
+    stats.averageWorkTime=(totalWorkEndingTime-totalWorkStartingTime)/workTimeMap.size(); //srednia ilosc czasu na dobe/ilosc unikalnych dni
+    */
+
+    ///DLA PRZYCHODZACYCH MEJLI
+    uniqueDays.clear();
+    unsigned int allMailsReceivedAtDay[7]={0};
+    for(auto it = vertex->pointingEdges.begin(); it!=vertex->pointingEdges.end(); it++){
+        stats.mailsReceived+=(*it)->mails.size();
+        for(auto mailsIt=(*it)->mails.begin(); mailsIt!=(*it)->mails.end(); mailsIt++){
+            const tm *timeinfo = &(*mailsIt).sendDate.timeStruct;
+            char buffer [20];
+            strftime (buffer, 20 ,"%w", timeinfo);   //wrzuca do buffer numer dnia tygodnia
+            unsigned int day=atoi(buffer);
+            allMailsReceivedAtDay[day]++;               //mail w dany dzien tygodnia
+            strftime (buffer, 20 ,"%D", timeinfo);  //dokladna data mejla
+            uniqueDays.insert (std::make_pair<char*,int>(buffer,day));//wrzuc unikalny dzien tyg.
+        }
+    }
+
+    uniqueDaysNum[7]={0};
+    for(auto it=uniqueDays.begin(); it!=uniqueDays.end(); it++){
+        uniqueDaysNum[it->second]++;
+    }
+    for(int i=0; i<7; i++){ //policz srednia ilsoc mejli kazdego dnia
+        stats.dailyReceivedAverage[i]=allMailsReceivedAtDay[i]/uniqueDaysNum[i];
+    }
+
+
+
+    return stats;
+}
 
 
 

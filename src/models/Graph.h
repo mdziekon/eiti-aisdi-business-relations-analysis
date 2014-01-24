@@ -10,6 +10,7 @@
 
 class Edge;
 class Graph;
+class Stats;
 
 class Vertex{
 public:
@@ -49,6 +50,7 @@ class Graph{
 public: //do testow
     std::unordered_map<Containers::Person*, Vertex*> vertices;
 	unsigned int fwdCount = 0;
+    Containers::Person* fwdOrigin = NULL;
 
     Graph(std::list<Containers::Person*>& people, std::list<Containers::Mail*>& mails);
     Graph(std::unordered_map<std::string, Containers::Person*>& people, std::vector<Containers::Mail*>& mails);
@@ -62,16 +64,16 @@ public: //do testow
 	std::string getMostActiveDay();
 	Containers::Person& getMostActiveReceiver();
     unsigned int getRelationsNum();
-    Edge * getTheHottestEdge(Vertex *vertex);
+    Edge* getTheHottestEdge(Vertex *vertex);
+    void checkGroups(unsigned int threshold);
+    Stats getStats(Containers::Person* person);
+
 
     Containers::Person* findPerson(std::string email);
     std::unordered_set<Containers::Mail*> getMailsHashset();
     std::list<Containers::Person*> getPeople();
     std::list<Containers::Mail*> getMails();
-
-    std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> fwdDetect(Containers::Mail* check);
-    Containers::Person* fwdOrigin = NULL;
-
+std::pair<std::vector<Containers::Person*>, std::list<Containers::Mail*>> fwdDetect(Containers::Mail* check);
 private:
     unsigned int biggestEdge;
     //to przyjmuje wektor UNIKALNYCH osob, dodaje wierzcholki odpowiadajce tym osobom
@@ -80,8 +82,19 @@ private:
     //to przyjmuje wektor UNIKALNYCH mejli idodaje te mejle do krawedzi. jesli krawedz nie istnieje, dodaje ja
     void addToEdges(std::vector<Containers::Mail*>& mails);
     void addToEdges(std::list<Containers::Mail*>& mails);
-    void checkGroups(unsigned int threshold);
+
 
 };
 
+
+class Stats{
+    public:
+    float dailySentAverage[7]={0};
+    float dailyReceivedAverage[7]={0};
+    unsigned int mailsSent=0, mailsReceived=0;
+    int averageWorkTime;    //to jest TimeStamp
+    //Containers::Date averageWorkStartTime[7];
+    //Containers::Date averageWorkEndTime[7];
+
+};
 #endif // GRAPH_H_INCLUDED

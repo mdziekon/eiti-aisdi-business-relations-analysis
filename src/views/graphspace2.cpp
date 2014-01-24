@@ -3,9 +3,7 @@
 #include "../utils/sortComparators.h"
 #include "../utils/quicksort.h"
 
-GraphSpace2::GraphSpace2()
-{
-}
+
 
 GraphSpace2::GraphSpace2(Graph * newgraph, QGridLayout * lay, float delta):
     graph(newgraph), layout(lay)
@@ -72,10 +70,10 @@ void GraphSpace2::CreateVisibleEdges(float delta)
      }
 }
 
-void GraphSpace2::CreateVisibleEdge(VisibleVertex* pointedvertex)
+VisibleEdge* GraphSpace2::CreateVisibleEdge(VisibleVertex* pointedvertex)
 {
     float x1,y1,x2,y2;
-    VisibleEdge * edge;
+    VisibleEdge * edge = NULL;
     Vertex* vertex = pointedvertex->graphVertex;
     x1 = vertex->x;
     y1 = vertex->y;
@@ -97,16 +95,18 @@ void GraphSpace2::CreateVisibleEdge(VisibleVertex* pointedvertex)
             //visibleEdges.push_back(edge);
         }
     }
+    return edge;
 }
 
 
-void GraphSpace2::DefaultColour() { ColourGraph(this->graph->getMails(),defaultBrush,defaultPen); for(auto vertexit = this->visibleVertices.begin() ; vertexit != this->visibleVertices.end() ; vertexit++) { VisibleVertex* vertex = *vertexit; ColourVertex(vertex->graphPerson,defaultBrush); } scene->update(); }
-
-//void GraphSpace2::DefaultColour()
-//{
-//    ColourGraph(this->graph->getMails(),defaultBrush,defaultPen);
-//    scene->update();
-//}
+void GraphSpace2::DefaultColour() {
+    ColourGraph(this->graph->getMails(),defaultBrush,defaultPen);
+    for(auto vertexit = this->visibleVertices.begin() ; vertexit != this->visibleVertices.end() ; vertexit++)
+    {
+        VisibleVertex* vertex = *vertexit;
+        ColourVertex(vertex->graphPerson,defaultBrush);
+    } scene->update();
+}
 
 void GraphSpace2::ColourGraph(std::list<Containers::Mail*> maillist, QBrush brush, QPen pen)
 {
@@ -133,6 +133,7 @@ void GraphSpace2::ColourVertex(Containers::Person* person, QBrush brush)
         }
     }
 }
+
 void GraphSpace2::ColourEdge(Containers::Mail* mail, QPen pen)
 {
     for(auto edgeit = this->visibleEdges.begin() ; edgeit != this->visibleEdges.end() ; edgeit++)
@@ -144,7 +145,6 @@ void GraphSpace2::ColourEdge(Containers::Mail* mail, QPen pen)
             Containers::Mail* checkingmail = &*edge1mailsIt;
             if(mail == checkingmail)
             {
-               std::cout<<"znaleziono krawędz do kolorowania"<<std::endl;
                edge->pen = pen;
             }
         }
@@ -156,7 +156,6 @@ void GraphSpace2::ColourEdge(Containers::Mail* mail, QPen pen)
                 Containers::Mail* checkingmail = &*edge2mailsIt;
                 if(mail == checkingmail)
                 {
-                   std::cout<<"znaleziono krawędz do kolorowania"<<std::endl;
                    edge->pen = pen;
                 }
             }
@@ -215,7 +214,7 @@ void GraphSpace2::SetLocations()
 
 
 
-    //dobrze
+    //dobre, stare na 1 okregu wyliczanie
 //    r = 395/2 - 40;
 //    std::cout << "r: " << r <<std::endl;
 
@@ -251,6 +250,7 @@ QPointF GraphSpace2::liczCwiartkeDlugosciLini(qreal x1, qreal y1, qreal x2, qrea
     return QPointF(a,b);
 }
 
+//true jesli nie ma takiej krawedzi
 bool GraphSpace2::CheckEdges( std::pair<Vertex*,const Vertex*> verticlesX, Edge* newedge )
 {
     std::vector<VisibleEdge*>::iterator it = visibleEdges.begin();
@@ -264,15 +264,14 @@ bool GraphSpace2::CheckEdges( std::pair<Vertex*,const Vertex*> verticlesX, Edge*
             return false;
         }
     }
-    return true; //true jesli nie ma takiej krawedzi
+    return true;
 }
-/////////////////////////////////////////
+
 VisibleVertex::VisibleVertex(float a, float b, Vertex * vertex, Containers::Person * person):
     graphVertex(vertex), graphPerson(person)
 {
     setPos(QPointF(a,b));
     ishover = false;
-    ispressed = false; isgrey = false; isspecial = false;
     setAcceptHoverEvents(true);
     brush = QBrush(Qt::blue);
 }
@@ -329,20 +328,11 @@ void VisibleVertex::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
         this->scene()->update();
     }
 }
-////////////////////////////////////////
 
-
-VisibleEdge::VisibleEdge(
-  double x1,
-  double y1,
-  double x2,
-  double y2,
-  QGraphicsItem *parent)
+VisibleEdge::VisibleEdge(double x1, double y1, double x2, double y2, QGraphicsItem *parent)
   : QGraphicsLineItem(x1+15,y1+15,x2+15,y2+15,parent)
 {
     setAcceptHoverEvents(true);
-    ishover = false;
-    ispressed = false; isgrey = false; isspecial = false;
     graphEdge1 = NULL;
     graphEdge2 = NULL;
     pen.setWidth(1); pen.setColor(Qt::black);
@@ -391,37 +381,10 @@ void VisibleEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
     painter->drawLine(line2);
 }
 
-void VisibleEdge::hoverEnterEvent(QGraphicsSceneHoverEvent *)
-{
-    if(!(myspace->scene->itemPressed))
-    {
-        ishover = true;
-        myspace->mailsInfo = new MailsInfo(myspace->layout, myspace->layout->parentWidget());
-        myspace->mailsInfo->FillTreeWidget(graphEdge1,graphEdge2);
-        myspace->layout->addWidget(myspace->mailsInfo);
-    }
-}
-
-void VisibleEdge::mousePressEvent(QGraphicsSceneMouseEvent *)
-{
-    myspace->scene->itemPressed = true;
-}
-
-void VisibleEdge::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
-{
-    if(!(myspace->scene->itemPressed))
-    {
-        delete myspace->mailsInfo;
-        myspace->mailsInfo = NULL;
-        this->scene()->update();
-    }
-}
-
 void VisibleEdge::AddSecondEdge(Edge *newedge)
 {
     graphEdge2 = newedge;
 }
-
 
 MyQGraphicsScene::MyQGraphicsScene(GraphSpace2* space): space(space)
 {
@@ -445,6 +408,7 @@ void MyQGraphicsScene::deleteAllPersonInfo()
         delete space->personInfo;
     space->personInfo = NULL;
 }
+
 void MyQGraphicsScene::deleteAllMailsInfo()
 {
     if( space->mailsInfo != NULL )

@@ -191,9 +191,17 @@ void FiltersParser::parseExpression()
 		{
 			parserQueue.push({parserStack.top(), ""});
 			parserStack.pop();
-		}	
+		}
 		
-		this->success = true;
+		if (parserQueue.empty())
+		{
+			errorFound = true;
+			this->errorType = Error::ERR_EMPTY_EXPRESSION;
+		}
+		else
+		{		
+			this->success = true;
+		}
 	}
 }
 
@@ -396,6 +404,9 @@ string FiltersParser::getErrorInfo(int surrounding)
 			break;
 		case Error::ERR_UNEXPECTED_END:
 			errorString = "Unexpected expression end";
+			break;
+		case Error::ERR_EMPTY_EXPRESSION:
+			errorString = "Empty expression";
 			break;
 		default:
 			errorString = "Undefined error";
