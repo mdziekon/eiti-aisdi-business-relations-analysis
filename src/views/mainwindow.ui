@@ -74,7 +74,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -202,7 +202,7 @@
          <enum>QFrame::StyledPanel</enum>
         </property>
         <property name="text">
-         <string>Utworzone grupy:</string>
+         <string>Wybierz osobe by zobacz z kim nalezy do grupy:</string>
         </property>
         <property name="margin">
          <number>0</number>
@@ -734,7 +734,7 @@ p, li { white-space: pre-wrap; }
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="text">
-           <string>Wysłał:</string>
+           <string>Wysłał średnio na dzień:</string>
           </property>
          </widget>
         </item>
@@ -890,7 +890,7 @@ p, li { white-space: pre-wrap; }
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="text">
-           <string>Odebral:</string>
+           <string>Odebral średnio na dzień:</string>
           </property>
          </widget>
         </item>

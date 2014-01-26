@@ -55,12 +55,12 @@ void MainWindow::on_actionResetGraf_activated()
         return;
 
     WyczyscGraf2();
-    UzupelnijGraf2(originalGraph);
     ui->treeWidget_MailList->clear();
-    UzupelnijSzczegoly(originalGraph->getMails());
     delete filteredGraph;
     filteredGraph = new Graph(vecPerson, vecMail);
-    FillComboBoxPersons(originalGraph->getPeople());
+    UzupelnijGraf2(filteredGraph);
+    UzupelnijSzczegoly(filteredGraph->getMails());
+    FillComboBoxPersons(filteredGraph->getPeople());
 
 }
 
@@ -109,11 +109,11 @@ void MainWindow::UzupelnianieOkienek(std::vector<Containers::Mail*> vecPobraneMa
 	originalGraph->forwards_hashes = filteredGraph->forwards_hashes = fp->forwards_hashes;
     filterset = new FilterSet();
 
-    UzupelnijZestawienie(originalGraph);
-    UzupelnijSzczegoly(originalGraph->getMails());
-    UzupelnijGraf2(originalGraph);
-    FillComboBoxPersons(originalGraph->getPeople());
-    FillGroupsList(originalGraph->getPeople());
+    UzupelnijZestawienie(filteredGraph);
+    UzupelnijSzczegoly(filteredGraph->getMails());
+    UzupelnijGraf2(filteredGraph);
+    FillComboBoxPersons(filteredGraph->getPeople());
+    FillGroupsList(filteredGraph->getPeople());
     FillPeopleList(vecPerson);
 }
 void MainWindow::UzupelnijZestawienie(Graph* graphObj)
@@ -342,13 +342,13 @@ void MainWindow::on_pushButton_advancedfiltersaction_clicked()
     if (fp.hasSucceded())
     {
         WyczyscGraf2();
-        fp.applyExpression(originalGraph);
-        UzupelnijGraf2(originalGraph);
+        fp.applyExpression(filteredGraph);
+        UzupelnijGraf2(filteredGraph);
 
         //do sparwdzenia
         ui->treeWidget_MailList->clear();
         int lp = 0;
-        std::list<Containers::Mail*> lista = originalGraph->getMails();
+        std::list<Containers::Mail*> lista = filteredGraph->getMails();
         std::list<Containers::Mail*>::iterator it = lista.begin();
         for( ; it != lista.end() ; ++it)
         {
@@ -370,7 +370,7 @@ void MainWindow::on_listWidget_grouppeople_itemClicked(QListWidgetItem *item)
 {
     QListWidgetItemPerson * myitem = static_cast<QListWidgetItemPerson*>(item);
     Containers::Person* person = myitem->person;
-    this->graphspace2->ColourVertex(person,QBrush(Qt::yellow));
+    this->graphspace2->ColourVertex(person,QBrush(Qt::green));
     for(auto it = this->graphspace2->visibleVertices.begin(); it!= this->graphspace2->visibleVertices.end(); ++it)
     {
         VisibleVertex* visvertex = *it;
@@ -381,7 +381,9 @@ void MainWindow::on_listWidget_grouppeople_itemClicked(QListWidgetItem *item)
             std::cout<<"tu: "<<vertex->groups.size()<<std::endl;
             for(auto ii = vertex->groups.begin() ; ii!= vertex->groups.end() ; ++ii)
             {
+
                 Vertex* v = *ii;
+                std::cout<<"Nalezy do grupy: "<<v->owner->getName()<<std::endl;
                 this->graphspace2->ColourVertex(v->owner,QBrush(Qt::yellow));
             }
         }
@@ -433,7 +435,7 @@ void MainWindow::ColourTreeView(std::list<Containers::Mail*> mailsToColour, QCol
             if(currentitem == 0)
                 break;
             myitem = static_cast<MyQTreeWidgetItem*>(currentitem);
-            if(myitem->myMail == mail)
+            if(myitem->myMail->content == mail->content)
             {
                 ColourTreeView(myitem, color);
                 break;
@@ -477,11 +479,12 @@ void MainWindow::on_pushButton_pokazforward_clicked()
     ColourTreeView(myitem,Qt::yellow);
     Containers::Mail* forwardedMail = myitem->myMail; // tu masz wskaznik na mail ktory wybralismy
 
-    auto ret = this->graphspace2->graph->fwdDetect(forwardedMail);
+    auto ret = this->filteredGraph->fwdDetect(forwardedMail);
 
 //    std::list<Containers::Mail*> mailstocolour;// tu przykladowe wykorzystanie funkcji
 //    mailstocolour.push_back(forwardedMail);//
     ColourTreeView(ret.second, Qt::red);//
+    ColourTreeView(this->fil)
     //tutaj trzeba zapuscic jakas petle ktora dla kazdego maila forwardowanego uruchomi funkcje
     //ColourTreeView(std::list<Containers::Mail*> mailstoColour, QColor color);
     for(auto it: ret.first)
@@ -489,7 +492,7 @@ void MainWindow::on_pushButton_pokazforward_clicked()
         this->graphspace2->ColourVertex(it, brush);
     }
     this->graphspace2->ColourGraph(ret.second,brush,pen);
-    this->graphspace2->ColourVertex(this->graphspace2->graph->fwdOrigin, brush2);
+    this->graphspace2->ColourVertex(this->filteredGraph->fwdOrigin, brush2);
     this->graphspace2->scene->update();
 }
 
@@ -550,14 +553,14 @@ void MainWindow::on_pushButton_plus_clicked()
 
     this->scale += .25f;
     this->WyczyscGraf2();
-    this->UzupelnijGraf2(this->originalGraph);
+    this->UzupelnijGraf2(this->filteredGraph);
 }
 
 void MainWindow::on_pushButton_minus_clicked()
 {
     this->scale -= .25f;
     this->WyczyscGraf2();
-    this->UzupelnijGraf2(this->originalGraph);
+    this->UzupelnijGraf2(this->filteredGraph);
 }
 
 MyQTreeWidgetItem::MyQTreeWidgetItem(QTreeWidget * parent,Containers::Mail *mail): QTreeWidgetItem(parent)

@@ -143,7 +143,7 @@ void GraphSpace2::ColourEdge(Containers::Mail* mail, QPen pen)
         for(auto edge1mailsIt = edge1->mails.begin() ; edge1mailsIt != edge1->mails.end() ; edge1mailsIt++)
         {std::cout<<"t"<<std::endl;
             Containers::Mail* checkingmail = &*edge1mailsIt;
-            if(mail == checkingmail)
+            if(mail->content == checkingmail->content)
             {std::cout<<"tg"<<std::endl;
                edge->pen = pen;
             }
@@ -154,7 +154,7 @@ void GraphSpace2::ColourEdge(Containers::Mail* mail, QPen pen)
             for(auto edge2mailsIt = edge2->mails.begin() ; edge2mailsIt != edge2->mails.end() ; edge2mailsIt++)
             {std::cout<<"tkk"<<std::endl;
                 Containers::Mail* checkingmail = &*edge2mailsIt;
-                if(mail == checkingmail)
+                if(mail->content == checkingmail->content)
                 {
                    edge->pen = pen;
                 }
