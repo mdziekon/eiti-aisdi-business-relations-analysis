@@ -74,7 +74,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>5</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -377,7 +377,7 @@
             <item>
              <widget class="QLabel" name="label">
               <property name="text">
-               <string>TopicSubstringFilter:</string>
+               <string>Filtrowanie po słowie kluczowym</string>
               </property>
              </widget>
             </item>
@@ -403,7 +403,7 @@ p, li { white-space: pre-wrap; }
               <item>
                <widget class="QPushButton" name="pushButton_substringfilter">
                 <property name="text">
-                 <string>Add TopicSubstringFilter</string>
+                 <string>Dodaj SubstringFilter</string>
                 </property>
                </widget>
               </item>
@@ -416,7 +416,7 @@ p, li { white-space: pre-wrap; }
             <item>
              <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>PeopleFilter:</string>
+               <string>Filtrowanie po ludziach</string>
               </property>
              </widget>
             </item>
@@ -450,7 +450,7 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <widget class="QCheckBox" name="checkBox_issenders">
                   <property name="text">
-                   <string>senders</string>
+                   <string>nadawca</string>
                   </property>
                   <property name="checked">
                    <bool>true</bool>
@@ -460,7 +460,7 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <widget class="QCheckBox" name="checkBox_isrecivers">
                   <property name="text">
-                   <string>recivers</string>
+                   <string>odbiorca</string>
                   </property>
                  </widget>
                 </item>
@@ -469,7 +469,7 @@ p, li { white-space: pre-wrap; }
               <item>
                <widget class="QPushButton" name="pushButton_peoplefilter">
                 <property name="text">
-                 <string>Add PeopleFilter</string>
+                 <string>Dodaj PeopleFilter</string>
                 </property>
                </widget>
               </item>
@@ -482,7 +482,7 @@ p, li { white-space: pre-wrap; }
             <item>
              <widget class="QLabel" name="label_3">
               <property name="text">
-               <string>DateFilter:</string>
+               <string>Filtrowanie po dacie</string>
               </property>
              </widget>
             </item>
@@ -518,7 +518,7 @@ p, li { white-space: pre-wrap; }
               <item>
                <widget class="QPushButton" name="pushButton_datefilter">
                 <property name="text">
-                 <string>Add DateFilter</string>
+                 <string>Dodaj DateFilter</string>
                 </property>
                </widget>
               </item>

@@ -56,12 +56,13 @@ void MainWindow::on_actionResetGraf_activated()
 
     WyczyscGraf2();
     ui->treeWidget_MailList->clear();
+    ui->listWidget_grouppeople->clear();
     delete filteredGraph;
     filteredGraph = new Graph(vecPerson, vecMail);
     UzupelnijGraf2(filteredGraph);
     UzupelnijSzczegoly(filteredGraph->getMails());
     FillComboBoxPersons(filteredGraph->getPeople());
-
+    FillGroupsList(filteredGraph->getPeople());
 }
 
 void MainWindow::AddLine(Containers::Mail* mail, int lp)
@@ -484,7 +485,6 @@ void MainWindow::on_pushButton_pokazforward_clicked()
 //    std::list<Containers::Mail*> mailstocolour;// tu przykladowe wykorzystanie funkcji
 //    mailstocolour.push_back(forwardedMail);//
     ColourTreeView(ret.second, Qt::red);//
-    ColourTreeView(this->fil)
     //tutaj trzeba zapuscic jakas petle ktora dla kazdego maila forwardowanego uruchomi funkcje
     //ColourTreeView(std::list<Containers::Mail*> mailstoColour, QColor color);
     for(auto it: ret.first)
