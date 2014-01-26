@@ -254,7 +254,7 @@ void MainWindow::on_pushButton_peoplefilter_clicked()
         QString name = QString::fromStdString(peopleSet.back()->getName());
         peopleSet.pop_back();
         AddFilterToList(listtext+name, peoplefilter);
-	}   
+	}
 }
 
 void MainWindow::on_pushButton_datefilter_clicked()
@@ -264,7 +264,7 @@ void MainWindow::on_pushButton_datefilter_clicked()
 	QDateTime datetime = ui->dateTimeEdit->dateTime();
     QDate qdate = ui->dateTimeEdit->date();
     QString qstr= qdate.toString("dd.MM.yyyy");
-    
+
     QString listtext;
     listtext += " Odfiltruj date: "; listtext += qstr;
 
@@ -493,6 +493,7 @@ void MainWindow::on_listWidget_people_itemDoubleClicked(QListWidgetItem *item)
     ui->label_sendsat->setText(QString::number(stats.dailySentAverage[6]));
     ui->label_sendsan->setText(QString::number(stats.dailySentAverage[0]));
     ui->label_sendall->setText(QString::number(stats.mailsSent));
+
     ui->label_recivemon->setText(QString::number(stats.dailyReceivedAverage[1]));
     ui->label_recivetu->setText(QString::number(stats.dailyReceivedAverage[2]));
     ui->label_recivewe->setText(QString::number(stats.dailyReceivedAverage[3]));
@@ -501,7 +502,6 @@ void MainWindow::on_listWidget_people_itemDoubleClicked(QListWidgetItem *item)
     ui->label_recivesat->setText(QString::number(stats.dailyReceivedAverage[6]));
     ui->label_recivesan->setText(QString::number(stats.dailyReceivedAverage[0]));
     ui->label_reciveall->setText(QString::number(stats.mailsReceived));
-    unsigned int time = stats.averageWorkTime;
     ui->label_averageworktime->setText(QString::number(stats.averageWorkTime));
 
 }
